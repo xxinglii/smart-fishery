@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.yutang.timed-record</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/jiayang/代码/2026 鱼塘/录像与延时方案/record.sh</string>
+    <string>timed</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>600</integer>
+  <key>StandardOutPath</key>
+  <string>/tmp/yutang-record.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/yutang-record.log</string>
+</dict>
+</plist>

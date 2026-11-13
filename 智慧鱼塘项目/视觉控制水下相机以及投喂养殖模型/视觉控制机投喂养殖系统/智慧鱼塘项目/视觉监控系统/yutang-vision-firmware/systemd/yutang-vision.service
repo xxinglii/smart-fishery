@@ -1,0 +1,39 @@
+[Unit]
+Description=鱼塘视觉监控系统 · 树莓派端固件 (yutang-vision)
+Documentation=file://__PROJECT_DIR__/README.md
+# 4G CPE 起来得比系统慢，等网络在线再拉流，省得开机就报一堆重连日志
+After=network-online.target time-sync.target
+Wants=network-online.target
+# 相机在局域网里，PoE 交换机上电后几十秒才可用；固件本身有指数退避，不怕晚
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__PROJECT_DIR__
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+# 现场模式：连真相机。想先做前端联调，把 --simulate 加上即可（health.mode 会变 mock）
+ExecStart=__PYTHON__ -m yutang_vision --config __PROJECT_DIR__/config.yaml --host 0.0.0.0 --port __PORT__
+Restart=always
+RestartSec=5
+# 优雅退出：固件收到 SIGTERM 会停采集线程、关 SQLite、落盘 ptz.json
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+# 日志进 journald：journalctl -u yutang-vision -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=yutang-vision
+
+# --- 安全加固（现场盒子，能收就收）---
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=__PROJECT_DIR__
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

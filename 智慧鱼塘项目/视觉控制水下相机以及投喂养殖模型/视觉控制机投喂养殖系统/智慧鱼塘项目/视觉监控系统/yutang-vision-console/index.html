@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>塘口视觉监控台 · YUTANG VISION CONSOLE</title>
+<meta name="description" content="鱼塘视觉监控系统 · 外部网页端原型：双机位实时画面、摄食水花事件、云台巡航、4G 链路与本地录像。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A0B0D'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23FFB020' stroke-width='2'/><circle cx='16' cy='16' r='2.4' fill='%23FF4D4D'/><path d='M16 3v4M16 25v4M3 16h4M25 16h4' stroke='%23FFB020' stroke-width='2'/></svg>">
+</head>
+<body data-mode="mock">
+
+<!-- 顶部 tally 条 ==================================================== -->
+<header class="tally">
+  <div class="tally-brand">
+    <span class="tally-mark">YUTANG</span>
+    <span class="tally-sub">VISION CONSOLE</span>
+    <span class="tally-ver">v1.0 · PROTOTYPE</span>
+  </div>
+
+  <div class="tally-mid">
+    <span class="chip" id="tally-rec"><i class="rec"></i> REC</span>
+    <span class="chip" id="tally-mode">MOCK</span>
+    <span class="chip" id="tally-cams">CH 2/2</span>
+  </div>
+
+  <div class="tally-right">
+    <span class="meter" id="tally-sig" title="4G 信号">▮▮▮▯</span>
+    <span class="mono dim" id="tally-net">--</span>
+    <span class="mono dim" id="tally-disk">--</span>
+    <span class="mono big" id="tally-clock">--:--:--</span>
+  </div>
+</header>
+
+<div class="shell">
+  <!-- 左侧页签轨 ==================================================== -->
+  <nav class="rail" id="rail"></nav>
+
+  <!-- 主视图 ======================================================== -->
+  <div class="stage">
+    <div class="crumb">
+      <span class="crumb-code" id="crumb-code">01</span>
+      <span class="crumb-name" id="crumb-name">总览</span>
+      <span class="crumb-path mono" id="crumb-path">OVERVIEW</span>
+      <span class="spacer"></span>
+      <span class="crumb-note" id="crumb-note"></span>
+    </div>
+    <main id="view" class="view"></main>
+  </div>
+</div>
+
+<!-- 底部 24h 事件时间轴 ============================================== -->
+<footer class="strip">
+  <div class="strip-label">
+    <span class="mono">24H</span>
+    <span class="dim">事件轴</span>
+  </div>
+  <canvas id="strip-canvas" height="46"></canvas>
+  <div class="strip-legend">
+    <span><i class="dot info"></i>提示</span>
+    <span><i class="dot notice"></i>关注</span>
+    <span><i class="dot warn"></i>告警</span>
+    <span><i class="dot critical"></i>严重</span>
+  </div>
+</footer>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script src="feed.js"></script>
+<script src="api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

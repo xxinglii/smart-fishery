@@ -1,0 +1,154 @@
+
+===== PAGE 1 =====
+S
+Communication Expert
+of Industrial IOT
+“Lipstick” Size LTE Modem
+USR-DR154
+Introduction
+The USR-DR15X series device is the latest lipstick-sized 4G LTE modem introduced by PUSR. This
+product integrates a 4G module, providing a stable and reliable network connection for IoT applications.
+Additionally, this
+product integrates RS485 serial ports, enabling rapid transformation of on-site
+equipment into IoT devices, facilitating remote monitoring and control of the remote device.
+Due to its compact size and support for DIN rail mounting, this product can be used in a wider range
+of scenarios, making it especially suitable for installation in small enclosures.This device has been
+widely applied in variety industries such as environmental monitoring, smart agriculture, smart cities,
+smart energy and etc.
+
+===== PAGE 2 =====
+SPECIFICATION
+Product Features
+
+4G Cat1 connectivity, low latency, broad coverage, and high network stability;
+
+Supports multiple work modes: TCP, UDP, HTTP, and MQTT, capable of interfacing with various
+protocol servers;
+
+Built-in hardware watchdog to ensure stable operation without crashes;
+
+Industrial-grade design with a wide operating temperature range: -20 to 75。C;
+
+Wide voltage supply: 5-24V;
+
+Modbus gateway: allowing seamless communication between on-site devices and SCADA software;
+
+Supports both DIN rail and mounting hole installations;
+
+Utilizes push-in terminals for easy wiring;
+
+High EMC protection level: Level 2;
+
+Remote management through the PUSR platform, enabling remote device management.
+Dimensions
+Unit: mm
+Specifications
+Power
+Power Supply
+5-24V DC, 12V/1A is commanded
+Consumption
+Average:0.8W, Max:3.5W
+Cellular
+Frequency Band
+B1/3/5/7/8/20/28
+Transmition Rate(Mbps)
+10.3 DL/5.1 UL
+Modulation System
+UP link：QPSK/16QAM
+Down link：QPSK/16QAM/64QAM
+Tx Power
+23.5±2dBm
+
+===== PAGE 3 =====
+SPECIFICATION
+Receive Sensitivity
+Band 1 -98.5 10MHz Bandwidth
+Band 3 -98.0 10MHz Bandwidth
+Band 4 -97.5 10MHz Bandwidth
+Band 5 -98.0 10MHz Bandwidth
+Band 7 -97.5 10MHz Bandwidth
+Band 8 -98.0 10MHz Bandwidth
+Band 20 -98.5 10MHz Bandwidth
+Band 28 -98.0 10MHz Bandwidth
+SIM Slot
+1*4FF, Nano SIM card
+Antenna Connector
+1*SMA Female
+Serial Port
+Baud Rate
+600bps~230400bps
+Data Bits
+7,8
+Stop Bit
+1,2
+Parity Bit
+NONE,EVEN,ODD
+Software Features
+Protocols
+TCP/UDP/HTTP/MQTT/DNS/NTP/FTP/SSL
+Work Mode
+TCP Server, TCP client, UDP
+client, HTTP
+client, MQTT Client
+Registration Packet
+√
+Heartbeat Packet
+√
+Modbus Gateway
+Modubs RTU to Modbus TCP conversion
+Remote Management
+PUSR Cloud(Not available in Europe)
+Configuration
+Config Tools, AT command
+Environmental
+Characteristic
+Operating Temprature
+-25℃~+75℃
+Storage Temprature
+-40℃~ +85℃
+Operating Humidity
+5%~95%(Non-condensing)
+Weight
+<50g
+Dimension
+74*24*22mm(L* W* H)
+Others
+Certificate
+CE, NBTC, RoHS*, WEEE*
+*: The * feature is coming soon.
+Ordering Guide
+Model
+USR-DR154-E
+USR-DR154
+Frequency
+LTE FDD:
+B1/3/5/7/8/20/28
+LTE FDD: Band1/3/5/8
+LTE TDD:
+Band38/39/40/41
+Region
+Europe, Southeast
+Asia, Middle East
+China, India
+TCP Server
+√
+/
+Modbus Gateway
+√
+/
+SMS
+/
+√
+Purchase & Support
+For more information, please visit our websites:
+Official website: https://pusr.com
+Official shop: https://shop.usriot.com
+Technical support: http://h.usriot.com/
+
+===== PAGE 4 =====
+Official Website: www.pusr.com
+Official Shop: shop.usriot.com
+Technical Support: h.usriot.com
+Inquiry Email: inquiry@usriot.com
+Skype & WhatsApp: +86 13405313834
+Click to view more: Product Catalog & Facebook & Youtube

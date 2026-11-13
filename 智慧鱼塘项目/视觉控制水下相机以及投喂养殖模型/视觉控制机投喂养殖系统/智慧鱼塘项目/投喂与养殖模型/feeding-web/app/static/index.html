@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鱼塘投喂养殖模型</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         margin: 0; background: #f2f4f6; color: #222; }
+  header { background: #1b5e20; color: #fff; padding: 14px 20px; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; font-size: 12px; opacity: .85; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+  .card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .card h2 { margin: 0 0 12px; font-size: 16px; border-left: 4px solid #1b5e20; padding-left: 8px; }
+  label { display: block; font-size: 13px; margin: 8px 0 2px; color: #444; }
+  input, select { width: 100%; padding: 7px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+  button { margin-top: 12px; padding: 8px 18px; border: 0; border-radius: 4px; background: #1b5e20;
+           color: #fff; font-size: 14px; cursor: pointer; }
+  button.ghost { background: #555; }
+  button:hover { opacity: .9; }
+  .big { font-size: 40px; font-weight: 700; color: #1b5e20; }
+  .big small { font-size: 15px; font-weight: 400; color: #666; }
+  .range { color: #555; font-size: 14px; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  th, td { border: 1px solid #e0e0e0; padding: 6px 8px; text-align: left; }
+  th { background: #f6f6f6; }
+  .alarm { border-radius: 4px; padding: 8px 10px; margin: 6px 0; font-size: 13px; }
+  .alarm.red { background: #fdecea; color: #b71c1c; border: 1px solid #f5c6c0; }
+  .alarm.yellow { background: #fff8e1; color: #8d6e00; border: 1px solid #f0e0a0; }
+  .msg { font-size: 13px; margin-top: 8px; min-height: 18px; }
+  .msg.ok { color: #1b5e20; } .msg.err { color: #b71c1c; }
+  .muted { color: #777; font-size: 12px; }
+  .kv { font-size: 14px; line-height: 1.9; }
+  .kv b { display: inline-block; min-width: 110px; color: #555; font-weight: 600; }
+  footer { max-width: 1100px; margin: 8px auto 24px; padding: 0 16px; font-size: 12px; color: #888; }
+  .events { font-size: 12px; max-height: 220px; overflow-y: auto; }
+  .events div { border-bottom: 1px dashed #eee; padding: 4px 0; }
+  code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>鱼塘投喂养殖模型</h1>
+  <p>投喂率依据 T/SCFA 0011—2023（黄河鲤）表 4 + 表 3 餐次 + DB4102/T 002 投喂时间</p>
+</header>
+<main>
+  <div class="grid">
+
+    <div class="card">
+      <h2>鱼群上报（外部系统 API 入口）</h2>
+      <label>当前尾数 N *</label>
+      <input id="fish-count" type="number" min="0" placeholder="如 5000">
+      <label>抽样均重 w̄ (g)</label>
+      <input id="fish-weight" type="number" step="0.1" placeholder="如 400（填了即视为一次抽样）">
+      <label>本次死亡尾数</label>
+      <input id="fish-mortality" type="number" min="0" placeholder="可选">
+      <label>抽样日期</label>
+      <input id="fish-sampled" type="date">
+      <label>备注</label>
+      <input id="fish-note" type="text" placeholder="可选">
+      <button onclick="submitFish()">上报鱼群</button>
+      <div id="fish-msg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>环境录入</h2>
+      <label>水温 (℃) *</label>
+      <input id="env-water" type="number" step="0.1" placeholder="如 25">
+      <label>气温 (℃)</label>
+      <input id="env-air" type="number" step="0.1">
+      <label>湿度 (%)</label>
+      <input id="env-humidity" type="number" step="1" placeholder="仅记录，不参与投喂量计算">
+      <label>溶氧 (mg/L)</label>
+      <input id="env-do" type="number" step="0.1" placeholder="如 6">
+      <label>天气</label>
+      <select id="env-weather">
+        <option value="">（不填按晴处理）</option>
+        <option>晴</option><option>阴</option><option>雷雨</option>
+        <option>暴雨</option><option>闷热低压</option>
+      </select>
+      <button onclick="submitEnv()">保存环境</button>
+      <div id="env-msg" class="msg"></div>
+      <div class="muted" style="margin-top:8px">
+        天气系数（自定义默认值，官方无定量系数）：晴×1.0 / 阴×0.8 / 雷雨·暴雨×0（停喂）/ 闷热低压×0.7。<br>
+        湿度影响投饵机下料速率漂移，换料/换季需复标定。
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>当日投喂方案</h2>
+      <div>
+        <input id="plan-date" type="date" style="width:auto">
+        <button class="ghost" onclick="loadPlan()">刷新方案</button>
+      </div>
+      <div id="plan-body" style="margin-top:10px"><span class="muted">点击“刷新方案”获取。</span></div>
+    </div>
+
+    <div class="card">
+      <h2>鱼群状态</h2>
+      <div id="state-body"><span class="muted">加载中…</span></div>
+      <button class="ghost" onclick="loadState()">刷新状态</button>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>事件日志（最近 20 条，"四本账"简化版）</h2>
+      <div id="events-body" class="events"><span class="muted">加载中…</span></div>
+    </div>
+
+  </div>
+</main>
+<footer>
+  精度免责：模型精度预期 ±30%，输出为区间值；过量代价远大于不足，宁可按下限执行。
+  绝不根据累计投料量反推生物量（正反馈发散风险）。SGR 为估计值，15–20 天须抽样校核。
+</footer>
+
+<script>
+function val(id){ return document.getElementById(id).value.trim(); }
+function numOrNull(id){ var v = val(id); return v === "" ? null : Number(v); }
+function setMsg(id, text, ok){
+  var el = document.getElementById(id);
+  el.textContent = text; el.className = "msg " + (ok ? "ok" : "err");
+}
+
+async function submitFish(){
+  var body = { count: Number(val("fish-count")) };
+  if (val("fish-count") === "") { setMsg("fish-msg", "请填写当前尾数", false); return; }
+  var w = numOrNull("fish-weight"); if (w !== null) body.avg_weight_g = w;
+  var m = numOrNull("fish-mortality"); if (m !== null) body.mortality = m;
+  if (val("fish-sampled")) body.sampled_at = val("fish-sampled");
+  if (val("fish-note")) body.note = val("fish-note");
+  var r = await fetch("/api/fish", { method: "POST",
+    headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) });
+  var j = await r.json();
+  if (r.ok) { setMsg("fish-msg", "已上报：" + JSON.stringify(body), true); loadState(); loadPlan(); }
+  else setMsg("fish-msg", "失败：" + (j.detail || r.status), false);
+}
+
+async function submitEnv(){
+  var w = numOrNull("env-water");
+  if (w === null) { setMsg("env-msg", "请填写水温", false); return; }
+  var body = { water_temp_c: w };
+  var a = numOrNull("env-air"); if (a !== null) body.air_temp_c = a;
+  var h = numOrNull("env-humidity"); if (h !== null) body.humidity_pct = h;
+  var d = numOrNull("env-do"); if (d !== null) body.dissolved_oxygen_mgl = d;
+  if (val("env-weather")) body.weather = val("env-weather");
+  var r = await fetch("/api/environment", { method: "POST",
+    headers: {"Content-Type": "application/json"}, body: JSON.stringify(body) });
+  var j = await r.json();
+  if (r.ok) { setMsg("env-msg", "已保存环境记录", true); loadState(); loadPlan(); }
+  else setMsg("env-msg", "失败：" + (j.detail || r.status), false);
+}
+
+function alarmsHtml(list){
+  if (!list || !list.length) return "<div class='muted'>无告警</div>";
+  return list.map(function(a){
+    var cls = a["级别"] === "红" ? "red" : "yellow";
+    return "<div class='alarm " + cls + "'><b>[" + a["级别"] + "]</b> " + a["内容"] + "</div>";
+  }).join("");
+}
+
+async function loadPlan(){
+  var d = val("plan-date");
+  var url = "/api/plan" + (d ? "?date=" + d : "");
+  var r = await fetch(url);
+  var j = await r.json();
+  var el = document.getElementById("plan-body");
+  if (!r.ok) { el.innerHTML = "<div class='alarm red'>" + (j.detail || r.status) + "</div>"; return; }
+  if (j["可计算"] === false) { el.innerHTML = alarmsHtml(j["告警"]); return; }
+
+  var html = "";
+  if (j["停喂"]) html += "<div class='big' style='color:#b71c1c'>停喂</div>";
+  else html += "<div class='big'>" + j["日投喂总量kg每天"] + " <small>kg/天</small></div>";
+  html += "<div class='range'>执行区间 [" + j["区间kg每天"][0] + ", " + j["区间kg每天"][1] + "] kg/天　"
+        + "<span class='muted'>" + j["区间说明"] + "</span></div>";
+
+  var snap = j["输入快照"];
+  html += "<div class='kv' style='margin-top:8px'>"
+    + "<b>生物量 B</b>" + j["生物量kg"] + " kg<br>"
+    + "<b>投喂率 r</b>" + j["投喂率pct"] + " %体重/天<br>"
+    + "<b>当前均重</b>" + snap["当前均重g"] + " g"
+    + (snap["estimated"] ? " <span class='alarm yellow' style='display:inline-block;padding:1px 6px'>estimated（按 SGR 估算）</span>" : "")
+    + "<br>"
+    + "<b>水温 / 溶氧 / 天气</b>" + snap["水温℃"] + " ℃ / "
+    + (snap["溶氧mgL"] === null ? "未录" : snap["溶氧mgL"] + " mg/L") + " / "
+    + (snap["天气"] || "未录") + "</div>";
+
+  var f = j["修正系数"];
+  html += "<table><tr><th>系数</th><th>值</th></tr>"
+    + "<tr><td>f_DO（溶氧）</td><td>" + f["f_DO"] + "</td></tr>"
+    + "<tr><td>f_水温</td><td>" + f["f_水温"] + "</td></tr>"
+    + "<tr><td>f_天气</td><td>" + f["f_天气"] + "</td></tr>"
+    + "<tr><td><b>f_env（乘积）</b></td><td><b>" + f["f_env"] + "</b></td></tr></table>"
+    + "<div class='muted'>" + f["天气系数说明"] + "</div>";
+
+  if (j["餐次"] && j["餐次"].length){
+    html += "<table><tr><th>餐次时间</th><th>每餐量 (kg)</th></tr>"
+      + j["餐次"].map(function(m){
+          return "<tr><td>" + m["时间"] + "</td><td>" + m["每餐量kg"] + "</td></tr>";
+        }).join("") + "</table>";
+  }
+  html += "<div class='muted' style='margin-top:4px'>" + j["餐次说明"] + "</div>";
+  html += "<div style='margin-top:8px'>" + alarmsHtml(j["告警"]) + "</div>";
+  el.innerHTML = html;
+}
+
+async function loadState(){
+  var r = await fetch("/api/state");
+  var j = await r.json();
+  var s = j["鱼群状态"];
+  var html = "<div class='kv'>"
+    + "<b>当前尾数 N</b>" + s.count + " 尾<br>"
+    + "<b>抽样均重 w̄</b>" + s.avg_weight_g + " g<br>"
+    + "<b>初始放养尾数</b>" + s.initial_count + " 尾<br>"
+    + "<b>累计死亡</b>" + s.cumulative_mortality + " 尾<br>"
+    + "<b>上次抽样日期</b>" + (s.last_sampled_at || "—")
+    + "（距今 " + (j["距上次抽样天数"] === null ? "?" : j["距上次抽样天数"]) + " 天）<br>"
+    + "<b>SGR</b>" + s.sgr_pct + " %/天 <span class='muted'>（估计值，15–20 天须抽样校核）</span></div>";
+  if (j["estimated提醒"]) html += "<div class='alarm yellow'>" + j["estimated提醒"] + "</div>";
+  var e = j["最新环境"];
+  if (e) html += "<div class='muted' style='margin-top:6px'>最新环境（" + e.recorded_at + "）：水温 "
+    + e.water_temp_c + "℃，溶氧 " + (e.dissolved_oxygen_mgl === null ? "—" : e.dissolved_oxygen_mgl)
+    + "，天气 " + (e.weather || "—") + "</div>";
+  document.getElementById("state-body").innerHTML = html;
+
+  var ev = j["事件日志"] || [];
+  document.getElementById("events-body").innerHTML = ev.length
+    ? ev.map(function(x){
+        return "<div>[" + x.created_at + "] <b>" + x.event_type + "</b> "
+             + "<code>" + JSON.stringify(x.payload) + "</code></div>";
+      }).join("")
+    : "<span class='muted'>暂无事件</span>";
+}
+
+document.getElementById("plan-date").value = new Date().toISOString().slice(0, 10);
+loadState();
+loadPlan();
+</script>
+</body>
+</html>

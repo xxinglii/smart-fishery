@@ -1,0 +1,7255 @@
+
+===== PAGE 1 =====
+ 
+ 
+ 
+EC200A Series QuecOpen 
+Hardware Design 
+ 
+LTE Standard Module Series 
+ 
+Version: 1.1 
+ 
+Date: 2023-11-10 
+ 
+Status: Released
+
+===== PAGE 2 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       1 / 106 
+ 
+ 
+ 
+At Quectel, our aim is to provide timely and comprehensive services to our customers. If you 
+require any assistance, please contact our headquarters: 
+ 
+Quectel Wireless Solutions Co., Ltd.  
+Building 5, Shanghai Business Park Phase III (Area B), No.1016 Tianlin Road, Minhang District, Shanghai 
+200233, China  
+Tel: +86 21 5108 6236  
+Email: info@quectel.com 
+ 
+Or our local offices. For more information, please visit:  
+http://www.quectel.com/support/sales.htm. 
+ 
+For technical support, or to report documentation errors, please visit:  
+http://www.quectel.com/support/technical.htm. 
+Or email us at: support@quectel.com. 
+ 
+Legal Notices 
+We offer information as a service to you. The provided information is based on your requirements and we 
+make every effort to ensure its quality. You agree that you are responsible for using independent analysis 
+and evaluation in designing intended products, and we provide reference designs for illustrative purposes 
+only. Before using any hardware, software or service guided by this document, please read this notice 
+carefully. Even though we employ commercially reasonable efforts to provide the best possible 
+experience, you hereby acknowledge and agree that this document and related services hereunder are 
+provided to you on an “as available” basis. We may revise or restate this document from time to time at 
+our sole discretion without any prior notice to you. 
+ 
+Use and Disclosure Restrictions 
+License Agreements 
+Documents and information provided by us shall be kept confidential, unless specific permission is 
+granted. They shall not be accessed or used for any purpose except as expressly provided herein. 
+ 
+Copyright 
+Our and third-party products hereunder may contain copyrighted material. Such copyrighted material 
+shall not be copied, reproduced, distributed, merged, published, translated, or modified without prior 
+written consent. We and the third party have exclusive rights over copyrighted material. No license shall 
+be granted or conveyed under any patents, copyrights, trademarks, or service mark rights. To avoid 
+ambiguities, purchasing in any form cannot be deemed as granting a license other than the normal 
+non-exclusive, royalty-free license to use the material. We reserve the right to take legal action for 
+noncompliance with abovementioned requirements, unauthorized use, or other illegal or malicious use of 
+the material. 
+
+===== PAGE 3 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       2 / 106 
+ 
+ 
+ 
+Trademarks 
+Except as otherwise set forth herein, nothing in this document shall be construed as conferring any rights 
+to use any trademark, trade name or name, abbreviation, or counterfeit product thereof owned by Quectel 
+or any third party in advertising, publicity, or other aspects. 
+ 
+Third-Party Rights 
+This document may refer to hardware, software and/or documentation owned by one or more third parties 
+(“third-party materials”). Use of such third-party materials shall be governed by all restrictions and 
+obligations applicable thereto. 
+ 
+We make no warranty or representation, either express or implied, regarding the third-party materials, 
+including but not limited to any implied or statutory, warranties of merchantability or fitness for a particular 
+purpose, quiet enjoyment, system integration, information accuracy, and non-infringement of any 
+third-party intellectual property rights with regard to the licensed technology or use thereof. Nothing herein 
+constitutes a representation or warranty by us to either develop, enhance, modify, distribute, market, sell, 
+offer for sale, or otherwise maintain production of any our products or any other hardware, software, 
+device, tool, information, or product. We moreover disclaim any and all warranties arising from the course 
+of dealing or usage of trade. 
+ 
+Privacy Policy 
+To implement module functionality, certain device data are uploaded to Quectel’s or third-party’s servers, 
+including carriers, chipset suppliers or customer-designated servers. Quectel, strictly abiding by the 
+relevant laws and regulations, shall retain, use, disclose or otherwise process relevant data for the 
+purpose of performing the service only or as permitted by applicable laws. Before data interaction with 
+third parties, please be informed of their privacy and data security policy. 
+ 
+Disclaimer  
+a) 
+We acknowledge no liability for any injury or damage arising from the reliance upon the information. 
+b) 
+We shall bear no liability resulting from any inaccuracies or omissions, or from the use of the 
+information contained herein.  
+c) 
+While we have made every effort to ensure that the functions and features under development are 
+free from errors, it is possible that they could contain errors, inaccuracies, and omissions. Unless 
+otherwise provided by valid agreement, we make no warranties of any kind, either implied or express, 
+and exclude all liability for any loss or damage suffered in connection with the use of features and 
+functions under development, to the maximum extent permitted by law, regardless of whether such 
+loss or damage may have been foreseeable. 
+d) 
+We are not responsible for the accessibility, safety, accuracy, availability, legality, or completeness of 
+information, advertising, commercial offers, products, services, and materials on third-party websites 
+and third-party resources. 
+Copyright © Quectel Wireless Solutions Co., Ltd. 2023. All rights reserved. 
+
+===== PAGE 4 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       3 / 106 
+ 
+ 
+ 
+Safety Information 
+ 
+The following safety precautions must be observed during all phases of operation, such as usage, service 
+or repair of any terminal or mobile incorporating the module. Manufacturers of the terminal should notify 
+users and operating personnel of the following safety information by incorporating these guidelines into all 
+manuals of the product. Otherwise, Quectel assumes no liability for customers’ failure to comply with 
+these precautions. 
+ 
+ 
+Full attention must be paid to driving at all times in order to reduce the risk of an 
+accident. Using a mobile while driving (even with a handsfree kit) causes 
+distraction and can lead to an accident. Please comply with laws and regulations 
+restricting the use of wireless devices while driving. 
+ 
+Switch off the terminal or mobile before boarding an aircraft. The operation of 
+wireless appliances in an aircraft is forbidden to prevent interference with 
+communication systems. If there is an Airplane Mode, it should be enabled prior to 
+boarding an aircraft. Please consult the airline staff for more restrictions on the use 
+of wireless devices on an aircraft.  
+ 
+Wireless devices may cause interference on sensitive medical equipment, so 
+please be aware of the restrictions on the use of wireless devices when in 
+hospitals, clinics or other healthcare facilities. 
+ 
+Terminals or mobiles operating over radio signal and cellular network cannot be 
+guaranteed to connect in certain conditions, such as when the mobile bill is unpaid 
+or the (U)SIM card is invalid. When emergent help is needed in such conditions, 
+use emergency call if the device supports it. In order to make or receive a call, the 
+terminal or mobile must be switched on in a service area with adequate cellular 
+signal strength. In an emergency, the device with emergency call function cannot 
+be used as the only contact method considering network connection cannot be 
+guaranteed under all circumstances. 
+ 
+The terminal or mobile contains a transceiver. When it is ON, it receives and 
+transmits radio frequency signals. RF interference can occur if it is used close to 
+TV sets, radios, computers or other electric equipment. 
+ 
+In locations with explosive or potentially explosive atmospheres, obey all posted 
+signs and turn off wireless devices such as mobile phone or other terminals. Areas 
+with explosive or potentially explosive atmospheres include fueling areas, below 
+decks on boats, fuel or chemical transfer or storage facilities, and areas where the 
+air contains chemicals or particles such as grain, dust or metal powders. 
+
+===== PAGE 5 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       4 / 106 
+ 
+ 
+ 
+About the Document 
+ 
+Revision History  
+Version  
+Date 
+Author 
+Description 
+- 
+2022-06-20 
+Shiye ZHU/ 
+Kerwin CHENG 
+Creation of the document 
+1.0 
+2022-07-25 
+Shiye ZHU/ 
+Kerwin CHENG 
+First official release 
+1.1 
+2023-11-10 
+Shiye ZHU/ 
+John QIN/ 
+Charley JIANG 
+1. 
+Added the applicable variant EC200A-EL and 
+related information. 
+2. 
+Deleted NTP, FTPS and MQTT internet 
+protocol (Table 4). 
+3. 
+Updated the information about functional 
+diagram (Chapter 2.3).  
+4. 
+Updated pins 144 & 143 from RESERVED to 
+GRFC1 and GRFC2 respectively (Figure 2 & 
+Table 6). 
+5. 
+Added Note 3 about antenna tuning switch 
+(Chapter 2.4). 
+6. 
+Updated the DC characteristics (Table 6). 
+7. 
+Added footnote about VBAT_BB, and updated 
+the VBAT_RF current requirement (Tables 6 &  
+8 & 38). 
+8. 
+Updated the power domain of SD card interface 
+from 1.8/2.8 V to 1.8/2.85 V (Tables 6 & 19). 
+9. 
+Updated the comment of SPI (Tables 6 & 23). 
+10. Added current requirement of variant that does 
+not support GSM frequency band (Chapter 
+3.4.2). 
+11. Updated the minimum time of pulling down 
+PWRKEY pin from 500 ms to 650 ms (Chapter 
+3.5 & 4.2). 
+12. Added the cable routing requirements for 
+
+===== PAGE 6 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       5 / 106 
+ 
+ 
+ 
+SD_SDIO_CLK (Chapter 4.7). 
+13. Added NOTE 4 of the RGMII/RMII interface 
+(Chapter 4.11). 
+14. Updated the Rx sensitivity data of each variant 
+in the LTE frequency band (Table 33 & 34 & 
+35). 
+15. Updated the power consumption (Chapter 6.3). 
+16. Updated the digital l/O characteristic (Chapter 
+6.4). 
+17. Updated the recommended thickness of stencil 
+for the module, the ramp-to-soak slope of soak 
+zone, ramp-up and cool-down slope of reflow 
+zone, and added a related note (Chapter 8.2). 
+18. Added mounting direction of the module 
+(Chapter 8.3.3). 
+
+===== PAGE 7 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       6 / 106 
+ 
+ 
+ 
+Contents 
+Safety Information ....................................................................................................................................... 3 
+About the Document ................................................................................................................................... 4 
+Contents ....................................................................................................................................................... 6 
+Table Index ................................................................................................................................................... 8 
+Figure Index ............................................................................................................................................... 10 
+1 
+Introduction ........................................................................................................................................ 12 
+1.1. 
+Special Marks .......................................................................................................................... 12 
+2 
+Product Overview .............................................................................................................................. 13 
+2.1. 
+Frequency Bands and Functions ............................................................................................ 13 
+2.2. 
+Key Features ........................................................................................................................... 14 
+2.3. 
+Functional Diagram ................................................................................................................. 17 
+2.4. 
+Pin Assignment ........................................................................................................................ 18 
+2.5. 
+Pin Description ........................................................................................................................ 19 
+2.6. 
+EVB Kit .................................................................................................................................... 28 
+3 
+Operating Characteristics ................................................................................................................. 29 
+3.1. 
+Operating Modes ..................................................................................................................... 29 
+3.2. 
+Sleep Mode ............................................................................................................................. 30 
+3.2.1. 
+USB Application with USB Remote Wakeup Function .................................................. 30 
+3.2.2. 
+USB Application without USB Remote Wakeup Function ............................................. 31 
+3.2.3. 
+USB Application without USB Suspend Function .......................................................... 31 
+3.3. 
+Airplane Mode ......................................................................................................................... 32 
+3.4. 
+Power Supply .......................................................................................................................... 33 
+3.4.1. 
+Power Supply Pins ......................................................................................................... 33 
+3.4.2. 
+Reference Design for Power Supply .............................................................................. 34 
+3.4.3. 
+Requirements for Voltage Stability ................................................................................. 34 
+3.5. 
+Turn On ................................................................................................................................... 36 
+3.5.1. 
+Turn on the Module with PWRKEY ................................................................................ 36 
+3.6. 
+Turn Off .................................................................................................................................... 38 
+3.6.1. 
+Turn off the Module with PWRKEY ................................................................................ 38 
+3.6.2. 
+Turn off the Module with AT Command .......................................................................... 38 
+3.7. 
+Reset ....................................................................................................................................... 39 
+4 
+Application Interfaces ....................................................................................................................... 41 
+4.1. 
+USB Interface .......................................................................................................................... 41 
+4.2. 
+USB_BOOT Interface .............................................................................................................. 43 
+4.3. 
+(U)SIM Interface ...................................................................................................................... 44 
+4.4. 
+PCM and I2C Interfaces .......................................................................................................... 46 
+4.5. 
+Analog Audio Interfaces .......................................................................................................... 48 
+4.5.1. 
+Notes on Analog Audio Interface Design ....................................................................... 49 
+4.5.2. 
+Microphone Interface Circuit .......................................................................................... 49 
+
+===== PAGE 8 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       7 / 106 
+ 
+ 
+ 
+4.5.3. 
+Earpiece Interface Circuit ............................................................................................... 50 
+4.6. 
+UART Interface ........................................................................................................................ 51 
+4.7. 
+SD card Interface .................................................................................................................... 53 
+4.8. 
+WLAN_SDIO Interface ............................................................................................................ 54 
+4.9. 
+ADC Interface .......................................................................................................................... 55 
+4.10. 
+SPI ........................................................................................................................................... 56 
+4.11. 
+RGMII/RMII Interface .............................................................................................................. 57 
+4.12. 
+Indication Signal ...................................................................................................................... 60 
+4.12.1. 
+Network Status Indication ....................................................................................... 61 
+4.12.2. 
+STATUS .................................................................................................................. 61 
+5 
+RF Specifications ............................................................................................................................... 63 
+5.1. 
+Cellular Network ...................................................................................................................... 63 
+5.1.1. 
+Antenna Interface & Frequency Bands .......................................................................... 63 
+5.1.2. 
+Tx Power ........................................................................................................................ 66 
+5.1.3. 
+Rx Sensitivity .................................................................................................................. 67 
+5.1.4. 
+Reference Design .......................................................................................................... 70 
+5.2. 
+Reference Design of RF Routing ............................................................................................ 71 
+5.3. 
+Requirements for Antenna Design .......................................................................................... 73 
+5.4. 
+RF Connector Recommendation ............................................................................................ 73 
+6 
+Electrical Characteristics &  Reliability ......................................................................................... 76 
+6.1. 
+Absolute Maximum Ratings .................................................................................................... 76 
+6.2. 
+Power Supply Ratings ............................................................................................................. 77 
+6.3. 
+Power Consumption ................................................................................................................ 77 
+6.4. 
+Digital I/O Characteristics ........................................................................................................ 90 
+6.5. 
+ESD Protection ........................................................................................................................ 91 
+6.6. 
+Operating and Storage Temperatures ..................................................................................... 92 
+7 
+Mechanical Information ..................................................................................................................... 93 
+7.1. 
+Mechanical Dimensions .......................................................................................................... 93 
+7.2. 
+Recommended Footprint ......................................................................................................... 95 
+7.3. 
+Top and Bottom Views............................................................................................................. 96 
+8 
+Storage, Manufacturing & Packaging .............................................................................................. 97 
+8.1. 
+Storage Conditions .................................................................................................................. 97 
+8.2. 
+Manufacturing and Soldering .................................................................................................. 98 
+8.3. 
+Packaging Specifications ...................................................................................................... 100 
+8.3.1. 
+Carrier Tape .................................................................................................................. 100 
+8.3.2. 
+Plastic Reel .................................................................................................................. 101 
+8.3.3. 
+Mounting Direction ....................................................................................................... 101 
+8.3.4. 
+Packaging Process ...................................................................................................... 102 
+9 
+Appendix References ...................................................................................................................... 103 
+ 
+ 
+
+===== PAGE 9 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       8 / 106 
+ 
+ 
+ 
+Table Index 
+Table 1: Special Marks ............................................................................................................................... 12 
+Table 2: Brief Introduction of the Module ................................................................................................... 13 
+Table 3: Wireless Network Mode................................................................................................................ 13 
+Table 4: Key Features ................................................................................................................................ 14 
+Table 5: I/O Parameters Definition ............................................................................................................. 19 
+Table 6: Pin Description ............................................................................................................................. 19 
+Table 7: Overview of Operating Modes ...................................................................................................... 29 
+Table 8: Pin Definition of Power Supply ..................................................................................................... 33 
+Table 9: Pin Definition of PWRKEY ............................................................................................................ 36 
+Table 10: Pin Definition of RESET_N ......................................................................................................... 39 
+Table 11: Pin Definition of USB Interface ................................................................................................... 41 
+Table 12: Pin Definition of USB_BOOT Interface ...................................................................................... 43 
+Table 13: Pin Definition of (U)SIM Interface ............................................................................................... 45 
+Table 14: Pin Definition of PCM Interface .................................................................................................. 47 
+Table 15: Pin Definition of I2C Interface..................................................................................................... 48 
+Table 16: Pin Definition of Analog Audio Interfaces ................................................................................... 49 
+Table 17: Pin Definition of Main UART ....................................................................................................... 51 
+Table 18: Pin Definition of Debug UART .................................................................................................... 51 
+Table 19: Pin Definition of SD Card Interface ............................................................................................ 53 
+Table 20：Pin Definition of WLAN Interface .............................................................................................. 54 
+Table 21: Pin Definition of ADC Interface ................................................................................................... 55 
+Table 22: Characteristics of ADC Interface ................................................................................................ 56 
+Table 23: Pin Definition of SPI.................................................................................................................... 56 
+Table 24: Pin Definition of RGMII/RMII Interface ....................................................................................... 58 
+Table 25: Pin Definition of Indication Signal ............................................................................................... 60 
+Table 26: Working Status of Network Connection Status/Activity Indication ............................................. 61 
+Table 27: Pin Definition of Cellular Network Interfaces .............................................................................. 63 
+Table 28: Operating Frequency of EC200A-CN ......................................................................................... 63 
+Table 29: Operating Frequency of EC200A-AU ......................................................................................... 64 
+Table 30: Operating Frequency of EC200A-EU ......................................................................................... 65 
+Table 31: Operating Frequency of EC200A-EL ......................................................................................... 66 
+Table 32: Tx Power ..................................................................................................................................... 66 
+Table 33: Conducted RF Receiving Sensitivity of EC200A-CN (Unit: dBm) ............................................. 67 
+Table 34: Conducted RF Receiving Sensitivity of EC200A-AU (Unit: dBm) .............................................. 68 
+Table 35: Conducted RF Receiving Sensitivity of EC200A-EU (Unit: dBm) .............................................. 69 
+Table 36: Conducted RF Receiving Sensitivity of EC200A-EL (Unit: dBm) .............................................. 70 
+Table 37: Requirements for Antenna Design ............................................................................................. 73 
+Table 38: Absolute Maximum Ratings ........................................................................................................ 76 
+Table 39: Module’s Power Supply Ratings ................................................................................................. 77 
+Table 40: Current Consumption of EC200A-CN ........................................................................................ 77 
+Table 41: Current Consumption of EC200A-AU ........................................................................................ 80 
+
+===== PAGE 10 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       9 / 106 
+ 
+ 
+ 
+Table 42: Current Consumption of EC200A-EU ........................................................................................ 84 
+Table 43: Current Consumption of EC200A-EL ......................................................................................... 88 
+Table 44: VDD_EXT I/O Requirements ...................................................................................................... 90 
+Table 45: (U)SIM Low-voltage I/O Requirements ...................................................................................... 90 
+Table 46: (U)SIM High-voltage I/O Requirements ..................................................................................... 90 
+Table 47: SDIO Low-voltage I/O Requirements ......................................................................................... 91 
+Table 48: SDIO High-voltage I/O Requirements ........................................................................................ 91 
+Table 49: Electrostatics Discharge Characteristics (Temperature: 25–30 °C, Humidity: 40 ±5 %) ........... 91 
+Table 50: Operating and Storage Temperatures ........................................................................................ 92 
+Table 51: Recommended Thermal Profile Parameters .............................................................................. 99 
+Table 52: Carrier Tape Dimension Table (Unit: mm) ................................................................................ 100 
+Table 53: Plastic Reel Dimension Table (Unit: mm) ................................................................................. 101 
+Table 54: Related Documents .................................................................................................................. 103 
+Table 55: Terms and Abbreviations .......................................................................................................... 103 
+ 
+ 
+
+===== PAGE 11 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       10 / 106 
+ 
+ 
+ 
+Figure Index  
+Figure 1: Functional Diagram ..................................................................................................................... 17 
+Figure 2: Pin Assignment (Top View) ......................................................................................................... 18 
+Figure 3: DRX Run Time and Current Consumption in Sleep Mode ......................................................... 30 
+Figure 4: Sleep Mode Application with USB Remote Wakeup .................................................................. 30 
+Figure 5: Sleep Mode Application without USB Remote Wakeup ............................................................. 31 
+Figure 6: Sleep Mode Application without Suspend Function ................................................................... 32 
+Figure 7: Reference Design of Power Supply ............................................................................................ 34 
+Figure 8: Power Supply Limits during Burst Transmission ........................................................................ 35 
+Figure 9: Star Structure of the Power Supply ............................................................................................ 35 
+Figure 10: Reference Circuit of Turning on the Module Using Driving Circuit ........................................... 36 
+Figure 11: Reference Circuit of Turning on the Module with Button .......................................................... 37 
+Figure 12: Power-up Timing ....................................................................................................................... 37 
+Figure 13: Timing of Turning off Module .................................................................................................... 38 
+Figure 14: Reference Circuit of RESET_N with Driving Circuit ................................................................. 39 
+Figure 15: Reference Circuit of RESET_N with Button ............................................................................. 40 
+Figure 16: Timing of Resetting Module ...................................................................................................... 40 
+Figure 17: Reference Circuit of USB Interface .......................................................................................... 42 
+Figure 18: Reference Circuit of USB_BOOT Interface .............................................................................. 43 
+Figure 19: Timing Sequence for Entering Emergency Download Mode ................................................... 44 
+Figure 20: Reference Circuit of (U)SIM Interface with an 8-pin (U)SIM Card Connector ......................... 45 
+Figure 21: Reference Circuit of (U)SIM Interface with a 6-pin (U)SIM Card Connector ........................... 46 
+Figure 22：Timing Sequence for Short Frame Mode ................................................................................ 47 
+Figure 23: PCM and I2C Interface Circuit Reference Design .................................................................... 48 
+Figure 24: Microphone Interface Reference Circuit ................................................................................... 50 
+Figure 25: Earpiece Interface Reference Circuit ........................................................................................ 50 
+Figure 26: Reference Circuit with Translator Chip ..................................................................................... 52 
+Figure 27: Reference Circuit with Transistor Circuit .................................................................................. 52 
+Figure 28: Reference Circuit of SD Card Interface .................................................................................... 53 
+Figure 29: SPI Circuit Reference Design (Module as Master Device) ...................................................... 57 
+Figure 30: SPI Circuit Reference Design (Module as Slave* Device) ....................................................... 57 
+Figure 31: Reference Circuit of RMII to PHY Interface .............................................................................. 59 
+Figure 32: Reference Circuit of RGMII to PHY Interface ........................................................................... 59 
+Figure 33: Reference Circuit of the Network Status Indication .................................................................. 61 
+Figure 34: Reference Circuits of STATUS ................................................................................................. 62 
+Figure 35: Reference Circuit for RF Antenna Interfaces ............................................................................ 71 
+Figure 36: Microstrip Design on a 2-layer PCB ......................................................................................... 71 
+Figure 37: Coplanar Waveguide Design on a 2-layer PCB ....................................................................... 72 
+Figure 38: Coplanar Waveguide Design on a 4-layer PCB (Layer 3 as Reference Ground) .................... 72 
+Figure 39: Coplanar Waveguide Design on a 4-layer PCB (Layer 4 as Reference Ground) .................... 72 
+Figure 40: Dimensions o fthe Receptacle (Unit: mm) ................................................................................ 74 
+Figure 41: Mechanicals of Mated Plugs ..................................................................................................... 74 
+
+===== PAGE 12 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       11 / 106 
+ 
+ 
+ 
+Figure 42: Space Factor of Mated Connector (Unit: mm) .......................................................................... 75 
+Figure 43: Module Top and Side Dimensions (Unit: mm) .......................................................................... 93 
+Figure 44: Module Bottom Dimensions View (Unit: mm) ........................................................................... 94 
+Figure 45: Recommended Footprint (Perspective View) ........................................................................... 95 
+Figure 46: Top and Bottom Views of the Module ....................................................................................... 96 
+Figure 47: Recommended Reflow Soldering Thermal Profile ................................................................... 98 
+Figure 48: Carrier Tape Dimension Drawing (Unit: mm) .......................................................................... 100 
+Figure 49: Plastic Reel Dimension Drawing ............................................................................................ 101 
+Figure 50: Mounting Direction .................................................................................................................. 101 
+Figure 51: Packaging Process ................................................................................................................. 102 
+ 
+ 
+ 
+
+===== PAGE 13 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       12 / 106 
+ 
+ 
+ 
+1 Introduction 
+ 
+QuecOpen® is a solution where the module acts as the main processor. Constant transition and evolution 
+of both the communication technology and the market highlight its merits. It can help you to: 
+ 
+⚫ 
+Realize embedded applications’ quick development and shorten product R&D cycle 
+⚫ 
+Simplify circuit and hardware structure design to reduce engineering costs 
+⚫ 
+Miniaturize products 
+⚫ 
+Reduce product power consumption 
+⚫ 
+Apply OTA technology 
+⚫ 
+Enhance product competitiveness and price-performance ratio 
+ 
+This document defines the EC200A series QuecOpen® module and describes its air interfaces and 
+hardware interfaces which are connected with your applications.  
+ 
+It can help you quickly understand interface specifications, electrical and mechanical details, as well as 
+other related information of the module. Associated with application notes and user guides, customers 
+can use this module to design and to set up mobile applications easily.  
+ 
+1.1. Special Marks 
+ 
+Table 1: Special Marks 
+Mark  
+Definition  
+* 
+Unless otherwise specified, when an asterisk (*) is used after a function, feature, interface, 
+pin name, AT command, argument, and so on, it indicates that the function, feature, 
+interface, pin, AT command, argument, and so on, are under development and currently 
+not supported; and the asterisk (*) after a model indicates that the sample of such model is 
+currently unavailable. 
+[…] 
+Brackets ([…]) used after a pin enclosing a range of numbers indicate all pins of the same 
+type. For example, SD_SDIO_DATA[0:3] refers to all four SD_SDIO_DATA pins, 
+SD_SDIO_DATA0, SD_SDIO_DATA1, SD_SDIO_DATA2, and SD_SDIO_DATA3. 
+
+===== PAGE 14 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       13 / 106 
+ 
+ 
+ 
+2 Product Overview 
+ 
+The product is a series of LTE/WCDMA/GSM wireless communication module with receive diversity, 
+which provides data connectivity on LTE-FDD, LTE-TDD, HSDPA, HSUPA, HSPA+, WCDMA, EDGE and 
+GPRS network data connection. It also provides voice functionality for your specific applications. The 
+module contains 4 variants. You can choose a dedicated type based on the region or operator. The 
+following table shows the frequency bands of the module. 
+ 
+Table 2: Brief Introduction of the Module 
+ 
+2.1. Frequency Bands and Functions 
+Table 3: Wireless Network Mode 
+ 
+ 
+Categories 
+Packaging and pins number 
+LCC 80-pin; LGA 64-pin 
+Dimensions 
+(29.0 ±0.15) mm × (32.0 ±0.15) mm × (2.4 ±0.2) mm 
+Weight 
+4.4 g 
+Wireless network functions 
+LTE/WCDMA/GSM 
+Variants 
+EC200A-CN, EC200A-AU, EC200A-EU, EC200A-EL 
+Mode 
+EC200A-CN  
+EC200A-AU  
+EC200A-EU  
+EC200A-EL 
+LTE-FDD 
+B1/B3/B5/B8 
+B1/B2/B3/B4/B5/ 
+B7/B8/B28/B66 
+B1/B3/B5/B7/ 
+B8/B20/B28 
+B1/B3/B5/B7/ 
+B8/B20/B28 
+LTE-TDD 
+B34/B38/B39/ 
+B40/B41 
+B40 
+B38/B40/B41 
+B38/B40/B41 
+WCDMA 
+B1/B5/B8 
+B1/B2/B4/B5/B8 
+B1/B5/B8 
+B1/B5/B8 
+GSM 
+EGSM900/ 
+DCS1800 
+GSM850/EGSM900/ 
+DCS1800/PCS1900 
+EGSM900/ 
+DCS1800  
+- 
+
+===== PAGE 15 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       14 / 106 
+ 
+ 
+ 
+ 
+ 
+ 
+2.2. Key Features 
+ 
+Table 4: Key Features 
+B41 only supports 140 MHz operating frequency (2535–2675 MHz). 
+Features 
+Details 
+Power Supply 
+⚫ 
+Supply voltage: 3.4–4.5 V 
+⚫ 
+Typical supply voltage: 3.8 V 
+SMS 
+⚫ 
+Text and PDU mode 
+⚫ 
+Point-to-point MO and MT 
+⚫ 
+SMS cell broadcast 
+⚫ 
+SMS storage: (U)SIM or ME, ME by default 
+(U)SIM Interface 
+Supports (U)SIM card: 1.8/3.0 V 
+Audio Features 
+⚫ 
+Supports one digital audio interface: PCM Interface 
+⚫ 
+Supports one analog audio input and one analog audio output 
+⚫ 
+GSM: HR/FR/EFR/AMR/AMR-WB 
+⚫ 
+WCDMA: AMR/AMR-WB 
+⚫ 
+LTE: AMR/AMR-WB 
+⚫ 
+Supports echo cancellation and noise suppression. 
+PCM Interface 
+⚫ 
+Used for audio function with external codec 
+⚫ 
+Supports 16-bit linear encoding format 
+⚫ 
+Supports short frame 
+⚫ 
+Supports master and slave* modes 
+Analog audio Interface 
+Supports one analog audio input and one analog audio output channel  
+SPI  
+⚫ 
+Supports three SPI (one is open by default, and the other two are 
+used by multiplexing) 
+⚫ 
+1.8 V power domain 
+⚫ 
+Max. clock frequency 52 MHz 
+⚫ 
+Supports master and slave* modes 
+I2C Interface 
+⚫ 
+Supports one I2C interface  
+⚫ 
+Complies with I2C bus protocol specifications (100/400 kHz) 
+⚫ 
+Supports master mode only, and the multi-host mode is not 
+supported 
+USB Interface 
+⚫ 
+Compliant with USB 2.0 specification (slave and master modes 
+are supported); the data transfer rate can reach up to 480 Mbps  
+NOTE 
+
+===== PAGE 16 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       15 / 106 
+ 
+ 
+ 
+ 
+1 EC200A-EL does not support RGMII, and pins 79, 80, 82–84 are RESERVED. 
+⚫ 
+Used for AT command communication, data transmission, 
+software debugging and firmware upgrade 
+⚫ 
+Supports USB serial driver for Windows 7/8/8.1/10/11, Linux 
+2.6–6.5 and Android 4.x–13.x systems 
+WLAN Interface 
+Supports SDIO interface for WLAN function 
+SD Interface 
+Supports SD 3.0 protocol 
+RGMII/RMII Interface 1 
+⚫ 
+Supports one RGMII/RMII interface 
+⚫ 
+Supports RGMII: 1.8 V 
+⚫ 
+Supports RMII: 1.8/3.3 V  
+UART Interfaces 
+Main UART: 
+⚫ 
+Used for AT command communication and data transmission 
+⚫ 
+Baud rate: 115200 bps by default, Max 921600 bps 
+⚫ 
+Supports RTS and CTS hardware flow control 
+Debug UART: 
+⚫ 
+Used for the output of partial logs 
+⚫ 
+Baud rate: 115200 bps. 
+UART2 Interface: 
+⚫ 
+Supports RTS and CTS hardware flow control 
+⚫ 
+Baud rate: 115200 bps by default 
+⚫ 
+Multiplexed by GPIO7, MAIN_DTR, PCM_SYNC, PCM_CLK, 
+PCM_DOUT and PCM_DIN 
+ADC Interfaces 
+⚫ 
+Supports two ADC interfaces 
+⚫ 
+Voltage range: 0 V–VBAT_BB 
+Network Indication 
+NET_STATUS to indicate network connectivity status 
+AT Commands 
+Compliant with 3GPP TS 27.007, 3GPP TS 27.005 and Quectel 
+enhanced AT commands 
+Rx-diversity 
+Supports LTE Rx-diversity  
+Antenna Interface 
+⚫ 
+Supports Main antenna interface (ANT_MAIN) and Rx-diversity 
+antenna interface (ANT_DRX) 
+⚫ 
+50 Ω impedance 
+Transmitting Power 
+⚫ 
+GSM850: Class 4 (33 dBm ±2 dB) 
+⚫ 
+EGSM900: Class 4 (33 dBm ±2 dB) 
+⚫ 
+DCS1800: Class 1 (30 dBm ±2 dB) 
+⚫ 
+PCS1900: Class 1 (30 dBm ±2 dB) 
+⚫ 
+GSM850 8-PSK: Class E2 (27 dBm ±3 dB) 
+⚫ 
+EGSM900 8-PSK: Class E2 (27 dBm ±3 dB) 
+⚫ 
+DCS1800 8-PSK: Class E2 (26 dBm ±3 dB) 
+⚫ 
+PCS1900 8-PSK: Class E2 (26 dBm ±3 dB) 
+⚫ 
+WCDMA: Class 3 (23 dBm ±2 dB) 
+⚫ 
+LTE-FDD: Class 3 (23 dBm ±2 dB) 
+
+===== PAGE 17 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       16 / 106 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2 Within the operating temperature range, the module meets 3GPP specifications. 
+3 Within the extended temperature range, the module remains the ability to establish and maintain functions such as voice, 
+SMS and data transmission, without any unrecoverable malfunction. Radio spectrum and radio network are not influenced, 
+while one or more specifications, such as Pout, may exceed the specified tolerances of 3GPP. When the temperature 
+returns to the operating temperature range, the module meets 3GPP specifications again. 
+⚫ 
+LTE-TDD: Class 3 (23 dBm ±2 dB) 
+LTE Features 
+⚫ 
+Supports 3GPP R9 non-CA Cat 4 FDD and TDD 
+⚫ 
+Supports 1.4/3/5/10/15/20 MHz RF bandwidth 
+⚫ 
+Supports MIMO in DL direction 
+⚫ 
+Supports uplink QPSK, 16QAM modulation 
+⚫ 
+Supports downlink QPSK, 16QAM and 64QAM modulation 
+⚫ 
+LTE-FDD: Max. 150 Mbps (DL)/50 Mbps (UL) 
+⚫ 
+LTE-TDD: Max. 130 Mbps (DL)/30 Mbps (UL) 
+UMTS Features 
+⚫ 
+Supports 3GPP R7 HSPA+/HSDPA/HSUPA/WCDMA  
+⚫ 
+Supports QPSK, 16QAM, 64QAM modulation 
+⚫ 
+HSPA+: Max. 21 Mbps (DL) 
+⚫ 
+HSUPA: Max. 5.76 Mbps (UL) 
+⚫ 
+WCDMA: Max. 384 kbps (DL)/384 kbps (UL) 
+GSM Features 
+GPRS: 
+⚫ 
+Supports GPRS multi-slot class 12 
+⚫ 
+Coding scheme: CS 1–4 
+⚫ 
+Max. 85.6 kbps (DL)/85.6 kbps (UL) 
+EDGE: 
+⚫ 
+Supports EDGE multi-slot class 12 
+⚫ 
+Supports GMSK and 8-PSK for different MCS (Modulation 
+and Coding Scheme) 
+⚫ 
+Downlink coding schemes: MCS 1–9  
+⚫ 
+Uplink coding schemes: MCS 1–9 
+⚫ 
+Max. 236.8 kbps (DL)/236.8 kbps (UL) 
+Internet Protocol Features 
+⚫ 
+Supports TCP/UDP/PPP/NITZ/FTP/HTTP/PING/CMUX/ 
+HTTPS/SSL/FILE/MMS*/SMTP*/SMTPS* protocols 
+⚫ 
+Supports PAP and CHAP for PPP connections 
+Temperature Range 
+⚫ 
+Operating temperature range 2: -35 to +75 °C 
+⚫ 
+Extended temperature range 3: -40 to +85 °C 
+⚫ 
+Storage temperature range: -40 to +90 °C 
+Firmware Upgrade 
+Use USB interface or FOTA to upgrade.  
+RoHS 
+All hardware components are fully compliant with EU RoHS directive. 
+
+===== PAGE 18 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       17 / 106 
+ 
+ 
+ 
+2.3. Functional Diagram 
+ 
+The following figure shows a block diagram of the module and illustrates the major functional parts. 
+ 
+⚫ 
+Power management 
+⚫ 
+Baseband 
+⚫ 
+DDR + NAND flash 
+⚫ 
+Radio frequency 
+⚫ 
+Peripheral interface 
+Baseband
+PMIC
+FLASH
+PA
+PAM
+Switch
+ANT_MAIN
+ANT_DRX
+VBAT_BB
+VBAT_RF
+PWRKEY
+ADCs
+VDD_EXT
+USB (U)SIM
+UARTs
+Control
+Duplex
+SAW
+Tx
+PRx
+DRx
+SDIOs
+26M
+DCXO
+STATUS
+RESET_N
+SAW
+PCM
+Transceiver
+RGMII/RMII
+SPIs
+MIC/SPK
+RAM
+PRx 
+(B38/40/41)
+I2C
+ 
+Figure 1: Functional Diagram 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PAGE 19 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       18 / 106 
+ 
+ 
+ 
+2.4. Pin Assignment 
+ 
+The following figure illustrates the pin assignment of the module.  
+GPIO1
+GPIO2
+GPIO3
+GPIO4
+GPIO5
+NET_STATUS
+VDD_EXT
+100
+101
+102
+106
+107
+111
+112
+103
+104
+109
+105
+110
+89
+94
+98
+88
+93
+97
+86
+91
+96
+85
+90
+95
+99
+87
+92
+108
+RESERVED
+RESERVED
+141
+142
+118
+1
+2
+3
+4
+5
+6
+7
+8
+GND
+9
+GND
+10
+USIM_GND
+11
+12
+DBG_TXD
+13
+USIM_DET
+14
+USIM_VDD
+15
+USIM_DATA
+16
+USIM_CLK
+17
+USIM_RST
+18
+RESERVED
+DBG_RXD
+WLAN_SLP
+_CLK
+130
+129
+WLAN_SDIO
+_DATA3
+117
+RESERVED
+131
+WLAN_SDIO
+_DATA1
+119
+132
+WLAN_SDIO
+_DATA0
+120
+RGMII/RMII
+_INT
+133
+WLAN_SDIO
+_CLK
+121
+134
+WLAN_SDIO
+_CMD
+122
+135
+WLAN_WAKE
+123
+SPK_N
+136
+WLAN_EN
+124
+SPK_P
+137
+RESERVED
+125
+MIC_P
+138
+RESERVED
+126
+MIC_N
+139
+127
+WLAN_PWR
+_EN
+140
+MICBIAS
+128
+RESERVED
+116
+RESERVED
+115
+USB_BOOT
+GND
+19
+RESET_N
+20
+PWRKEY
+21
+GND
+22
+SD_DET
+23
+PCM_DIN
+24
+PCM_DOUT
+25
+PCM_SYNC
+26
+PCM_CLK
+27
+SD_SDIO_DATA3
+28
+SD_SDIO_DATA2
+29
+SD_SDIO_DATA1
+30
+SD_SDIO_DATA0
+31
+SD_SDIO_CLK
+32
+SD_SDIO_CMD
+33
+SD_SDIO_VDD
+34
+ANT_DRX
+35
+GND
+36
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+GND
+ANT_MAIN
+GND
+144
+143
+54
+53
+52
+51
+50
+49
+48
+47
+46
+GND
+45
+ADC0
+44
+43
+RESERVED
+42
+I2C_SDA
+41
+40
+SPI_CLK
+39
+38
+37
+ADC1
+I2C_SCL
+SPI_DIN
+SPI_DOUT
+SPI_CS
+114
+RESERVED
+113
+RESERVED
+GND
+72
+USB_VBUS
+71
+USB_DM
+70
+USB_DP
+69
+MAIN_RXD
+68
+67
+66
+65
+64
+63
+62
+STATUS
+61
+60
+59
+58
+57
+GND
+56
+RESERVED
+55
+82
+83
+84
+79
+80
+81
+76
+73
+77
+74
+78
+75
+RGMII/RMII
+_RX_1
+RGMII/RMII
+_CTL_RX
+MAIN_TXD
+MAIN_DTR
+MAIN_RTS
+MAIN_CTS
+GPIO7
+GPIO6
+VBAT_BB
+VBAT_BB
+VBAT_RF
+VBAT_RF
+Signal Pins
+Power Pins
+Debug UART
+Main UART
+RGMII/RMII
+ANT
+PCM
+I2C
+ADC
+GPIO8
+RESERVED
+GRFC1
+GRFC2
+RGMII/RMII
+_RST_N
+SPI
+MIC/SPK
+WLAN_SDIO
+_DATA2
+RGMII/RMII
+_CLK
+RGMII/RMII
+_RX_0
+RGMII/RMII
+_TX_0
+RGMII/RMII
+_TX_1
+RGMII_RX
+_2
+RGMII_TX
+_2
+RGMII/RMII
+_CTL_TX
+RGMII_RX
+_3
+RGMII_CK
+_TX
+RGMII_TX
+_3
+RGMII/RMII
+_MD_IO
+RGMII/RMII
+_MD_CLK
+GPIO
+(U)SIM
+SD
+USB
+GND
+WLAN
+GRFC
+RESERVED
+ 
+Figure 2: Pin Assignment (Top View) 
+ 
+ 
+1. 
+USB_BOOT (pin 115) and RGMII/RMII_RST_N (pin 119) cannot be pulled up before the module 
+starts up successfully. 
+2. 
+The unused and RESERVED pins should be kept open, and all GND pins should connect to the 
+ground. 
+3. 
+Antenna tuner control interface (pins 143 and 144) is optional. For details, please contact Quectel 
+Technical Support. 
+NOTE 
+
+===== PAGE 20 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       19 / 106 
+ 
+ 
+ 
+ 
+2.5. Pin Description 
+ 
+The following table shows the DC characteristics and pin descriptions. 
+ 
+Table 5: I/O Parameters Definition 
+ 
+DC characteristics include power domain and rated current. 
+ 
+Table 6: Pin Description 
+4. 
+EC200A-EL does not support RGMII, and pins 79, 80, 82–84 are RESERVED. 
+Type 
+Description 
+AI 
+Analog Input 
+AIO 
+Analog Input/Output 
+AO 
+Analog Output 
+DI 
+Digital Input 
+DIO 
+Digital Input/Output 
+DO 
+Digital Output 
+OD 
+Open Drain 
+PI 
+Power Input 
+PO 
+Power Output 
+Power Supply 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+VBAT_BB 
+59, 60 
+PI 
+Power supply for the 
+module’s baseband part 
+Vmax = 4.5 V 
+Vmin = 3.4 V 
+Vnom = 3.8 V 
+It must be 
+provided with 
+sufficient current 
+of at least    
+
+===== PAGE 21 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       20 / 106 
+ 
+ 
+ 
+ 
+4 If you choose to use the module that supports the APT function, the VBAT_BB must provide sufficient current of at least 
+1.5 A. For details, please consult Quectel Technical Support. 
+0.8 A 4. A test 
+point is 
+recommended 
+to be reserved. 
+VBAT_RF 
+57, 58 
+PI 
+Power supply for the 
+module’s RF part 
+It must be 
+provided with 
+sufficient current 
+of at least 2.0 A.  
+A test point is 
+recommended 
+to be reserved. 
+VDD_EXT 
+7 
+PO 
+Provide 1.8 V for 
+external circuit 
+Vnom = 1.8 V 
+IOmax = 50 mA 
+It can provide a 
+pull-up power to 
+the external 
+GPIO.  
+A test point is 
+recommended 
+to be reserved. 
+GND 
+8, 9,19, 22, 36, 46, 48, 50–54, 56, 72, 85–112 
+Turn On/Off 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+PWRKEY 
+21 
+DI 
+Turn on/off the module 
+VILmax = 0.5 V 
+VBAT power 
+domain. 
+Active low. 
+A test point is 
+recommended 
+to be reserved. 
+RESET_N 
+20 
+DI 
+Reset the module 
+1.8 V power 
+domain.  
+Active low after 
+the module 
+starts up. 
+Indication Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+STATUS 
+61 
+OD 
+Indicate the module's 
+operation status 
+VDD_EXT 
+An external 
+pull-up is 
+required. 
+If unused, keep 
+
+===== PAGE 22 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       21 / 106 
+ 
+ 
+ 
+it open. 
+NET_STATUS 
+6 
+DO 
+Indicate the module's 
+network activity status 
+1.8 V power 
+domain. 
+If unused, keep 
+it open. 
+USB Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+USB_VBUS 
+71 
+AI 
+USB connection detect 
+Vmax = 5.25 V 
+Vmin = 3.0 V 
+Vnom = 5.0 V 
+Typ. 5.0 V. 
+A test point is 
+recommended 
+to be reserved. 
+USB_DP 
+69 
+AIO 
+USB 2.0 differential data 
+(+) 
+ 
+90 Ω differential 
+impedance. 
+Compliant with 
+USB 2.0. 
+It is 
+recommended 
+to reserve test 
+points. 
+USB_DM 
+70 
+AIO 
+USB 2.0 differential data 
+(-) 
+ 
+(U)SIM Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+USIM_GND 
+10 
+ 
+Dedicated ground for 
+(U)SIM card 
+ 
+Connect to the 
+ground of 
+(U)SIM card. 
+USIM_VDD 
+14 
+PO 
+(U)SIM card power 
+supply 
+Low voltage： 
+Vmin = 1.67 V 
+Vnom = 1.8 V 
+Vmax = 1.93 V 
+ 
+High voltage： 
+Vmin = 2.7 V 
+Vnom = 3.0 V 
+Vmax = 3.3 V 
+Either 1.8 V or 
+3.0 V (U)SIM 
+card is 
+supported and 
+can be identified 
+automatically by 
+the module. 
+USIM_DATA 
+15 
+DIO 
+(U)SIM card data 
+USIM_VDD 
+ 
+USIM_CLK 
+16 
+DO 
+(U)SIM card clock 
+ 
+USIM_RST 
+17 
+DO 
+(U)SIM card reset 
+ 
+USIM_DET 
+13 
+DI 
+(U)SIM card hot-plug 
+detect 
+VDD_EXT 
+1.8 V power 
+domain.  
+
+===== PAGE 23 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       22 / 106 
+ 
+ 
+ 
+If unused, keep 
+it open. 
+SD Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+SD_SDIO_CLK 
+32 
+DO 
+SD card SDIO clock 
+SD_SDIO_VDD 
+1.8/2.85 V 
+power domain.  
+If unused, keep 
+it open. 
+SD_SDIO_CMD 
+33 
+DIO 
+SD card SDIO command 
+SD_SDIO_DATA0 
+31 
+DIO 
+SD card SDIO bit 0 
+SD_SDIO_DATA1 
+30 
+DIO 
+SD card SDIO bit 1 
+SD_SDIO_DATA2 
+29 
+DIO 
+SD card SDIO bit 2 
+SD_SDIO_DATA3 
+28 
+DIO 
+SD card SDIO bit 3 
+SD_SDIO_VDD 
+34 
+PO 
+SD card SDIO power 
+supply 
+Low Voltage： 
+Vmin=1.67V 
+Vnom = 1.8 V 
+Vmax = 1.93 V 
+ 
+High Voltage： 
+Vmin = 2.7 V 
+Vnom = 2.85 V 
+Vmax = 3.05 V 
+SD_DET* 
+23 
+DI 
+SD card hot-plug detect 
+VDD_EXT 
+1.8 V power 
+domain. If 
+unused, keep it 
+open. 
+Main UART 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+MAIN_CTS 
+64 
+DO 
+Clear to send signal from 
+the module  
+VDD_EXT 
+Connect to 
+MCU’s CTS. 
+1.8 V power 
+domain.  
+If unused, keep 
+it open. 
+MAIN_RTS 
+65 
+DI 
+Request to send signal 
+to the module  
+Connect to 
+MCU’s RTS. 
+1.8 V power 
+domain.  
+If unused, keep 
+
+===== PAGE 24 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       23 / 106 
+ 
+ 
+ 
+it open. 
+MAIN_DTR 
+66 
+DI 
+Main UART data terminal 
+ready 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+MAIN_RXD 
+68 
+DI 
+Main UART receive 
+MAIN_TXD 
+67 
+DO 
+Main UART transmit 
+Debug UART 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+DBG_RXD 
+11 
+DI 
+Debug UART receive 
+VDD_EXT 
+1.8 V power 
+domain.  
+If unused, keep 
+it open. 
+DBG_TXD 
+12 
+DO 
+Debug UART transmit 
+SPI  
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+SPI_CS 
+37 
+DIO 
+SPI chip select 
+VDD_EXT 
+1.8 V power 
+domain.  
+When the 
+module is used 
+as master 
+device, these 
+pins are in the 
+output state; 
+when the 
+module is used 
+as master 
+device, these 
+pins are in the 
+input state. 
+SPI_CLK 
+40 
+DIO 
+SPI clock 
+SPI_DOUT 
+38 
+DO 
+SPI data output 
+1.8 V power 
+domain. 
+If unused, keep 
+them open. 
+SPI_DIN 
+39 
+DI 
+SPI data input 
+I2C Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+I2C_SCL 
+41 
+OD 
+I2C serial clock (used for 
+external codec) 
+VDD_EXT 
+1.8 V pull-up 
+resistor is 
+needed. 
+If unused, keep 
+I2C_SDA 
+42 
+OD 
+I2C serial data (used for 
+external codec) 
+
+===== PAGE 25 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       24 / 106 
+ 
+ 
+ 
+them open. 
+PCM Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+PCM_SYNC 
+26 
+DIO 
+PCM data frame sync 
+VDD_EXT 
+1.8 V power 
+domain.  
+When the 
+module is used 
+as master 
+device, these 
+pins are in the 
+output state; 
+when the 
+module is used 
+as slave* 
+device, they are 
+in the input 
+state. 
+If unused, keep 
+them open. 
+PCM_CLK 
+27 
+DIO 
+PCM clock 
+PCM_DIN 
+24 
+DI 
+PCM data input 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+PCM_DOUT 
+25 
+DO 
+PCM data output 
+WLAN Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+WLAN_SLP_CLK 
+118 
+DO 
+WLAN sleep clock 
+VDD_EXT 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+WLAN_PWR_EN 
+127 
+DO 
+WLAN power supply 
+enable control 
+WLAN_SDIO_ 
+DATA3 
+129 
+DIO 
+WLAN SDIO data bit 3 
+WLAN_SDIO_ 
+DATA2 
+130 
+DIO 
+WLAN SDIO data bit 2 
+WLAN_SDIO_ 
+DATA1 
+131 
+DIO 
+WLAN SDIO data bit 1 
+WLAN_SDIO_ 
+DATA0 
+132 
+DIO 
+WLAN SDIO data bit 0 
+WLAN_SDIO_ 
+CLK 
+133 
+DO 
+WLAN SDIO clock 
+
+===== PAGE 26 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       25 / 106 
+ 
+ 
+ 
+ 
+5 EC200A-EL does not support RGMII function, and pins 79, 80, 82–84 are RESERVED. 
+WLAN_SDIO_ 
+CMD 
+134 
+DIO 
+WLAN SDIO command 
+WLAN_WAKE 
+135 
+DI 
+Wake up the host by an 
+external Wi-Fi module 
+WLAN_EN 
+136 
+DO 
+WLAN function enable 
+control 
+RF Antenna Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+ANT_DRX 
+35 
+AI 
+Diversity antenna 
+interface 
+ 
+50 Ω 
+characteristic 
+impedance. 
+ANT_MAIN 
+49 
+AIO 
+Main antenna interface 
+ 
+ADC Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+ADC0 
+45 
+AI 
+General-purpose ADC 
+interface  
+Voltage Range: 
+0 V–VBAT_BB 
+If unused, keep 
+them open. 
+ADC1 
+44 
+AI 
+RGMII/RMII Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+RGMII/RMII_RX_1 
+73 
+DI 
+RGMII/RMII receive data 
+bit 1 
+1.8 V 
+RGMII/RMII： 
+VILmin = -0.3 V 
+VILmax = 0.54 V 
+VIHmin = 1.26 V 
+VIHmax = 2.0 V 
+VOLmax = 0.2 V 
+VOHmin = 1.6 V 
+ 
+3.3 V RMII： 
+VILmin = -0.3 V 
+VILmax = 0.8 V 
+VIHmin = 2.0 V 
+VIHmax = 3.6 V 
+VOLmax = 0.4 V 
+VOHmin = 2.4 V 
+1.8 V power 
+domain for 
+RGMII.  
+1.8/3.3 V power 
+domain for RMII. 
+If unused, keep 
+them open. 
+RGMII/RMII_CTL_
+RX 
+74 
+DI 
+RGMII/RMII receive 
+control 
+RGMII/RMII_CLK 
+75 
+DI 
+RGMII/RMII clock 
+RGMII/RMII_RX_0 
+76 
+DI 
+RGMII/RMII receive data 
+bit 0 
+RGMII/RMII_TX_0 
+77 
+DO 
+RGMII/RMII transmit 
+data bit 0 
+RGMII/RMII_TX_1 
+78 
+DO 
+RGMII/RMII transmit 
+data bit 1 
+RGMII_RX_2 5 
+79 
+DI 
+RGMII receive data bit 2 
+VDD_EXT 
+
+===== PAGE 27 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       26 / 106 
+ 
+ 
+ 
+RGMII_TX_2 5 
+80 
+DO 
+RGMII transmit data bit 2 
+RGMII/RMII_CTL_ 
+TX 
+81 
+DO 
+RGMII/RMII transmit 
+control 
+1.8 V 
+RGMII/RMII: 
+VOLmax = 0.2 V 
+VOHmin = 1.6 V 
+ 
+3.3 V RMII: 
+VOLmax = 0.4 V 
+VOHmin = 2.4 V 
+RGMII_RX_3 5 
+82 
+DI 
+RGMII receive data bit 3 
+VDD_EXT 
+RGMII_CK_TX 5 
+83 
+DO 
+RGMII transmit clock 
+RGMII_TX_3 5 
+84 
+DO 
+RGMII transmit data bit 3 
+RGMII/RMII_INT 
+120 
+DI 
+RGMII/RMII interrupt 
+1.8 V 
+RGMII/RMII: 
+VILmin = -0.3 V 
+VILmax = 0.54 V 
+VIHmin = 1.26 V 
+VIHmax = 2.0 V 
+VOLmax = 0.2 V 
+VOHmin = 1.6 V 
+ 
+3.3 V RMII: 
+VILmin = -0.3 V 
+VILmax = 0.8 V 
+VIHmin = 2.0 V 
+VIHmax = 3.6 V 
+VOLmax = 0.4 V 
+VOHmin = 2.4 V 
+RGMII/RMII_MD_ 
+IO 
+121 
+DIO 
+RGMII/RMII 
+management data 
+input/output 
+RGMII/RMII_MD_ 
+CLK 
+122 
+DO 
+RGMII/RMII 
+management data clock 
+RGMII/RMII_RST_
+N 
+119 
+DO 
+RGMII/RMII reset 
+external PHY 
+VDD_EXT 
+1.8 V power 
+domain. 
+It cannot be 
+pulled up high 
+level before the 
+module starts up 
+successfully. 
+If unused, keep 
+it open. 
+Analog Audio Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+
+===== PAGE 28 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       27 / 106 
+ 
+ 
+ 
+SPK_P 
+124 
+AO 
+Analog audio differential 
+output channel (+) 
+ 
+ 
+SPK_N 
+123 
+AO 
+Analog audio differential 
+output channel (-) 
+ 
+ 
+MIC_P 
+125 
+AI 
+Microphone input 
+channel (+) 
+ 
+ 
+MIC_N 
+126 
+AI 
+Microphone input 
+channel (-) 
+ 
+ 
+MICBIAS 
+140 
+PO 
+Microphone bias voltage 
+ 
+ 
+Other Interfaces 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+USB_BOOT 
+115 
+DI 
+Forces the module to 
+enter download mode 
+VDD_EXT 
+1.8 V power 
+domain.  
+Active High.  
+A test point is 
+recommended 
+to be reserved. 
+GRFC1 
+144 
+DO 
+Generic RF controller 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+GRFC2 
+143 
+DO 
+GPIO Pins 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+DC 
+Characteristics 
+Comment 
+GPIO1 
+1 
+DIO 
+General-purpose 
+input/output 
+VDD_EXT 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+GPIO2 
+2 
+DIO 
+General-purpose 
+input/output 
+GPIO3 
+3 
+DIO 
+General-purpose 
+input/output 
+GPIO4 
+4 
+DIO 
+General-purpose 
+input/output 
+GPIO5 
+5 
+DIO 
+General-purpose 
+input/output 
+GPIO6 
+62 
+DIO 
+General-purpose 
+input/output 
+GPIO7 
+63 
+DIO 
+General-purpose 
+input/output 
+GPIO8 
+139 
+DIO 
+General-purpose 
+input/output 
+
+===== PAGE 29 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       28 / 106 
+ 
+ 
+ 
+ 
+2.6. EVB Kit 
+ 
+To help you develop applications with the module, Quectel supplies an evaluation board (LTE OPEN EVB) 
+with accessories to develop or test the module. For more details, see document [1].
+RESERVED Pins 
+Pin Name 
+Pin No. 
+Comment 
+RESERVED 
+18, 43, 47, 55, 113, 114, 116, 117, 128, 137, 138, 141,142 
+Keep them 
+open. 
+
+===== PAGE 30 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       29 / 106 
+ 
+ 
+ 
+3 Operating Characteristics 
+ 
+3.1. Operating Modes 
+ 
+The table below outlines operating modes of the module.  
+ 
+Table 7: Overview of Operating Modes  
+ 
+ 
+ 
+ 
+ 
+ 
+Mode 
+Details 
+Full Functionality 
+Operation 
+Idle 
+Software is active. The module is registered on the network 
+and ready to send and receive data. 
+Voice/Data 
+Network connection is ongoing. In this mode, the power 
+consumption is decided by network setting and data transfer 
+rate. 
+Minimum 
+Functionality Mode 
+AT+CFUN=0 can set the module to a minimum functionality mode. In this case, 
+both RF function and (U)SIM card will be invalid. 
+Airplane Mode 
+AT+CFUN=4 can set the module to airplane mode. In this case, RF function will 
+be invalid. 
+Sleep Mode 
+In this mode, current consumption of the module will be reduced to the minimal 
+level. In this mode, the module can still receive paging, SMS, voice call and 
+TCP/UDP data from network. 
+Power Down Mode 
+In this mode, the VBAT power supply is constantly turned on and the software 
+stops working. 
+For more details about the AT command, see document [2]. 
+NOTE 
+
+===== PAGE 31 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       30 / 106 
+ 
+ 
+ 
+3.2. Sleep Mode  
+ 
+In sleep mode, current consumption of the module will be reduced to the minimal level. The following 
+section describes the power saving procedures. 
+Current
+Run Time
+DRX OFF   ON      OFF   
+ON   
+ON   
+ OFF
+ OFF
+ON   
+ OFF
+ 
+Figure 3: DRX Run Time and Current Consumption in Sleep Mode 
+ 
+ 
+ 
+ 
+3.2.1. USB Application with USB Remote Wakeup Function 
+If the host supports USB suspend/resume and remote wakeup functions, the following three preconditions 
+must be met to let the module enter sleep mode. 
+ 
+⚫ 
+Enable sleep function through related API. 
+⚫ 
+Ensure that all pins configured as interrupt wake-up function in the module are in non-wake-up state. 
+⚫ 
+The host’s USB bus, which is connected with the module’s USB interface, enters suspend state. 
+ 
+The following figure shows the connection between the module and the host. 
+USB_VBUS
+USB_DP
+USB_DM
+VDD
+USB_DP
+USB_DM
+Module
+Host
+GND
+GND
+ 
+Figure 4: Sleep Mode Application with USB Remote Wakeup  
+DRX cycle values are transmitted over the wireless network. 
+NOTE 
+
+===== PAGE 32 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       31 / 106 
+ 
+ 
+ 
+⚫ 
+Sending data to the module through USB will wake up the module.  
+⚫ 
+When the module has a URC to report, the module will send remote wakeup signals via USB bus to 
+wake up the host. 
+ 
+3.2.2. USB Application without USB Remote Wakeup Function  
+If the host supports USB suspend/resume, but does not support remote wakeup function, the host needs 
+to be woken up by the module's GPIO. 
+ 
+There are three preconditions to let the module enter sleep mode. 
+ 
+⚫ 
+Enable sleep function through related API. 
+⚫ 
+Ensure that all pins configured as interrupt wake-up function in the module are in non-wake-up state. 
+⚫ 
+The host’s USB bus, which is connected with the module’s USB interface, enters suspend state.  
+ 
+The following figure shows the connection between the module and the host. 
+USB_VBUS
+USB_DP
+USB_DM
+VDD
+USB_DP
+USB_DM
+Module
+Host
+GND
+GND
+GPIO
+EINT
+ 
+Figure 5: Sleep Mode Application without USB Remote Wakeup 
+ 
+⚫ 
+Sending data to the module through USB will wake up the module.  
+⚫ 
+When the module has a URC to report, the module will send a signal through GPIO to wake up the 
+host. 
+ 
+3.2.3. USB Application without USB Suspend Function 
+If the host does not support USB suspend function, USB_VBUS should be disconnected through an 
+external control circuit to set the module to enter sleep mode. 
+ 
+⚫ 
+Enable sleep function through related API. 
+⚫ 
+Ensure that all pins configured as interrupt wake-up function in the module are in non-wake-up state. 
+⚫ 
+Disconnect USB_VBUS. 
+ 
+ 
+
+===== PAGE 33 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       32 / 106 
+ 
+ 
+ 
+The following figure shows the connection between the module and the host. 
+ 
+USB_VBUS
+USB_DP
+USB_DM
+VDD
+USB_DP
+USB_DM
+Module
+Host
+GPIO
+EINT
+Power 
+Switch
+GPIO
+GND
+GND
+ 
+Figure 6: Sleep Mode Application without Suspend Function 
+ 
+Restoring the power supply to USB_VBUS will wake up the module. 
+ 
+ 
+ 
+3.3. Airplane Mode 
+ 
+When the module enters into airplane mode, the RF function will be disabled, and all AT commands 
+related to it will be inaccessible. This mode can be set via the following ways.  
+ 
+AT+CFUN=<fun> provides choices of the functionality level through setting <fun> into 0, 1 or 4.  
+ 
+⚫ AT+CFUN=0: Minimum functionality mode (Both (U)SIM and RF functions are disabled). 
+⚫ AT+CFUN=1: Full functionality mode (by default). 
+⚫ AT+CFUN=4: Airplane mode (RF function is disabled). 
+ 
+⚫  
+ 
+1. 
+Please pay attention to the level match shown in dotted line between the module and the host. 
+2. 
+For more details about API, see document [3]. 
+For more details about AT command, see document [2]. 
+NOTE 
+NOTE 
+
+===== PAGE 34 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       33 / 106 
+ 
+ 
+ 
+3.4. Power Supply 
+3.4.1. Power Supply Pins 
+The module provides four VBAT pins dedicated to the connection with the external power supply. There 
+are two separate voltage domains for VBAT.  
+ 
+⚫ 
+Two VBAT_RF pins for module’s RF part 
+⚫ 
+Two VBAT_BB pins for module’s baseband part 
+ 
+The following table shows the details of power supply. 
+ 
+Table 8: Pin Definition of Power Supply 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6 If you use the module that supports the APT function, the VBAT_BB should provide sufficient current of at least 1.5 A. For 
+details, please contact Quectel Technical Support. 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+VBAT_BB 
+59, 60 
+PI 
+Power supply for the 
+module’s baseband part 
+It must be provided with 
+sufficient current of at 
+least 0.8 A 6. 
+A test point is 
+recommended to be 
+reserved. 
+VBAT_RF 
+57, 58 
+PI 
+Power supply for the 
+module’s RF part 
+It must be provided with 
+sufficient current of at 
+least 2.0 A. 
+A test point is 
+recommended to be 
+reserved. 
+VDD_EXT 
+7 
+PO 
+Provide 1.8V for external 
+circuit 
+It can provide a pull-up 
+power to the external 
+GPIO. 
+A test point is 
+recommended to be 
+reserved. 
+
+===== PAGE 35 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       34 / 106 
+ 
+ 
+ 
+3.4.2. Reference Design for Power Supply  
+The performance of the module largely depends on the power source. For the module that supports GSM 
+network, the power supply of the module should be able to provide sufficient current of at least 2.8 A 7. If 
+the voltage drops between input and output is not too high, it is suggested that an LDO should be used to 
+supply power to the module. If there is a big voltage difference between input and the desired output 
+VBAT, a buck converter is preferred as the power supply.  
+ 
+The following figure shows a reference design for +5 V input power source.  
+DC_IN
+LDO
+IN
+OUT
+EN
+GND
+ADJ
+VBAT 
+100 nF
+470 µF
+100 nF
+R1
+R2
+470 µF
+330R
+51K
+1%
+1%
+4.7K
+47K
+VBAT_EN
+ 
+Figure 7: Reference Design of Power Supply 
+ 
+⚫  
+ 
+3.4.3. Requirements for Voltage Stability 
+The power supply range of the module is from 3.4 V to 4.5 V. Please make sure the input voltage will 
+never drop below 3.4 V.  
+ 
+7 If you use the module that does not support the GSM frequency, you can select the power supply with sufficient current of 
+at least 2.0 A in reference design. 
+It is recommended to design switch control for power supply. 
+NOTE 
+
+===== PAGE 36 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       35 / 106 
+ 
+ 
+ 
+ 
+Power 
+Supply (V)
+Burst 
+Transmission
+Ripple
+Drop
+Burst 
+Transmission
+Load (A)
+ 
+Figure 8: Power Supply Limits during Burst Transmission 
+ 
+To decrease the voltage drop, a bypass capacitor of about 100 µF with low ESR (ESR ≤ 0.7 Ω) should be 
+used, and a multi-layer ceramic chip (MLCC) capacitor array should also be reserved due to its ultra-low 
+ESR. It is recommended to use three ceramic capacitors (100 nF, 33 pF, 10 pF) for composing the MLCC 
+array, and place these capacitors close to the VBAT_BB and VBAT_RF pins. The main power supply from 
+an external application has to be a single voltage source and can be expanded to two sub paths with star 
+structure. The width of VBAT_BB trace should be not less than 1 mm; and the width of VBAT_RF trace 
+should be not less than 2 mm. In principle, the longer the VBAT trace is, the wider it will be. 
+ 
+In addition, to avoid the surge, use a TVS diode of which working peak reserve voltage is 4.7 V and peak 
+pulse power is up to 2550 W. The following figure shows the reference circuit. 
+Module
+VBAT_RF
+VBAT_BB
+VBAT
+C1
+100 µF
+C6
+100 nF
+C7
+33 pF
+C8
+10 pF
++
++
+C2
+100 nF
+C5
+100 µF
+C3
+33 pF
+C4
+10 pF
+D1
+TVS 
+ 
+Figure 9: Star Structure of the Power Supply 
+ 
+
+===== PAGE 37 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       36 / 106 
+ 
+ 
+ 
+3.5. Turn On 
+3.5.1. Turn on the Module with PWRKEY  
+Table 9: Pin Definition of PWRKEY 
+ 
+When the module is in power down mode, it can be turned on to normal mode by driving the PWRKEY pin 
+to a low level for at least 650 ms. It is recommended to use an open drain/collector driver to control the 
+PWRKEY. A simple reference circuit is illustrated in the following figure.  
+PWRKEY
+4.7K
+47K
+10 nF
+Turn-on pulse
+  650 ms
+ 
+Figure 10: Reference Circuit of Turning on the Module Using Driving Circuit 
+ 
+The other way to control the PWRKEY is using a button directly. When pressing the button, fingers may 
+experience electrostatic strike. Therefore, an ESD component should be placed nearby the button for 
+ESD protection. A reference circuit is shown in the following figure.  
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+PWRKEY 
+21 
+DI 
+Turn on/off the module 
+VBAT power domain. 
+Active low. 
+A test point is 
+recommended to be 
+reserved. 
+
+===== PAGE 38 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       37 / 106 
+ 
+ 
+ 
+PWRKEY
+Module
+S1
+Close to S1
+ESD
+Turn-on pulse
+ 
+Figure 11: Reference Circuit of Turning on the Module with Button 
+ 
+The power-up scenario is illustrated in the following figure. 
+VIL    0.5 V
+VBAT
+PWRKEY
+  650 ms
+RESET_N
+STATUS
+(OD)
+I nactive
+Active
+UART
+NOTE 1
+Inactive
+Active
+USB
+  20 s
+VDD_EXT
+USB_BOOT
+  100 ms. After this time, the pin can be set 
+high level by an external circuit.
+    
+About 22 ms
+About 5 ms
+  20 s
+     s
+ 
+Figure 12: Power-up Timing 
+ 
+ 
+
+===== PAGE 39 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       38 / 106 
+ 
+ 
+ 
+. 
+ 
+3.6. Turn Off 
+ 
+The following procedures can be used to turn off the module:  
+ 
+3.6.1. Turn off the Module with PWRKEY 
+Driving the PWRKEY to a low-level voltage for 650 ms at least, then the module will execute power-down 
+procedure after the pull-down is completed. The timing of turning off the module is illustrated in the 
+following figure. 
+VBAT
+PWRKEY
+  7 s
+  650 ms
+Running
+Power-down procedure
+OFF
+Module
+Status
+STATUS
+(OD)
+ 
+Figure 13: Timing of Turning off Module 
+ 
+3.6.2. Turn off the Module with AT Command 
+It is safe to use AT+QPOWD to turn off the module, which is equivalent to turn off the module via 
+PWRKEY pin. 
+ 
+For details about AT+QPOWD command, see document [2]. 
+1. Make sure that VBAT is stable before pulling down PWRKEY pin. It is recommended that the time 
+difference between powering up VBAT and pulling down PWRKEY pin is not less than 30 ms.  
+2. PWRKEY can be pulled down directly to GND with a recommended 4.7 kΩ resistor if module needs 
+to be powered on automatically and shutdown is not needed. 
+NOTE 
+
+===== PAGE 40 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       39 / 106 
+ 
+ 
+ 
+. 
+ 
+3.7. Reset 
+ 
+The module can be reset by driving the RESET_N low for at least 300 ms and then releasing it. The 
+RESET_N signal is sensitive to interference, so it is recommended to route the trace as short as possible 
+and surround it with ground. 
+ 
+Table 10: Pin Definition of RESET_N 
+ 
+The recommended circuit is equivalent to the PWRKEY control circuit. An open drain/collector driver or 
+button can be used to control the RESET_N.  
+Reset pulse
+RESET_N
+4.7K
+47K
+≥ 300 ms
+ 
+Figure 14: Reference Circuit of RESET_N with Driving Circuit 
+ 
+1. To avoid damaging the data of internal flash, do not switch off the power supply when the module 
+works normally. Only after shutting down the module with PWRKEY or AT command can you cut off 
+the power supply. 
+2. When turning off module with the AT command, please keep PWRKEY at high level after the 
+execution of the command. Otherwise, the module will be turned on again after successfully 
+turn-off.  
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+RESET_N 
+20 
+DI 
+Reset the module 
+1.8 V power domain. 
+Active low after the 
+module starts up. 
+NOTE 
+
+===== PAGE 41 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       40 / 106 
+ 
+ 
+ 
+RESET_N
+S2
+Close to S2
+ESD
+ 
+Figure 15: Reference Circuit of RESET_N with Button  
+ 
+The timing of resetting module is illustrated in the following figure. 
+VIL ≤ 0.5 V
+VBAT
+Module 
+Status
+Running
+RESET_N
+Baseband restart 
+Baseband  resetting
+≥ 300 ms
+ 
+Figure 16: Timing of Resetting Module  
+ 
+⚫  
+ 
+ 
+1. 
+Please ensure that there is no large capacitance with the max. value exceeding 10 nF on PWRKEY 
+and RESET_N pins. 
+2. 
+RESET_N only resets the internal baseband chip of the module and does not reset the power 
+management chip. 
+NOTE 
+
+===== PAGE 42 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       41 / 106 
+ 
+ 
+ 
+4 Application Interfaces 
+ 
+4.1. USB Interface 
+ 
+The module provides one integrated Universal Serial Bus (USB) interface complying with USB 2.0 
+specification, with full-speed (12 Mbps) and high-speed (480 Mbps) modes supported. It can serve as a 
+slave device and master device, and can be used for AT command communication, data transmission, 
+software debugging and firmware upgrade. The following table shows the pin definition of USB interface.  
+ 
+Table 11: Pin Definition of USB Interface 
+ 
+For more details about the USB 2.0 specifications, please visit http://www.usb.org/home. 
+ 
+It is recommended to reserve test points for debugging and firmware upgrade in your designs. The 
+following figure shows a reference circuit of USB interface. 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+USB_VBUS 
+71 
+AI 
+USB connection detect 
+Typ. 5.0 V. 
+A test point is 
+recommended to be 
+reserved. 
+USB_DP 
+69 
+AIO 
+USB differential data (+) 
+90 Ω differential 
+impedance. 
+Compliant with USB 2.0. 
+It is recommended to 
+reserve test points. 
+USB_DM 
+70 
+AIO 
+USB differential data (-) 
+
+===== PAGE 43 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       42 / 106 
+ 
+ 
+ 
+USB_DP
+USB_DM
+GND
+USB_DP
+USB_DM
+GND
+L1
+Close to Module
+R1
+R2
+Test Points
+ESD Array
+NM_0 R
+NM_0 R
+Minimize these stubs
+Module
+MCU
+USB_VBUS
+VDD
+ 
+Figure 17: Reference Circuit of USB Interface 
+ 
+A common mode choke L1 is recommended to be added in series between the module and your MCU in 
+order to suppress EMI spurious transmission. Meanwhile, the 0 Ω resistors (R1 and R2) should be added 
+in series between the module and the test points so as to facilitate debugging, and the resistors are not 
+mounted by default. In order to ensure the integrity of USB data line signal, L1, R1 and R2 components 
+must be placed close to the module, and also resistors R1 and R2 should be placed close to each other. 
+The extra stubs of trace must be as short as possible. 
+ 
+The following principles should be complied with when designing the USB interface, to meet USB 
+specifications.  
+ 
+⚫ 
+It is important to route the USB signal traces as differential pairs with ground surrounded. The 
+impedance of USB differential trace is 90 Ω.  
+⚫ 
+Do not route signal traces under crystals, oscillators, magnetic devices, PCIe and RF signal traces. 
+It is important to route the USB differential traces in inner-layer of the PCB, and surround the traces 
+with ground on that layer and ground planes above and below. 
+⚫ 
+Junction capacitance of the ESD protection device might cause influences on USB data traces, so 
+please pay attention to the selection of the device. Typically, the stray capacitance should be less 
+than 2 pF for USB. 
+⚫ 
+If possible, reserve a 0 Ω resistor on USB_DP and USB_DM lines respectively. 
+ 
+For more details about the USB specifications, please visit http://www.usb.org/home.  
+ 
+. 
+ 
+If the OTG function needs to be used, the GPIO8 pin can be multiplexed into the USB_ID function. For 
+GPIO configuration, see document [4]. 
+NOTE 
+
+===== PAGE 44 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       43 / 106 
+ 
+ 
+ 
+4.2. USB_BOOT Interface 
+ 
+The module provides a USB_BOOT pin. Pull up USB_BOOT to VDD_EXT before powering on the 
+module, which will enter the download mode when it is turned on. In this mode, the module supports 
+firmware upgrade over USB interface. 
+ 
+Table 12: Pin Definition of USB_BOOT Interface 
+ 
+The following figure shows a reference circuit of USB_BOOT interface. 
+Module
+USB_BOOT
+VDD_EXT
+4.7K
+Test point
+ESD
+Close to test point
+ 
+Figure 18: Reference Circuit of USB_BOOT Interface 
+ 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+USB_BOOT 
+115 
+DI 
+Forces the module to enter 
+download mode 
+1.8 V power domain. 
+Active High. 
+A test point is 
+recommended to be 
+reserved. 
+
+===== PAGE 45 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       44 / 106 
+ 
+ 
+ 
+VIL   0.5V
+VBAT
+PWRKEY
+    0 ms
+RESET_N
+NOTE 1
+VDD_EXT
+About 5 ms
+USB_BOOT
+USB_BOOT can be pulled up to 1.8 V before 
+VDD_EXT is powered up, and the module will enter 
+emergency download mode when it is powered on.
+About 22 ms
+ 
+Figure 19: Timing Sequence for Entering Emergency Download Mode 
+ 
+. 
+ 
+4.3. (U)SIM Interface  
+ 
+The (U)SIM interface circuitry meets ETSI and IMT-2000 standards. Both 1.8 V and 3.0 V (U)SIM cards 
+are supported.  
+ 
+ 
+ 
+ 
+ 
+ 
+1. Please make sure that VBAT is stable before pulling down PWRKEY pin. It is recommended that the 
+time between powering up VBAT and pulling down PWRKEY pin is not less than 30 ms. 
+2. When using MCU to control module to enter the emergency download mode, please follow the 
+above timing sequence. It is not recommended to pull up USB_BOOT to 1.8 V before powering up 
+VBAT. Connect the test points directly as shown in Figure 18 can manually force the module into 
+download mode. 
+3. If the module is turned on normally, the USB_BOOT cannot be pulled up before the module starts 
+up successfully. 
+NOTE 
+
+===== PAGE 46 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       45 / 106 
+ 
+ 
+ 
+Table 13: Pin Definition of (U)SIM Interface 
+ 
+The module supports (U)SIM card hot-plug via the USIM_DET pin, the function supports low-level and 
+high-level detections. By default, it is disabled, and can be configured via AT+QSIMDET command. For 
+details about the AT command, see document [2]. 
+ 
+The reference circuit of the 8-pin (U)SIM interface is as follows.  
+Module
+USIM_VDD
+USIM_GND
+USIM_RST
+USIM_CLK
+USIM_DATA
+USIM_DET
+0R
+0R
+0R
+VDD_EXT
+51K
+100 nF
+GND
+GND
+33 pF
+33 pF 33 pF
+VCC
+RST
+CLK
+IO
+VPP
+GND
+GND
+USIM_VDD
+15K
+(U)SIM Card Connector
+ESD Array
+ 
+Figure 20: Reference Circuit of (U)SIM Interface with an 8-pin (U)SIM Card Connector  
+ 
+If (U)SIM card detection function is not needed, please keep USIM_DET unconnected. A reference circuit 
+for (U)SIM interface with a 6-pin (U)SIM card connector is illustrated in the following figure.  
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+USIM_GND 
+10 
+ 
+Dedicated ground for 
+(U)SIM card 
+ 
+USIM_VDD 
+14 
+PO 
+(U)SIM card power supply 
+Either 1.8 V or 3.0 V 
+(U)SIM card is 
+supported and can be 
+identified automatically 
+by the module. 
+USIM_DATA 
+15 
+DIO 
+(U)SIM card data 
+ 
+USIM_CLK 
+16 
+DO 
+(U)SIM card clock 
+ 
+USIM_RST 
+17 
+DO 
+(U)SIM card reset 
+ 
+USIM_DET 
+13 
+DI 
+(U)SIM card hot-plug detect 
+1.8 V power domain.  
+If unused, keep it open. 
+
+===== PAGE 47 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       46 / 106 
+ 
+ 
+ 
+Module
+USIM_VDD
+USIM_GND
+USIM_RST
+USIM_CLK
+USIM_DATA
+0R
+0R
+0R
+100 nF
+GND
+33 pF 33 pF 33 pF
+VCC
+RST
+CLK
+IO
+VPP
+GND
+GND
+15K
+USIM_VDD
+(U)SIM Card Connector
+ESD Array
+ 
+Figure 21: Reference Circuit of (U)SIM Interface with a 6-pin (U)SIM Card Connector  
+ 
+In order to enhance the reliability and availability of the (U)SIM card in applications, please follow the 
+criteria below in (U)SIM circuit design. 
+ 
+⚫ 
+Keep (U)SIM card connector as close as possible to the module. Keep the trace length as less than 
+200 mm as possible.  
+⚫ 
+Keep (U)SIM card signal traces away from RF and power supply traces.  
+⚫ 
+USIM_VDD maximum bypass capacitor does not exceed 1uF. 
+⚫ 
+Ensure the ground between the module and the (U)SIM card connector short and wide. Keep the 
+trace width of ground and USIM_VDD not less than 0.5 mm to maintain the same electric potential. 
+⚫ 
+To avoid cross-talk between USIM_DATA and USIM_CLK, keep them away from each other and 
+shield them with ground surrounded.  
+⚫ 
+In order to offer good ESD protection, it is recommended to add a ESD array whose parasitic 
+capacitance should not be more than 15 pF. The 0 Ω resistors should be added in series between the 
+module and the (U)SIM card to facilitate debugging. The 33 pF capacitors on the USIM_DATA, 
+USIM_CLK and USIM_RST traces are used for filtering interference. Please note that the (U)SIM 
+peripheral circuit should be close to the (U)SIM card connector.  
+⚫ 
+The pull-up resistor on USIM_DATA can improve anti-jamming capability of the (U)SIM card. If the 
+(U)SIM card traces are too long, or the interference source is relatively close, it is recommended to 
+add a pull-up resistor near the (U)SIM card connector. 
+ 
+4.4. PCM and I2C Interfaces 
+ 
+The module provides one Pulse Code Modulation (PCM) digital interface and one I2C interface for audio 
+design, and the PCM interface supports the primary mode (short frame synchronization) and the module 
+works as both master and slave* device. 
+ 
+ 
+
+===== PAGE 48 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       47 / 106 
+ 
+ 
+ 
+The module can only be used as primary devices in applications related to I2C interfaces and does not 
+support multi-host mode. It conforms to the I2C bus protocol specification (100/400 kHz). 
+ 
+In short frame mode, the data is sampled on the falling edge of the PCM_CLK and transmitted on the 
+rising edge. The PCM_SYNC falling edge represents the MSB. In this mode, the PCM interface supports 
+256 kHz, 512 kHz, 1024, 2048 kHz PCM_CLK at 8 kHz PCM_SYNC, and also supports 4069 kHz 
+PCM_CLK at 16 kHz PCM_SYNC. 
+ 
+The module supports a 16-bit linear encoding format. The following figure shows the sequence diagram of 
+short frame mode. (PCM_SYNC = 8 kHz, PCM_CLK = 2048 kHz). 
+PCM_CLK
+PCM_SYNC
+PCM_DOUT
+MSB
+LSB
+MSB
+125 µs
+1
+2
+256
+255
+PCM_DIN
+MSB
+LSB
+MSB
+ 
+Figure 22：Timing Sequence for Short Frame Mode 
+ 
+Table 14: Pin Definition of PCM Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+PCM_SYNC 
+26 
+DIO 
+PCM data frame sync  
+1.8 V power domain.  
+When the module is used 
+as master device, these 
+pins are in the output 
+state; when the module is 
+used as slave* device, 
+they are in the input state. 
+If unused, keep them 
+open. 
+PCM_CLK 
+27 
+DIO 
+PCM clock 
+PCM_DIN 
+24 
+DI 
+PCM data input 
+1.8 V power domain.  
+If unused, keep them 
+open. 
+PCM_DOUT 
+25 
+DO 
+PCM data output 
+
+===== PAGE 49 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       48 / 106 
+ 
+ 
+ 
+Table 15: Pin Definition of I2C Interface 
+ 
+Clock can be configured by AT command, and the default configuration is short frame synchronization 
+format with 2048 kHz PCM_CLK and 8 kHz PCM_SYNC. 
+ 
+The following is a reference design for the PCM and I2C interfaces with external Codec chip. 
+PCM_DIN
+PCM_DOUT
+PCM_SYNC
+PCM_CLK
+I2C_SCL
+I2C_SDA
+Module
+1.8 V
+4.7K
+4.7K
+BCLK
+LRCK
+DAC
+ADC
+SCL
+SDA
+BIAS
+MICBIAS
+INP
+INN
+LOUTP
+LOUTN
+Codec
+22R
+33 pF
+22R
+22R
+33 pF
+22R
+33 pF
+ 
+Figure 23: PCM and I2C Interface Circuit Reference Design  
+ 
+ 
+ 
+4.5. Analog Audio Interfaces 
+ 
+The module provides one analog audio input channel and one analog audio output channel. Pin definition 
+is shown in the following table. 
+ 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+I2C_SCL 
+41 
+OD 
+I2C serial clock (used for 
+external codec) 
+An external 1.8 V pull-up 
+resistor is needed. 
+If unused, keep them open. 
+I2C_SDA 
+42 
+OD 
+I2C serial data (used for 
+external codec)  
+It is recommended to reserve the RC (R = 22 Ω, C = 33 pF) circuit on the PCM signal line and the 
+capacitor should be placed close to the module, especially on PCM_CLK. 
+NOTE 
+
+===== PAGE 50 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       49 / 106 
+ 
+ 
+ 
+Table 16: Pin Definition of Analog Audio Interfaces 
+ 
+⚫ 
+AIN channel is a differential input and used for microphone input. Electret microphones are usually 
+used. 
+⚫ 
+AOUT channel is a differential output, typically used for receiver. 
+ 
+4.5.1. Notes on Analog Audio Interface Design 
+It is recommended to use the electret microphone with dual built-in capacitors (e.g. 10 pF and 33 pF) for 
+filtering out RF interference, thus reducing TDD noise. Without placing this capacitor, TDD noise could be 
+heard. Please note that the resonant frequency point of a capacitor largely depends on the material and 
+production technique. Therefore, you would have to discuss with their capacitor vendors to choose the 
+most suitable capacitor for filtering out high-frequency noises. 
+ 
+The severity of the RF interference in the voice channel during GSM transmitting largely depends on the 
+application design. Therefore, a suitable capacitor can be selected based on the test results. The filter 
+capacitors on the PCB should be placed as close to the audio devices or audio interfaces as possible, 
+and the traces should be as short as possible. They should go through the filter capacitors before arriving 
+at other connection points. 
+ 
+In order to decrease radio or other signal interference, RF antennas should be placed away from audio 
+interfaces and audio traces. Power traces cannot be parallel with and also should be far away from the 
+audio traces. 
+ 
+The differential audio traces must be routed according to the differential signal layout rule. 
+ 
+4.5.2. Microphone Interface Circuit 
+The microphone interface reference circuit is shown below. 
+Channel 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+AIN 
+MICBIAS 
+140 
+PO 
+Microphone bias voltage 
+MIC_P 
+125 
+AI 
+Microphone input channel (+) 
+MIC_N 
+126 
+Microphone input channel (-) 
+AOUT 
+SPK_P 
+124 
+AO 
+Analog audio differential output channel (+) 
+SPK_N 
+123 
+Analog audio differential output channel (-) 
+
+===== PAGE 51 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       50 / 106 
+ 
+ 
+ 
+MIC_P
+Differential 
+layout
+Module
+10 pF
+33 pF
+33 pF
+33 pF
+GND
+GND
+Electret 
+Microphone
+GND
+GND
+10 pF
+10 pF
+GND
+GND
+ESD
+ESD
+Close to Module
+MIC_N
+MICBIAS
+GND
+Close to 
+Microphone
+2.2 µF
+100 nF
+1.5K
+1.5K
+510R
+510R
+100 nF
+ 
+Figure 24: Microphone Interface Reference Circuit  
+ 
+ 
+ 
+4.5.3. Earpiece Interface Circuit 
+SPK_P
+SPK_N
+Differential layout
+Module
+10 pF
+Close to earpiece
+GND
+ESD 
+33 pF
+33 pF
+GND
+10 pF
+ESD 
+10 pF
+33 pF
+ 
+Figure 25: Earpiece Interface Reference Circuit 
+ 
+MIC channel is sensitive to ESD, so it is not recommended to remove the ESD components used for 
+protecting the MIC. 
+NOTE 
+
+===== PAGE 52 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       51 / 106 
+ 
+ 
+ 
+4.6. UART Interface 
+ 
+The module provides three UART interfaces: the main UART, the debug UART and the UART2. The 
+following shows their features. 
+ 
+⚫ 
+The main UART supports 4800 bps, 9600 bps, 19200 bps, 38400 bps, 57600 bps, 115200 bps, 
+230400 bps, 460800 bps, 921600 bps baud rates, and the baud rate is 115200 bps by default. It is 
+used for data transmission and AT command communication. Also, it supports RTS and CTS 
+hardware flow control. 
+⚫ 
+The debug UART supports 115200 bps baud rate, and is used for the output of partial logs.  
+⚫ 
+The UART2 supports 115200 bps baud rate by default, and supports RTS and CTS hardware flow 
+control. The UART2 function can be realized by multiplexing GPIO7, MAIN_DTR, PCM_SYNC, 
+PCM_CLK, PCM_DOUT, and PCM_DIN. For details, see document [4]. 
+ 
+Table 17: Pin Definition of Main UART 
+ 
+Table 18: Pin Definition of Debug UART 
+ 
+The module provides a 1.8 V UART interface. A level translator should be used if the application is 
+equipped with a 3.3 V UART interface. A level translator TXS0104EPWR provided by Texas Instruments 
+is recommended. The following figure shows a reference design. 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+MAIN_CTS 
+64 
+DO 
+Clear to send signal from 
+the module  
+Connect to MCU’s CTS. 
+1.8 V power domain.  
+If unused, keep it open. 
+MAIN_RTS 
+65 
+DI 
+Request to send signal to  
+the module  
+Connect to MCU’s RTS. 
+1.8 V power domain. 
+If unused, keep it open. 
+MAIN_DTR 
+66 
+DI 
+Main UART data terminal ready 
+If unused, keep it open. 
+MAIN_RXD 
+68 
+DI 
+Main UART receive 
+MAIN_TXD 
+67 
+DO 
+Main UART transmit 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+DBG_RXD 
+11 
+DI 
+Debug UART transmit 
+1.8 V power domain. 
+If unused, keep them open. 
+DBG_TXD 
+12 
+DO 
+Debug UART receive 
+
+===== PAGE 53 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       52 / 106 
+ 
+ 
+ 
+VCCA
+VCCB
+A1
+A2
+A3
+A4
+NC
+B1
+B2
+B3
+B4
+NC
+VDD_EXT
+MAIN_RXD
+MAIN_RTS
+MAIN_TXD
+MAIN_CTS
+0.1 μF
+RXD_MCU
+RTS_MCU
+TXD_MCU
+CTS_MCU
+VDD_MCU
+Translator
+GND
+OE
+VDD_EXT
+C1
+C2
+0.1uF
+10k
+120k
+R1
+R2
+ 
+Figure 26: Reference Circuit with Translator Chip 
+ 
+Please visit http://www.ti.com for more information. 
+ 
+Another example with transistor circuit is shown as below. For the design of circuits shown in dotted 
+lines, please refer to that shown in solid lines, but pay attention to the direction of connection.   
+MCU/ARM
+TXD
+RXD
+VDD_EXT
+10K
+VCC_MCU
+4.7K
+10K
+VDD_EXT
+MAIN_TXD
+MAIN_RXD
+MAIN_RTS
+MAIN_CTS
+RTS
+CTS
+GND
+Module
+VDD_EXT
+4.7K
+GND
+1 nF
+1 nF
+ 
+Figure 27: Reference Circuit with Transistor Circuit  
+ 
+ 
+ 
+ 
+1. 
+Transistor circuit solution is not suitable for applications with baud rates exceeding 460 kbps. 
+2. 
+Please note that the module’s CTS is connected to the MCU’s CTS, and the module’s RTS is 
+connected to the MCU’s RTS. 
+NOTE 
+
+===== PAGE 54 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       53 / 106 
+ 
+ 
+ 
+4.7. SD card Interface 
+ 
+The module provides one SD card interface supporting SD 3.0 protocol.  
+ 
+Table 19: Pin Definition of SD Card Interface 
+ 
+The following figure illustrates a reference design of SD card interface with the module. 
+SD Card Connector
+DAT2
+CD/DAT3
+CMD
+VDD
+CLK
+VSS
+DAT0
+DAT1
+DETECTIVE
+Module
+SD_SDIO_DATA3
+SD_SDIO_DATA2
+SD_SDIO_DATA1
+SD_SDIO_VDD
+SD_SDIO_DATA0
+SD_SDIO_CLK
+SD_SDIO_CMD
+SD_DET
+R1 0R
+R7
+NM
+R8
+NM
+R9
+NM
+R10
+NM
+R11
+NM
+VDD_3V
+R2 0R
+R3 0R
+R4 0R
+R6 22R
+R5 0R
+C2
+NM
+D2 C3
+NM
+D3 C4
+NM
+D4 C5
+NM
+D5
+C6
+NM
+D6
+C1
+NM
+D1
+C7
+10 pF
+D7
+C8
+33 pF
+C9
+100 nF
+C10
+100 uF
++
+ 
+Figure 28: Reference Circuit of SD Card Interface 
+ 
+ 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+SD_SDIO_CLK 
+32 
+DO 
+SD card SDIO clock 
+1.8/2.85 V power 
+domain.  
+If unused, keep them 
+open. 
+SD_SDIO_CMD 
+33 
+DIO 
+SD card SDIO 
+command 
+SD_SDIO_DATA0 
+31 
+DIO 
+SD card SDIO bit 0 
+SD_SDIO_DATA1 
+30 
+DIO 
+SD card SDIO bit 1 
+SD_SDIO_DATA2 
+29 
+DIO 
+SD card SDIO bit 2 
+SD_SDIO_DATA3 
+28 
+DIO 
+SD card SDIO bit 3 
+SD_SDIO_VDD 
+34 
+PO 
+SD card SDIO power 
+supply 
+SD_DET* 
+23 
+DI 
+SD card hot-plug 
+detect 
+1.8 V power domain.  
+If unused, keep it 
+open. 
+
+===== PAGE 55 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       54 / 106 
+ 
+ 
+ 
+In SD card interface design, in order to ensure good communication performance with SD card, the 
+following design principles should be complied with:  
+ 
+⚫ 
+The voltage range of SD card power supply VDD is 2.7–3.6 V and a sufficient current of at least 0.8 A 
+should be provided. The maximum output current of SD_SDIO_VDD is 50 mA which can only be 
+used for SDIO pull-up resistors, an externally power supply is needed for SD card. 
+⚫ 
+To avoid the jitter of bus, resistors R7–R11 are needed to pull up the SDIO to SD_SDIO_VDD. 
+Resistance of these resistors is among 10–100 kΩ and not mounted by default. SD_SDIO_VDD must 
+be used as the pull-up power.  
+⚫ 
+In order to improve the signal quality, it is recommended to add 0 Ω resistors R1 to R5 in series 
+between the module and the SD card. Connect a 15–24 Ω resistor in series on the SD_SDIO_CLK, 
+and the wiring distance from the module SD_SDIO_CLK pin to the resistor is less than 5 mm. The 
+bypass capacitors C1 to C6 are reserved and not mounted by default. All resistors and bypass 
+capacitors should be placed close to the module. 
+⚫ 
+In order to offer good ESD protection, it is recommended to add a ESD array on SD card pins near 
+the SD card connector with junction capacitance less than 8 pF. 
+⚫ 
+It is important to route the SDIO signal traces with ground surrounded. The impedance of SDIO data 
+trace is 50 Ω (±10 %). 
+⚫ 
+Keep SDIO signals far away from other sensitive circuits/signals such as RF circuits, analog signals, 
+etc., as well as noisy signals such as clock signals, DC-DC signals. 
+⚫ 
+It is recommended to keep the traces of SD_SDIO_CLK, SD_SDIO_DATA [0:3] and SD_SDIO_CMD 
+with equal length (the difference among them is less than 1 mm) and the total routing length needs to 
+be less than 50 mm. 
+⚫ 
+Make sure the adjacent trace spacing is twice of the trace width and the load capacitance of SDIO 
+bus should be less than 15 pF. 
+ 
+4.8. WLAN_SDIO Interface 
+ 
+The module provides one low-power SDIO 3.0 interface and one control interface for WLAN design. 
+ 
+Table 20：Pin Definition of WLAN Interface 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+WLAN_SLP_CLK 
+118 
+DO 
+WLAN sleep clock 
+1.8 V power 
+domain.  
+If unused, keep 
+them open. 
+WLAN_PWR_EN 
+127 
+DO 
+WLAN power supply 
+enable control 
+WLAN_SDIO_DATA3 
+129 
+DIO 
+WLAN SDIO data bit 3 
+WLAN_SDIO_DATA2 
+130 
+DIO 
+WLAN SDIO data bit 2 
+
+===== PAGE 56 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       55 / 106 
+ 
+ 
+ 
+ 
+In WLAN SDIO interface design, in order to ensure good performance, the following design principles 
+should be complied with: 
+ 
+⚫ 
+To avoid the jitter of bus, it is necessary to reserve a Pull-up resistor on the SDIO signal line. 
+Resistance of these resistors is among 10–100 kΩ and not mounted by default. It is recommended to 
+use module VDD_EXT as the pull-up power.  
+⚫ 
+It is important to route the SDIO signal traces with total grounding. The impedance of SDIO signal 
+trace is 50 Ω ±10 %. 
+⚫ 
+Keep SDIO signals far away from other sensitive circuits/signals such as RF circuits, analog signals, 
+etc., as well as noisy signals such as clock signals, DC-DC signals. 
+⚫ 
+It is recommended to keep the trace length difference between WLAN_SDIO_CLK, 
+WLAN_SDIO_DATA and WLAN_SDIO_CMD less than 1 mm and the total routing length less than   
+50 mm. 
+⚫ 
+Keep termination resistors within 15–24 Ω on WLAN_SDIO_CLK lines near the module and keep the 
+route distance from the WLAN_SDIO_CLK to termination resistors less than 5 mm. 
+⚫ 
+The spacing between SDIO signals and other signals needs to be greater than twice the trace width, 
+and the load capacitance of SDIO bus is less than 15 pF. 
+ 
+4.9. ADC Interface 
+ 
+The module provides two Analog-to-Digital Converter (ADC) interfaces. In order to improve the accuracy 
+of ADC, the trace of ADC interfaces should be surrounded by ground. 
+ 
+Table 21: Pin Definition of ADC Interface 
+WLAN_SDIO_DATA1 
+131 
+DIO 
+WLAN SDIO data bit 1 
+WLAN_SDIO_DATA0 
+132 
+DIO 
+WLAN SDIO data bit 0 
+WLAN_SDIO_CLK 
+133 
+DO 
+WLAN SDIO clock 
+WLAN_SDIO_CMD 
+134 
+DIO 
+WLAN SDIO command 
+WLAN_WAKE 
+135 
+DI 
+Wake up the host by an 
+external Wi-Fi module 
+WLAN_EN 
+136 
+DO 
+WLAN function enable 
+control 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+ADC0 
+45 
+AI 
+General-purpose ADC 
+interface 
+If unused, keep them open. 
+ADC1 
+44 
+AI 
+
+===== PAGE 57 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       56 / 106 
+ 
+ 
+ 
+The voltage value of ADC can be read by API, see document [5]. 
+ 
+The resolution of the ADC is up to 12 bits. The following table describes the characteristic of the ADC 
+interface. 
+ 
+Table 22: Characteristics of ADC Interface 
+ 
+ 
+ 
+4.10. SPI   
+ 
+The module provides three SPI that support master and slave* mode and the maximum clock frequency 
+is 52 MHz. One of them is open by default, and the other two need to be multiplexed from other functional 
+pins. For details, see document [4]. 
+ 
+Table 23: Pin Definition of SPI  
+Name 
+Min. 
+Typ. 
+Max. 
+Unit 
+ADC0 Voltage Range 
+0 
+- 
+VBAT_BB 
+V 
+ADC1 Voltage Range 
+0 
+- 
+VBAT_BB 
+V 
+ADC Resolution 
+- 
+12 
+- 
+bits 
+1. The input voltage of ADC should not exceed its corresponding voltage range. 
+2. It is prohibited to supply any voltage to ADC pin when VBAT is removed. 
+3. If the ADC pin uses a voltage divider circuit input, the voltage divider resistance should not exceed 
+100 kΩ. 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+SPI_CLK 
+40 
+DIO 
+SPI clock 
+1.8 V power domain.  
+When the module is 
+used as master 
+device, these pins 
+are in the output 
+state; when the 
+module is used as 
+slave*device, they 
+SPI_CS 
+37 
+DIO 
+SPI chip select 
+NOTE 
+
+===== PAGE 58 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       57 / 106 
+ 
+ 
+ 
+ 
+The following figures illustrate the circuit reference design. 
+ 
+SPI_TXD
+SPI_RXD
+SPI_CLK
+Module
+SPI_CLK
+SPI_MISO
+SPI_MOSI
+ Peripherals
+SPI_CS
+SPI_CS
+ 
+Figure 29: SPI Circuit Reference Design (Module as Master Device) 
+ 
+SPI_RXD
+SPI_TXD
+SPI_CLK
+Module
+SPI_CLK
+SPI_MISO
+SPI_MOSI
+ Peripherals
+SPI_CS
+SPI_CS
+ 
+Figure 30: SPI Circuit Reference Design (Module as Slave* Device) 
+ 
+4.11. RGMII/RMII Interface 
+ 
+The module provides one RGMII/RMII interface that can be used to connect 100/1000 Mbps Ethernet 
+PHYs. 
+ 
+ 
+are in the input state. 
+If unused, keep them 
+open. 
+SPI_DIN 
+39 
+DI 
+SPI data input 
+1.8 V power domain. 
+If unused, keep them 
+open. 
+SPI_DOUT 
+38 
+DO 
+SPI data output 
+
+===== PAGE 59 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       58 / 106 
+ 
+ 
+ 
+Table 24: Pin Definition of RGMII/RMII Interface 
+ 
+The following figure shows a reference circuit of RMII MAC (3.3 V power domain) to PHY interface (3.3 V 
+power domain). 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+RGMII/RMII_RX_1 
+73 
+DI 
+RGMII/RMII receive data bit 1 
+ 
+1.8 V power 
+domain for 
+RGMII.  
+1.8/3.3 V power 
+domain for RMII. 
+If unused, keep 
+them open. 
+RGMII/RMII_CTL_RX 
+74 
+DI 
+RGMII/RMII receive control 
+RGMII/RMII_CLK 
+75 
+DI 
+RGMII/RMII clock 
+RGMII/RMII_RX_0 
+76 
+DI 
+RGMII/RMII receive data bit 0 
+RGMII/RMII_TX_0 
+77 
+DO 
+RGMII/RMII transmit data bit 0 
+RGMII/RMII_TX_1 
+78 
+DO 
+RGMII/RMII transmit data bit 1 
+RGMII_RX_2 
+79 
+DI 
+RGMII receive data bit 2 
+RGMII_TX_2 
+80 
+DO 
+RGMII transmit data bit 2 
+RGMII/RMII_CTL_TX 
+81 
+DO 
+RGMII/RMII transmit control 
+RGMII_RX_3 
+82 
+DI 
+RGMII receive data bit 3 
+RGMII_CK_TX 
+83 
+DO 
+RGMII transmit clock 
+RGMII_TX_3 
+84 
+DO 
+RGMII transmit data bit 3 
+RGMII/RMII_INT 
+120 
+DI 
+RGMII/RMII interrupt 
+RGMII/RMII_MD_IO 
+121 
+DIO 
+RGMII/RMII management 
+data input/output 
+RGMII/RMII_MD_CLK 
+122 
+DO 
+RGMII/RMII management 
+data clock 
+RGMII/RMII_RST_N 
+119 
+DO 
+RGMII/RMII reset external 
+PHY 
+1.8 V power 
+domain. 
+It cannot be 
+pulled up high 
+level before the 
+module starts up 
+successfully. 
+If unused, keep it 
+open. 
+
+===== PAGE 60 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       59 / 106 
+ 
+ 
+ 
+Module
+M
+A
+C
+PHY
+ 3.3 V
+RGMII/RMII_TX_[0:1]
+RGMII/RMII_RX_[0:1]
+RGMII/RMII_MD_IO
+RGMII/RMII_MD_CLK
+RGMII/RMII_CTL_TX
+RGMII/RMII_CTL_RX
+RGMII/RMII_INT
+RGMII/RMII_RST_N
+RGMII/RMII_CLK
+ 
+Figure 31: Reference Circuit of RMII to PHY Interface  
+ 
+The following figure shows a reference circuit of RGMII MAC (1.8 V power domain) to PHY (1.8 V power 
+domain) interface. 
+ 
+Module
+M
+A
+C
+PHY           
+ 1.8 V
+RGMII/RMII_TX_[0:1]
+RGMII/RMII_RX_[0:1]
+RGMII/RMII_MD_IO
+RGMII/RMII_MD_CLK
+RGMII/RMII_CTL_TX
+RGMII/RMII_CTL_RX
+RGMII/RMII_INT
+RGMII/RMII_RESET_N
+RGMII/RMII_CLK
+RGMII_TX_[2:3]
+RGMII_RX_[2:3]
+RGMII_CK_TX
+ 
+Figure 32: Reference Circuit of RGMII to PHY Interface  
+ 
+ 
+ 
+ 
+
+===== PAGE 61 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       60 / 106 
+ 
+ 
+ 
+To enhance the reliability and availability of application designs, please follow the criteria below for 
+RGMII/RMII circuit design: 
+ 
+⚫ 
+Keep data signal and control signal traces of RMII and RGMII interfaces far away from sensitive 
+circuits and signals such as RF signals, analog signals, and noise signals generated by clock, 
+DC-DC. 
+⚫ 
+The single-ended impedance of RGMII data trace is 50 Ω ±10 %. 
+⚫ 
+The length difference of RGMII/RMII_TX_[0:1], RGMII_TX_[2:3], RGMII/RMII_CTL_TX, and 
+RGMII_CK_TX should be less than 0.25 mm, and the space between the signal traces should be 
+larger than twice of trace width. Similarly, the length difference of RGMII/RMII_RX_[0:1], 
+RGMII_RX_[2:3], RGMII/RMII_CTL_RX, and RGMII/RMII_CLK should be less than 0.25 mm, and 
+the space between the signal traces should be larger than twice of trace width. 
+⚫ 
+Spacing between Tx bus and Rx bus should be larger than 2.5 times of the trace width. 
+⚫ 
+Spacing between Tx bus or Rx bus should be larger than 3 times of the trace width. 
+ 
+ 
+ 
+4.12. Indication Signal 
+ 
+The pin definition of indication signal is as follows: 
+ 
+Table 25: Pin Definition of Indication Signal 
+ 
+1. EC200A-EL does not support the RGMII function. Pins 79–80 and 82–84 are RESERVED. 
+2. Pin 119 of the module is connected to PHYs chip as a multiplexing function. Note that this pin 
+cannot be pulled up before the module starts up successfully. Other GPIO can also be used as 
+RGMII/RMII_RST_N to reset PHYs chip. 
+3. Pay attention to the level match shown in dotted line. 
+4. If the RMII interface is used only, the length difference between RGMII/RMII_TX_[0:1] and 
+RGMII/RMII_CTL_TX 
+should 
+be 
+less 
+than 
+2 
+mm; 
+the 
+length 
+difference 
+among 
+RGMII/RMII_RX_[0:1], RGMII/RMII_CTL_RX and RGMII/RMII_CLK should be less than 2 mm. 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+NET_STATUS 
+6 
+DO 
+Indicate the module's 
+network activity status 
+1.8 V power domain. 
+If unused, keep it open. 
+STATUS 
+61 
+OD 
+Running status indication 
+An external pull-up is 
+required. 
+If unused, keep it open. 
+NOTE 
+
+===== PAGE 62 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       61 / 106 
+ 
+ 
+ 
+4.12.1. Network Status Indication 
+The network indication pin NET_STATUS can be used to drive network status indication LEDs. The 
+following table describes the pin definition and logic level changes in different network status. 
+ 
+Table 26: Working Status of Network Connection Status/Activity Indication 
+ 
+4.7 K
+47 K
+VBAT
+2.2 K
+Module
+NET_STATUS
+ 
+Figure 33: Reference Circuit of the Network Status Indication 
+ 
+4.12.2. STATUS 
+The STATUS pin is an open drain output for module’s operation status indication. It can be connected to a 
+GPIO of DTE with a pulled-up resistor, or as an LED indication circuit as below. When the module is 
+turned on normally, the STATUS outputs a low level; otherwise, the STATUS will present high-impedance 
+state.  
+ 
+The following figure shows different circuit designs of STATUS, and you can choose either of them 
+according to the application demands. 
+Pin Name 
+Status 
+Description 
+NET_STATUS 
+Flicker slowly (200 ms High/1800 ms Low) 
+Network searching 
+Flicker slowly (1800 ms High/200 ms Low) 
+Idle 
+Flicker quickly (125 ms High/125 ms Low) 
+Data transfer is ongoing 
+Always High 
+Voice calling 
+
+===== PAGE 63 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       62 / 106 
+ 
+ 
+ 
+ 
+VDD_MCU
+33 K
+Module
+STATUS
+MCU_GPIO
+Module
+STATUS
+VBAT
+2.2 K
+ 
+Figure 34: Reference Circuits of STATUS 
+ 
+ 
+The status pin cannot be used as an indication of module shutdown status when VBAT is not available. 
+NOTE 
+
+===== PAGE 64 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       63 / 106 
+ 
+ 
+ 
+5 RF Specifications 
+ 
+Appropriate antenna type and design should be used with matched antenna parameters according to 
+specific application. It is required to perform a comprehensive functional test for the RF design before 
+mass production of terminal products. The entire content of this chapter is provided for illustration only. 
+Analysis, evaluation and determination are still necessary when designing target products. 
+ 
+5.1. Cellular Network 
+5.1.1. Antenna Interface & Frequency Bands 
+The pin definition of cellular network interfaces is shown below. 
+ 
+Table 27: Pin Definition of Cellular Network Interfaces 
+ 
+Table 28: Operating Frequency of EC200A-CN 
+Pin Name 
+Pin No. 
+I/O 
+Description 
+Comment 
+ANT_DRX 
+35 
+AI 
+Diversity antenna interface 
+50 Ω characteristic 
+impedance. 
+ANT_MAIN 
+49 
+AIO 
+Main antenna interface 
+Operating Frequency 
+Transmit (MHz) 
+Receive (MHz) 
+EGSM900 
+880–915 
+925–960 
+DCS1800 
+1710–1785 
+1805–1880 
+WCDMA B1 
+1920–1980 
+2110–2170 
+WCDMA B5 
+824–849 
+869–894 
+WCDMA B8 
+880–915 
+925–960 
+LTE-FDD B1 
+1920–1980 
+2110–2170 
+
+===== PAGE 65 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       64 / 106 
+ 
+ 
+ 
+ 
+Table 29: Operating Frequency of EC200A-AU 
+LTE-FDD B3 
+1710–1785 
+1805–1880 
+LTE-FDD B5 
+824–849 
+869–894 
+LTE-FDD B8 
+880–915 
+925–960 
+LTE-TDD B34 
+2010–2025 
+2010–2025 
+LTE-TDD B38 
+2570–2620 
+2570–2620 
+LTE-TDD B39 
+1880–1920 
+1880–1920 
+LTE-TDD B40 
+2300–2400 
+2300–2400 
+LTE-TDD B41 
+2535–2675 
+2535–2675 
+Operating Frequency 
+Transmit (MHz) 
+Receive (MHz) 
+GSM850 
+824–849 
+869–894 
+EGSM900 
+880–915 
+925–960 
+DCS1800 
+1710–1785 
+1805–1880 
+PCS1900 
+1850–1910 
+1930–1990 
+WCDMA B1 
+1920–1980 
+2110–2170 
+WCDMA B2 
+1850–1910 
+1930–1990 
+WCDMA B4 
+1710–1755 
+2110–2155 
+WCDMA B5 
+824–849 
+869–894 
+WCDMA B8 
+880–915 
+925–960 
+LTE-FDD B1 
+1920–1980 
+2110–2170 
+LTE FDD B2 
+1850–1910 
+1930–1990 
+LTE-FDD B3 
+1710–1785 
+1805–1880 
+LTE FDD B4 
+1710–1755 
+2110–2155 
+LTE-FDD B5 
+824–849 
+869–894 
+
+===== PAGE 66 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       65 / 106 
+ 
+ 
+ 
+ 
+Table 30: Operating Frequency of EC200A-EU  
+ 
+LTE-FDD B7 
+2500–2570 
+2620–2690 
+LTE-FDD B8 
+880–915 
+925–960 
+LTE-FDD B28 
+703–748 
+758–803 
+LTE-FDD B66 
+1710–1780 
+2110–2180 
+LTE-TDD B40 
+2300–2400 
+2300–2400 
+Operating Frequency 
+Transmit (MHz) 
+Receive (MHz) 
+EGSM900 
+880–915 
+925–960 
+DCS1800 
+1710–1785 
+1805–1880 
+WCDMA B1 
+1920–1980 
+2110–2170 
+WCDMA B5 
+824–849 
+869–894 
+WCDMA B8 
+880–915 
+925–960 
+LTE-FDD B1 
+1920–1980 
+2110–2170 
+LTE-FDD B3 
+1710–1785 
+1805–1880 
+LTE-FDD B5 
+824–849 
+869–894 
+LTE-FDD B7 
+2500–2570 
+2620–2690 
+LTE-FDD B8 
+880–915 
+925–960 
+LTE-FDD B20 
+832–862 
+791–821 
+LTE-FDD B28 
+703–748 
+758–803 
+LTE-TDD B38 
+2570–2620 
+2570–2620 
+LTE-TDD B40 
+2300–2400 
+2300–2400 
+LTE-TDD B41 
+2535–2675 
+2535–2675 
+
+===== PAGE 67 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       66 / 106 
+ 
+ 
+ 
+Table 31: Operating Frequency of EC200A-EL 
+ 
+⚫  
+ 
+5.1.2. Tx Power 
+The following table shows the Tx-power of the module. 
+ 
+Table 32: Tx Power 
+Operating Frequency 
+Transmit (MHz) 
+Receive (MHz) 
+WCDMA B1 
+1920–1980 
+2110–2170 
+WCDMA B5 
+824–849 
+869–894 
+WCDMA B8 
+880–915 
+925–960 
+LTE-FDD B1 
+1920–1980 
+2110–2170 
+LTE-FDD B3 
+1710–1785 
+1805–1880 
+LTE-FDD B5 
+824–849 
+869–894 
+LTE-FDD B7 
+2500–2570 
+2620–2690 
+LTE-FDD B8 
+880–915 
+925–960 
+LTE-FDD B20 
+832–862 
+791–821 
+LTE-FDD B28 
+703–748 
+758–803 
+LTE-TDD B38 
+2570–2620 
+2570–2620 
+LTE-TDD B40 
+2300–2400 
+2300–2400 
+LTE-TDD B41 
+2535–2675 
+2535–2675 
+B41 only supports 140 MHz operating frequency (2535–2675 MHz). 
+Frequency Bands 
+Max. Tx Power 
+Comments 
+GSM850  
+33 dBm ±2 dB 
+5 dBm ±5 dB 
+EGSM900  
+33 dBm ±2 dB 
+5 dBm ±5 dB 
+NOTE 
+
+===== PAGE 68 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       67 / 106 
+ 
+ 
+ 
+ 
+. 
+ 
+5.1.3. Rx Sensitivity 
+The following table shows conducted Rx sensitivity of the module. 
+ 
+Table 33: Conducted RF Receiving Sensitivity of EC200A-CN (Unit: dBm) 
+DCS1800  
+30 dBm ±2 dB 
+0 dBm ±5 dB 
+PCS1900  
+30 dBm ±2 dB 
+0 dBm ±5 dB 
+GSM850 (8-PSK) 
+27 dBm ±3 dB 
+5 dBm ±5 dB 
+GSM900 (8-PSK) 
+27 dBm ±3 dB 
+5 dBm ±5 dB 
+DCS1800 (8-PSK) 
+26 dBm ±3 dB 
+0 dBm ±5 dB 
+PCS1900 (8-PSK) 
+26 dBm ±3 dB 
+0 dBm ±5 dB 
+WCDMA  
+23 dBm ±2 dB 
+< -49 dBm 
+LTE-FDD  
+23 dBm ±2 dB 
+< -39 dBm 
+LTE-TDD  
+23 dBm ±2 dB 
+< -39 dBm 
+For GPRS transmission on 4 uplink timeslots, the maximum output power reduction is 4.0 dB. The 
+design conforms to 3GPP TS 51.010-1 subclause 13.16. 
+Frequency 
+Receiving Sensitivity (Typ.) 
+3GPP 
+Requirement 
+(SIMO) 
+Primary 
+Diversity 
+SIMO 
+EGSM900 
+-109 
+- 
+- 
+-102.4 
+DCS1800 
+-107 
+- 
+- 
+-102.4 
+WCDMA B1 
+-109.4 
+- 
+- 
+-106.7 
+WCDMA B5 
+-109.7 
+- 
+- 
+-104.7 
+WCDMA B8 
+-110.2 
+- 
+- 
+-103.7  
+LTE-FDD B1 
+-97.2 
+-97.5 
+-100.4 
+-96.3 
+LTE-FDD B3 
+-96.5 
+-97.2 
+-99.9 
+-93.3 
+NOTE 
+
+===== PAGE 69 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       68 / 106 
+ 
+ 
+ 
+ 
+Table 34: Conducted RF Receiving Sensitivity of EC200A-AU (Unit: dBm) 
+LTE-FDD B5 
+-98.1 
+-99 
+-101.6 
+-94.3 
+LTE-FDD B8 
+-98 
+-98.8 
+-101.4 
+-93.3 
+LTE-TDD B34 
+-96.3 
+-97.6 
+-100 
+-96.3 
+LTE-TDD B38 
+-97 
+-96.8 
+-99.9 
+-96.3 
+LTE-TDD B39 
+-97.2 
+-97 
+-100.1 
+-96.3 
+LTE-TDD B40 
+-97.4 
+-98 
+-100.7 
+-96.3 
+LTE-TDD B41 
+-96 
+-96 
+-99 
+-94.3 
+Frequency 
+Receiving Sensitivity (Typ.) 
+3GPP 
+Requirement 
+(SIMO) 
+Primary 
+Diversity 
+SIMO 
+GSM850 
+-109.3 
+- 
+- 
+-102.4 
+EGSM900 
+-108.2 
+- 
+- 
+-102.4 
+DCS1800 
+-106.8 
+- 
+- 
+-102.4 
+PCS1900 
+-107 
+- 
+- 
+-102.4 
+WCDMA B1 
+-109.2 
+- 
+- 
+-106.7 
+WCDMA B2 
+-107.7 
+- 
+- 
+-104.7 
+WCDMA B4 
+-109.2 
+- 
+- 
+-106.7 
+WCDMA B5 
+-110.7 
+- 
+- 
+-104.7 
+WCDMA B8 
+-110.2 
+- 
+- 
+-103.7 
+LTE-FDD B1 
+-97.2 
+-97.5 
+-100.4 
+-96.3 
+LTE FDD B2 
+-96.1 
+-97.8 
+-100 
+-94.3 
+LTE-FDD B3 
+-96.5 
+-97.2 
+-99.9 
+-93.3 
+LTE FDD B4 
+-96.6 
+-97.4 
+-100 
+-96.3 
+LTE-FDD B5 
+-98.2 
+-99 
+-101.6 
+-94.3 
+LTE-FDD B7 
+-95.6 
+-96.7 
+-99.2 
+-94.3 
+
+===== PAGE 70 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       69 / 106 
+ 
+ 
+ 
+ 
+Table 35: Conducted RF Receiving Sensitivity of EC200A-EU (Unit: dBm) 
+ 
+ 
+LTE-FDD B8 
+-98 
+-98.8 
+-101.4 
+-93.3 
+LTE-FDD B28 
+-98.5 
+-99.3 
+-101.9 
+-94.8 
+LTE-FDD B66 
+-95.5 
+-97.7 
+-99.7 
+-95.8 
+LTE-TDD B40 
+-96.9 
+-98.5 
+-100.8 
+-96.3 
+Frequency 
+Receiving Sensitivity (Typ.) 
+3GPP 
+Requirement 
+(SIMO) 
+Primary 
+Diversity 
+SIMO 
+EGSM900 
+-108.7 
+- 
+- 
+-102.4 
+DCS1800 
+-107 
+- 
+- 
+-102.4 
+WCDMA B1 
+-109.7 
+- 
+- 
+-106.7 
+WCDMA B5 
+-111 
+- 
+- 
+-104.7 
+WCDMA B8 
+-110.5 
+- 
+- 
+-103.7 
+LTE-FDD B1 
+-97.2 
+-97.5 
+-100.4 
+-96.3 
+LTE-FDD B3 
+-96.5 
+-97.2 
+-99.9 
+-93.3 
+LTE-FDD B5 
+-98.2 
+-99 
+-101.6 
+-94.3 
+LTE-FDD B7 
+-95.6 
+-96.7 
+-99.2 
+-94.3 
+LTE-FDD B8 
+-98 
+-98.8 
+-101.4 
+-93.3 
+LTE-FDD B20 
+-97.4 
+-98.7 
+-101.1 
+-93.3 
+LTE-FDD B28 
+-98.5 
+-99.5 
+-102 
+-94.8 
+LTE-TDD B38 
+-96.7 
+-97 
+-99.9 
+-96.3 
+LTE-TDD B40 
+-97.4 
+-98.6 
+-101.1 
+-96.3 
+LTE-TDD B41 
+-96 
+-96 
+-99 
+-94.3 
+
+===== PAGE 71 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       70 / 106 
+ 
+ 
+ 
+Table 36: Conducted RF Receiving Sensitivity of EC200A-EL (Unit: dBm) 
+ 
+5.1.4. Reference Design 
+The module provides two RF antenna interfaces for antenna connection.  
+ 
+It is recommended to reserve a π-type matching circuit for better RF performance, and the π-type 
+matching components (C1, R1, C2 and C3, R2, C4) should be placed as close to the antenna as possible. 
+The capacitors are not mounted by default. 
+ 
+ 
+ 
+Frequency 
+Receiving Sensitivity (Typ.) 
+3GPP 
+Requirement 
+(SIMO) 
+Primary 
+Diversity 
+SIMO 
+WCDMA B1 
+-109.6 
+- 
+- 
+-106.7  
+WCDMA B5 
+-109.7 
+- 
+- 
+-104.7  
+WCDMA B8 
+-110 
+- 
+- 
+-103.7  
+LTE-FDD B1 
+-98.1 
+-98.9 
+-101.5 
+-96.3  
+LTE-FDD B3 
+-97.7 
+-96.8 
+-100.3 
+-93.3  
+LTE-FDD B5 
+-98.0 
+-98.1 
+-101.0 
+-94.3  
+LTE-FDD B7 
+-97.8 
+-96.8 
+-100.3 
+-94.3  
+LTE-FDD B8 
+-99.2 
+-99.3 
+-102.2 
+-93.3  
+LTE-FDD B20 
+-98.8 
+-97.6 
+-101.2 
+-93.3  
+LTE-FDD B28 
+-100.1 
+-98.8 
+-102.5 
+-94.8  
+LTE-TDD B38 
+-97.6 
+-97.5 
+-100.5 
+-96.3  
+LTE-TDD B40 
+-98.1 
+-97.8 
+-100.9 
+-96.3  
+LTE-TDD B41 
+-98.3 
+-96.7 
+-100.5 
+-94.3  
+
+===== PAGE 72 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       71 / 106 
+ 
+ 
+ 
+ANT_MAIN
+R1    0 R
+C1
+Module
+Main
+antenna
+NM
+C2
+NM
+R2    0 R
+C3
+Rx-diversity 
+antenna
+NM
+C4
+NM
+ANT_DRX
+ 
+Figure 35: Reference Circuit for RF Antenna Interfaces 
+ 
+5.2. Reference Design of RF Routing 
+ 
+For user’s PCB, the characteristic impedance of all RF traces should be controlled to 50 Ω. The 
+impedance of the RF traces is usually determined by the trace width (W), the materials’ dielectric constant, 
+the height from the reference ground to the signal layer (H), and the spacing between RF traces and 
+grounds (S). Microstrip or coplanar waveguide is typically used in RF layout to control characteristic 
+impedance. The following are reference designs of microstrip or coplanar waveguide with different PCB 
+structures. 
+ 
+Figure 36: Microstrip Design on a 2-layer PCB 
+ 
+
+===== PAGE 73 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       72 / 106 
+ 
+ 
+ 
+ 
+Figure 37: Coplanar Waveguide Design on a 2-layer PCB 
+ 
+ 
+Figure 38: Coplanar Waveguide Design on a 4-layer PCB (Layer 3 as Reference Ground) 
+ 
+ 
+Figure 39: Coplanar Waveguide Design on a 4-layer PCB (Layer 4 as Reference Ground) 
+ 
+ 
+
+===== PAGE 74 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       73 / 106 
+ 
+ 
+ 
+To ensure RF performance and reliability, follow the principles below in RF layout design: 
+ 
+⚫ 
+Use an impedance simulation tool to accurately control the characteristic impedance of RF traces to 
+50 Ω. 
+⚫ 
+The GND pins adjacent to RF pins should not be designed as thermal relief pads, and should be fully 
+connected to ground. 
+⚫ 
+The distance between the RF pins and the RF connector should be as short as possible and all the 
+right-angle traces should be changed to curved ones. The recommended trace angle is 135°. 
+⚫ 
+There should be clearance under the signal pin of the antenna connector or solder joint. 
+⚫ 
+The reference ground of RF traces should be complete. Meanwhile, adding some ground vias around 
+RF traces and the reference ground could help to improve RF performance. The distance between 
+the ground vias and RF traces should be not less than twice the width of RF signal traces (2 × W). 
+⚫ 
+Keep RF traces away from interference sources, and avoid intersection and paralleling between 
+traces on adjacent layers.  
+ 
+For more details about RF layout, see document [6]. 
+ 
+5.3. Requirements for Antenna Design 
+ 
+Table 37: Requirements for Antenna Design 
+ 
+5.4. RF Connector Recommendation 
+ 
+If RF connector is used for antenna connection, it is recommended to use U.FL-R-SMT receptacle 
+provided by Hirose. 
+ 
+Antenna Type 
+Requirements 
+GSM/UMTS/LTE 
+VSWR: ≤ 2  
+Efficiency: > 30 % 
+Gain: 1dBi 
+Max. input power: 50 W 
+Input impedance: 50 Ω  
+Cable insertion loss:  
+< 1 dB：LB (< 1 GHz) 
+< 1.5 dB：MB (1–2.3 GHz) 
+< 2 dB：HB (> 2.3 GHz) 
+
+===== PAGE 75 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       74 / 106 
+ 
+ 
+ 
+ 
+Figure 40: Dimensions o fthe Receptacle (Unit: mm) 
+ 
+U.FL-LP series mated plugs listed in the following figure can be used to match the U.FL-R-SMT. 
+ 
+Figure 41: Mechanicals of Mated Plugs 
+ 
+The following figure describes the space factor of mated connector. 
+ 
+
+===== PAGE 76 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       75 / 106 
+ 
+ 
+ 
+ 
+Figure 42: Space Factor of Mated Connector (Unit: mm) 
+ 
+For more details, please visit http://hirose.com. 
+
+===== PAGE 77 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       76 / 106 
+ 
+ 
+ 
+6 Electrical Characteristics & Reliability 
+ 
+6.1. Absolute Maximum Ratings 
+ 
+Absolute maximum ratings for power supply and voltage on digital and analog pins of the module are 
+listed in the following table. 
+ 
+Table 38: Absolute Maximum Ratings 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8 If you choose to use the module that supports the APT function, the VBAT_BB must provide sufficient current of at least 
+1.5 A. For details, please consult Quectel Technical Support. 
+Parameter 
+Min. 
+Max. 
+Unit 
+VBAT_RF/VBAT_BB 
+-0.3 
+5.5 
+V 
+USB_VBUS 
+-0.3 
+5.5 
+V 
+Peak Current of VBAT_BB 
+- 
+0.8 8 
+A 
+Peak Current of VBAT_RF 
+- 
+2.0 
+A 
+Voltage on Digital Pins 
+-0.3 
+2.3 
+V 
+Voltage at ADC0 
+0 
+VBAT_BB 
+V 
+Voltage at ADC1 
+0 
+VBAT_BB 
+V 
+
+===== PAGE 78 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       77 / 106 
+ 
+ 
+ 
+6.2. Power Supply Ratings 
+ 
+Table 39: Module’s Power Supply Ratings 
+ 
+6.3. Power Consumption 
+ 
+Table 40: Current Consumption of EC200A-CN 
+Parameter 
+Description 
+Conditions 
+Min. 
+Typ. 
+Max. 
+Unit 
+VBAT 
+VBAT_BB and 
+VBAT_RF 
+The actual input voltages 
+must be kept between the 
+minimum and maximum 
+values. 
+3.4 
+3.8 
+4.5 
+V 
+Voltage drop 
+during 
+transmitting burst 
+Maximum power control 
+level  
+0 
+0 
+400 
+mV 
+IVBAT_RF 
+Peak supply 
+current 
+Maximum power control 
+level  
+- 
+- 
+2.0 
+A 
+USB_VBUS USB connection 
+detection 
+ 
+3.0 
+5.0 
+5.25 
+V 
+Description 
+Conditions 
+Typ. 
+Unit 
+OFF state  
+Power down 
+12 
+μA 
+Sleep state 
+AT+CFUN=0 (USB disconnected) 
+0.84 
+mA 
+EGSM900 @ DRX = 2 (USB disconnected) 
+1.56 
+mA 
+EGSM900 @ DRX = 5 (USB disconnected) 
+1.18 
+mA 
+EGSM900 @ DRX = 9 (USB disconnected) 
+1.07 
+mA 
+DCS1800 @ DRX = 2 (USB disconnected) 
+1.56 
+mA 
+DCS1800 @ DRX = 5 (USB disconnected) 
+1.18 
+mA 
+DCS1800 @ DRX = 9 (USB disconnected) 
+1.08 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+2.44 
+mA 
+
+===== PAGE 79 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       78 / 106 
+ 
+ 
+ 
+WCDMA @ PF = 128 (USB disconnected) 
+1.69 
+mA 
+WCDMA @ PF = 256 (USB disconnected) 
+1.31 
+mA 
+WCDMA @ PF = 512 (USB disconnected) 
+1.12 
+mA 
+LTE-FDD @ PF = 32 (USB disconnected) 
+2.16 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+1.54 
+mA 
+LTE-FDD @ PF = 128 (USB disconnected) 
+1.26 
+mA 
+LTE-FDD @ PF = 256 (USB disconnected) 
+1.12 
+mA 
+LTE-TDD @ PF = 32 (USB disconnected) 
+2.20 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+1.56 
+mA 
+LTE-TDD @ PF = 128 (USB disconnected) 
+1.26 
+mA 
+LTE-TDD @ PF = 256 (USB disconnected) 
+1.12 
+mA 
+Idle state 
+EGSM900 @ DRX = 5 (USB disconnected) 
+13.90 
+mA 
+EGSM900 @ DRX = 5 (USB connected) 
+37.46 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+14.90 
+mA 
+WCDMA @ PF = 64 (USB connected) 
+37.96 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+14.41 
+mA 
+LTE-FDD @ PF = 64 (USB connected) 
+37.68 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+14.43 
+mA 
+LTE-TDD @ PF = 64 (USB connected) 
+37.81 
+mA 
+GPRS data transfer 
+EGSM900 4DL/1UL @ 32.33 dBm 
+226 
+mA 
+EGSM900 3DL/2UL @ 32.29 dBm 
+410 
+mA 
+EGSM900 2DL/3UL @ 30.79 dBm 
+505 
+mA 
+EGSM900 1DL/4UL @ 28.87 dBm 
+560 
+mA 
+DCS1800 4DL/1UL @ 29.61 dBm 
+156 
+mA 
+DCS1800 3DL/2UL @ 29.61 dBm 
+266 
+mA 
+
+===== PAGE 80 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       79 / 106 
+ 
+ 
+ 
+DCS1800 2DL/3UL @ 28.14 dBm 
+314 
+mA 
+DCS1800 1DL/4UL @ 26.28 dBm 
+338 
+mA 
+EDGE data  
+transfer 
+EGSM900 4DL/1UL @ 26.54 dBm 
+155 
+mA 
+EGSM900 3DL/2UL @ 26.34 dBm 
+263 
+mA 
+EGSM900 2DL/3UL @ 24.61 dBm 
+334 
+mA 
+EGSM900 1DL/4UL @ 22.31 dBm 
+398 
+mA 
+DCS1800 4DL/1UL @ 25.27 dBm 
+129 
+mA 
+DCS1800 3DL/2UL @ 25.16 dBm 
+213 
+mA 
+DCS1800 2DL/3UL @ 23.84 dBm 
+282 
+mA 
+DCS1800 1DL/4UL @ 21.95 dBm 
+347 
+mA 
+WCDMA data 
+transfer 
+WCDMA B1 HSDPA @ 22.24 dBm 
+567 
+mA 
+WCDMA B5 HSDPA @ 22.16 dBm 
+503 
+mA 
+WCDMA B8 HSDPA @ 22.20dBm 
+515 
+mA 
+WCDMA B1 HSUPA @ 21.85 dBm 
+548 
+mA 
+WCDMA B5 HSUPA @ 21.63 dBm 
+479 
+mA 
+WCDMA B8 HSUPA @ 21.62 dBm 
+496 
+mA 
+LTE data transfer 
+LTE-FDD B1 @ 22.87 dBm 
+609 
+mA 
+LTE-FDD B3 @ 22.27 dBm 
+552 
+mA 
+LTE-FDD B5 @ 22.44 dBm 
+528 
+mA 
+LTE-FDD B8 @ 22.54 dBm 
+564 
+mA 
+LTE-TDD B34 @ 22.66 dBm 
+262 
+mA 
+LTE-TDD B38 @ 22.90 dBm 
+346 
+mA 
+LTE-TDD B39 @ 22.93 dBm 
+266 
+mA 
+LTE-TDD B40 @ 22.74 dBm 
+321 
+mA 
+LTE-TDD B41 @ 23.16 dBm 
+335 
+mA 
+
+===== PAGE 81 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       80 / 106 
+ 
+ 
+ 
+ 
+Table 41: Current Consumption of EC200A-AU 
+GSM voice call 
+EGSM900 PCL = 5 @ 32.25 dBm 
+276 
+mA 
+EGSM900 PCL = 12 @ 18.96 dBm 
+117 
+mA 
+EGSM900 PCL = 19 @ 5.08 dBm 
+92 
+mA 
+DCS1800 PCL = 0 @ 29.63 dBm 
+218 
+mA 
+DCS1800 PCL = 7 @ 15.97 dBm 
+108 
+mA 
+DCS1800 PCL = 15 @ 0.45 dBm 
+90 
+mA 
+WCDMA voice call 
+WCDMA B1 @ 22.81 dBm 
+594 
+mA 
+WCDMA B5 @ 22.81 dBm 
+529 
+mA 
+WCDMA B8 @ 22.94 dBm 
+537 
+mA 
+Description 
+Conditions 
+Typ. 
+Unit 
+OFF state  
+Power down 
+12 
+μA 
+Sleep state 
+AT+CFUN=0 (USB disconnected) 
+0.73 
+mA 
+EGSM900 @ DRX = 2 (USB disconnected) 
+1.50 
+mA 
+EGSM900 @ DRX = 5 (USB disconnected) 
+1.16 
+mA 
+EGSM900 @ DRX = 5 (USB suspend) 
+1.33 
+mA 
+EGSM900 @ DRX = 9 (USB disconnected) 
+1.05 
+mA 
+DCS1800 @ DRX = 2 (USB disconnected) 
+1.46 
+mA 
+DCS1800 @ DRX = 5 (USB disconnected) 
+1.15 
+mA 
+DCS1800 @ DRX = 5 (USB suspend) 
+1.33 
+mA 
+DCS1800 @ DRX = 9 (USB disconnected) 
+1.04 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+1.98 
+mA 
+WCDMA @ PF = 64 (USB suspend) 
+1.28 
+mA 
+WCDMA @ PF = 128 (USB disconnected) 
+1.41 
+mA 
+
+===== PAGE 82 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       81 / 106 
+ 
+ 
+ 
+WCDMA @ PF = 256 (USB disconnected) 
+1.10 
+mA 
+WCDMA @ PF = 512 (USB disconnected) 
+1.00 
+mA 
+LTE-FDD @ PF = 32 (USB disconnected) 
+2.01 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+1.42 
+mA 
+LTE-FDD @ PF = 64 (USB suspend) 
+1.59 
+mA 
+LTE-FDD @ PF = 128 (USB disconnected) 
+1.14 
+mA 
+LTE-FDD @ PF = 256 (USB disconnected) 
+0.98 
+mA 
+LTE-TDD @ PF = 32 (USB disconnected) 
+2.00 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+1.43 
+mA 
+LTE-TDD @ PF = 64 (USB suspend) 
+1.59 
+mA 
+LTE-TDD @ PF = 128 (USB disconnected) 
+1.15 
+mA 
+LTE-TDD @ PF = 256 (USB disconnected) 
+0.99 
+mA 
+Idle state 
+EGSM900 @ DRX = 5 (USB disconnected) 
+10.59 
+mA 
+EGSM900 @ DRX = 5 (USB connected) 
+27.72 
+mA 
+DCS1800 @ DRX = 5 (USB disconnected) 
+10.89 
+mA 
+DCS1800 @ DRX = 5 (USB connected) 
+27.70 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+13.23 
+mA 
+WCDMA @ PF = 64 (USB connected) 
+31.31 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+15.07 
+mA 
+LTE-FDD @ PF = 64 (USB connected) 
+32.95 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+17.55 
+mA 
+LTE-TDD @ PF = 64 (USB connected) 
+32.94 
+mA 
+GPRS data transfer 
+GSM850 4DL/1UL @ 33.54 dBm 
+197 
+mA 
+GSM850 3DL/2UL @ 33.55 dBm 
+368 
+mA 
+GSM850 2DL/3UL @ 30.72 dBm 
+453 
+mA 
+
+===== PAGE 83 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       82 / 106 
+ 
+ 
+ 
+GSM850 1DL/4UL @ 28.84 dBm 
+503 
+mA 
+EGSM900 4DL/1UL @ 33.84 dBm 
+219 
+mA 
+EGSM900 3DL/2UL @ 33.80 dBm 
+410 
+mA 
+EGSM900 2DL/3UL @ 31.13 dBm 
+510 
+mA 
+EGSM900 1DL/4UL @ 29.17 dBm 
+560 
+mA 
+DCS1800 4DL/1UL @ 30.41 dBm 
+137 
+mA 
+DCS1800 3DL/2UL @ 30.41 dBm 
+247 
+mA 
+DCS1800 2DL/3UL @ 28.97 dBm 
+300 
+mA 
+DCS1800 1DL/4UL @ 26.45 dBm 
+312 
+mA 
+PCS1900 4DL/1UL @ 30.43 dBm 
+139 
+mA 
+PCS1900 3DL/2UL @ 30.44 dBm 
+251 
+mA 
+PCS1900 2DL/3UL @ 27.50 dBm 
+315 
+mA 
+PCS1900 1DL/4UL @ 26.16 dBm 
+351 
+mA 
+EDGE data transfer 
+GSM850 4DL/1UL @ 28.15 dBm 
+132 
+mA 
+GSM850 3DL/2UL @ 28.15 dBm 
+235 
+mA 
+GSM850 2DL/3UL @ 26.01 dBm 
+307 
+mA 
+GSM850 1DL/4UL @ 23.99 dBm 
+371 
+mA 
+EGSM900 4DL/1UL @ 27.84 dBm 
+137 
+mA 
+EGSM900 3DL/2UL @ 27.68 dBm 
+241 
+mA 
+EGSM900 2DL/3UL @ 25.86 dBm 
+314 
+mA 
+EGSM900 1DL/4UL @ 23.83 dBm 
+377 
+mA 
+DCS1800 4DL/1UL @ 26.63 dBm 
+118 
+mA 
+DCS1800 3DL/2UL @ 26.54 dBm 
+210 
+mA 
+DCS1800 2DL/3UL @ 24.74 dBm 
+287 
+mA 
+DCS1800 1DL/4UL @ 22.84 dBm 
+360 
+mA 
+
+===== PAGE 84 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       83 / 106 
+ 
+ 
+ 
+PCS1900 4DL/1UL @ 26.85 dBm 
+113 
+mA 
+PCS1900 3DL/2UL @ 26.75 dBm 
+199 
+mA 
+PCS1900 2DL/3UL @ 25.12 dBm 
+268 
+mA 
+PCS1900 1DL/4UL @ 23.23 dBm 
+339 
+mA 
+WCDMA data transfer 
+WCDMA B1 HSDPA @ 22.57 dBm 
+576 
+mA 
+WCDMA B2 HSDPA @ 22.04 dBm 
+564 
+mA 
+WCDMA B4 HSDPA @ 22.45 dBm 
+546 
+mA 
+WCDMA B5 HSDPA @ 22.18 dBm 
+492 
+mA 
+WCDMA B8 HSDPA @ 22.21 dBm 
+506 
+mA 
+WCDMA B1 HSUPA @ 22.10 dBm 
+557 
+mA 
+WCDMA B2 HSUPA @ 21.54 dBm 
+542 
+mA 
+WCDMA B4 HSUPA @ 21.82 dBm 
+517 
+mA 
+WCDMA B5 HSUPA @ 21.57 dBm 
+475 
+mA 
+WCDMA B8 HSUPA @ 21.70 dBm 
+489 
+mA 
+LTE data transfer 
+LTE-FDD B1 @ 23.18 dBm 
+605 
+mA 
+LTE-FDD B2 @ 23.42 dBm 
+662 
+mA 
+LTE-FDD B3 @ 23.29 dBm 
+554 
+mA 
+LTE-FDD B4 @ 23.21 dBm 
+561 
+mA 
+LTE-FDD B5 @ 22.45 dBm 
+502 
+mA 
+LTE-FDD B7 @ 23.30 dBm 
+766 
+mA 
+LTE-FDD B8 @ 22.65 dBm 
+554 
+mA 
+LTE-FDD B28A @ 22.40 dBm 
+483 
+mA 
+LTE-FDD B28B @ 22.50 dBm 
+446 
+mA 
+LTE-FDD B66 @ 22.77 dBm 
+577 
+mA 
+LTE-TDD B40 @ 22.48 dBm 
+302 
+mA 
+
+===== PAGE 85 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       84 / 106 
+ 
+ 
+ 
+ 
+Table 42: Current Consumption of EC200A-EU 
+GSM voice call 
+GSM850 PCL = 5 @ 32.87 dBm 
+217 
+mA 
+GSM850 PCL = 12 @ 19.62 dBm 
+78 
+mA 
+GSM850 PCL = 19 @ 5.66 dBm 
+49 
+mA 
+EGSM900 PCL = 5 @ 33.02 dBm 
+240 
+mA 
+EGSM900 PCL = 12 @ 19.77 dBm 
+83 
+mA 
+EGSM900 PCL = 19 @ 5.74 dBm 
+50 
+mA 
+DCS1800 PCL = 0 @ 29.42 dBm 
+146 
+mA 
+DCS1800 PCL = 7 @ 16.20 dBm 
+62 
+mA 
+DCS1800 PCL = 15 @ 0.69 dBm 
+48 
+mA 
+PCS1900 PCL = 0 @ 29.77 dBm 
+152 
+mA 
+PCS1900 PCL = 7 @ 16.43 dBm 
+63 
+mA 
+PCS1900 PCL = 15 @ 1.11 dBm 
+48 
+mA 
+WCDMA voice call 
+WCDMA B1 @ 23.26 dBm 
+610 
+mA 
+WCDMA B2 @ 22.80 dBm 
+594 
+mA 
+WCDMA B4 @ 23.44 dBm 
+589 
+mA 
+WCDMA B5 @ 22.80 dBm 
+519 
+mA 
+WCDMA B8 @ 22.85 dBm 
+525 
+mA 
+Description 
+Conditions 
+Typ. 
+Unit 
+OFF state  
+Power down 
+11 
+μA 
+Sleep state 
+AT+CFUN=0 (USB disconnected) 
+0.80 
+mA 
+EGSM900 @ DRX = 2 (USB disconnected) 
+1.44 
+mA 
+EGSM900 @ DRX = 5 (USB disconnected) 
+1.12 
+mA 
+EGSM900 @ DRX = 5 (USB suspend) 
+1.28 
+mA 
+
+===== PAGE 86 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       85 / 106 
+ 
+ 
+ 
+EGSM900 @ DRX = 9 (USB disconnected) 
+1.01 
+mA 
+DCS1800 @ DRX = 2 (USB disconnected) 
+1.44 
+mA 
+DCS1800 @ DRX = 5 (USB disconnected) 
+1.12 
+mA 
+DCS1800 @ DRX = 5 (USB suspend) 
+1.27 
+mA 
+DCS1800 @ DRX = 9 (USB disconnected) 
+1.01 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+2.07 
+mA 
+WCDMA @ PF = 64 (USB suspend) 
+2.23 
+mA 
+WCDMA @ PF = 128 (USB disconnected) 
+1.51 
+mA 
+WCDMA @ PF = 256 (USB disconnected) 
+1.22 
+mA 
+WCDMA @ PF = 512 (USB disconnected) 
+1.08 
+mA 
+LTE-FDD @ PF = 32 (USB disconnected) 
+2.08 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+1.49 
+mA 
+LTE-FDD @ PF = 64 (USB suspend) 
+1.65 
+mA 
+LTE-FDD @ PF = 128 (USB disconnected) 
+1.24 
+mA 
+LTE-FDD @ PF = 256 (USB disconnected) 
+1.11 
+mA 
+LTE-TDD @ PF = 32 (USB disconnected) 
+2.14 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+1.54 
+mA 
+LTE-TDD @ PF = 64 (USB suspend) 
+1.69 
+mA 
+LTE-TDD @ PF = 128 (USB disconnected) 
+1.25 
+mA 
+LTE-TDD @ PF = 256 (USB disconnected) 
+1.13 
+mA 
+Idle state 
+EGSM900 @ DRX = 5 (USB disconnected) 
+10.58 
+mA 
+EGSM900 @ DRX = 5 (USB connected) 
+27.61 
+mA 
+DCS1800 @ DRX = 5 (USB disconnected) 
+10.88 
+mA 
+DCS1800 @ DRX = 5 (USB connected) 
+27.58 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+11.44 
+mA 
+
+===== PAGE 87 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       86 / 106 
+ 
+ 
+ 
+WCDMA @ PF = 64 (USB connected) 
+27.81 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+11.42 
+mA 
+LTE-FDD @ PF = 64 (USB connected) 
+27.41 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+11.37 
+mA 
+LTE-TDD @ PF = 64 (USB connected) 
+27.42 
+mA 
+GPRS data transfer 
+EGSM900 4DL/1UL @ 32.60 dBm 
+204 
+mA 
+EGSM900 3DL/2UL @ 32.55 dBm 
+379 
+mA 
+EGSM900 2DL/3UL @ 31.18 dBm 
+482 
+mA 
+EGSM900 1DL/4UL @ 29.28 dBm 
+543 
+mA 
+DCS1800 4DL/1UL @ 29.91 dBm 
+138 
+mA 
+DCS1800 3DL/2UL @ 29.92 dBm 
+249 
+mA 
+DCS1800 2DL/3UL @ 28.41 dBm 
+302 
+mA 
+DCS1800 1DL/4UL @ 26.17 dBm 
+317 
+mA 
+EDGE data transfer 
+EGSM900 4DL/1UL @ 26.67 dBm 
+134 
+mA 
+EGSM900 3DL/2UL @ 26.68 dBm 
+237 
+mA 
+EGSM900 2DL/3UL @ 24.99 dBm 
+312 
+mA 
+EGSM900 1DL/4UL @ 22.78 dBm 
+371 
+mA 
+DCS1800 4DL/1UL @ 25.96 dBm 
+118 
+mA 
+DCS1800 3DL/2UL @ 25.85 dBm 
+208 
+mA 
+DCS1800 2DL/3UL @ 24.31 dBm 
+289 
+mA 
+DCS1800 1DL/4UL @ 22.00 dBm 
+365 
+mA 
+WCDMA data transfer 
+WCDMA B1 HSDPA @ 22.38 dBm 
+533 
+mA 
+WCDMA B5 HSDPA @ 22.11 dBm 
+472 
+mA 
+WCDMA B8 HSDPA @ 22.02 dBm 
+478 
+mA 
+WCDMA B1 HSUPA @ 21.70 dBm 
+512 
+mA 
+
+===== PAGE 88 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       87 / 106 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+WCDMA B5 HSUPA @ 21.27 dBm 
+448 
+mA 
+WCDMA B8 HSUPA @ 21.20 dBm 
+460 
+mA 
+LTE data transfer 
+LTE-FDD B1 @ 23.03 dBm 
+567 
+mA 
+LTE-FDD B3 @ 23.29 dBm 
+545 
+mA 
+LTE-FDD B5 @ 22.61 dBm 
+496 
+mA 
+LTE-FDD B7 @ 23.18 dBm 
+712 
+mA 
+LTE-FDD B8 @ 22.63 dBm 
+526 
+mA 
+LTE-FDD B20 @ 23.01 dBm 
+547 
+mA 
+LTE-FDD B28 @ 22.36 dBm 
+488 
+mA 
+LTE-TDD B38 @ 22.62 dBm 
+340 
+mA 
+LTE-TDD B40 @ 22.89 dBm 
+309 
+mA 
+LTE-TDD B41 @ 23.25 dBm 
+359 
+mA 
+GSM voice call 
+EGSM900 PCL = 5 @ 32.47 dBm 
+228 
+mA 
+EGSM900 PCL = 12 @ 19.37 dBm 
+80 
+mA 
+EGSM900 PCL = 19 @ 5.40 dBm 
+50 
+mA 
+DCS1800 PCL = 0 @ 29.67 dBm 
+147 
+mA 
+DCS1800 PCL = 7 @ 16.03 dBm 
+61 
+mA 
+DCS1800 PCL = 15 @ 0.51 dBm 
+48 
+mA 
+WCDMA voice call 
+WCDMA B1 @ 23.01 dBm 
+558 
+mA 
+WCDMA B5 @ 22.79 dBm 
+500 
+mA 
+WCDMA B8 @ 22.74 dBm 
+509 
+mA 
+
+===== PAGE 89 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       88 / 106 
+ 
+ 
+ 
+Table 43: Current Consumption of EC200A-EL 
+Description 
+Conditions 
+Typ. 
+Unit 
+OFF state  
+Power down 
+10 
+μA 
+Sleep state 
+AT+CFUN=0 (USB disconnected) 
+0.86 
+mA 
+WCDMA @ PF = 64 (USB disconnected) 
+2.13 
+mA 
+WCDMA @ PF = 64 (USB suspend) 
+2.29 
+mA 
+WCDMA @ PF = 128 (USB disconnected) 
+1.56 
+mA 
+WCDMA @ PF = 256 (USB disconnected) 
+1.27 
+mA 
+WCDMA @ PF = 512 (USB disconnected) 
+1.12 
+mA 
+LTE-FDD @ PF = 32 (USB disconnected) 
+2.15 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+1.57 
+mA 
+LTE-FDD @ PF = 64 (USB suspend) 
+1.72 
+mA 
+LTE-FDD @ PF = 128 (USB disconnected) 
+1.28 
+mA 
+LTE-FDD @ PF = 256 (USB disconnected) 
+1.11 
+mA 
+LTE-TDD @ PF = 32 (USB disconnected) 
+2.18 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+1.57 
+mA 
+LTE-TDD @ PF = 64 (USB suspend) 
+1.73 
+mA 
+LTE-TDD @ PF = 128 (USB disconnected) 
+1.28 
+mA 
+LTE-TDD @ PF = 256 (USB disconnected) 
+1.13 
+mA 
+Idle state 
+WCDMA @ PF = 64 (USB disconnected) 
+11.53 
+mA 
+WCDMA @ PF = 64 (USB connected) 
+28.29 
+mA 
+LTE-FDD @ PF = 64 (USB disconnected) 
+11.39 
+mA 
+LTE-FDD @ PF = 64 (USB connected) 
+28.22 
+mA 
+LTE-TDD @ PF = 64 (USB disconnected) 
+11.16 
+mA 
+LTE-TDD @ PF = 64 (USB connected) 
+28.34 
+mA 
+
+===== PAGE 90 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       89 / 106 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+WCDMA data transfer 
+WCDMA B1 HSDPA @ 22.38 dBm 
+604 
+mA 
+WCDMA B5 HSDPA @ 22.49 dBm 
+555 
+mA 
+WCDMA B8 HSDPA @ 22.61 dBm 
+614 
+mA 
+WCDMA B1 HSUPA @ 21.96 dBm 
+584 
+mA 
+WCDMA B5 HSUPA @ 21.97dBm 
+537 
+mA 
+WCDMA B8 HSUPA @ 22.10dBm 
+588 
+mA 
+LTE data transfer 
+LTE-FDD B1 @ 23.60 dBm 
+655 
+mA 
+LTE-FDD B3 @ 23.23 dBm 
+656 
+mA 
+LTE-FDD B5 @ 23.24 dBm 
+580 
+mA 
+LTE-FDD B7 @ 23.15 dBm 
+705 
+mA 
+LTE-FDD B8 @ 23.33 dBm 
+643 
+mA 
+LTE-FDD B20 @ 23.64 dBm 
+618 
+mA 
+LTE-FDD B28 @ 23.89 dBm 
+627 
+mA 
+LTE-TDD B38 @ 22.86 dBm 
+422 
+mA 
+LTE-TDD B40 @ 23.08 dBm 
+401 
+mA 
+LTE-TDD B41 @ 23.59 dBm 
+426 
+mA 
+WCDMA voice call 
+WCDMA B1 @ 23.06 dBm 
+637 
+mA 
+WCDMA B5 @ 23.18 dBm 
+575 
+mA 
+WCDMA B8 @ 23.32 dBm 
+642 
+mA 
+
+===== PAGE 91 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       90 / 106 
+ 
+ 
+ 
+6.4. Digital I/O Characteristics 
+ 
+Table 44: VDD_EXT I/O Requirements 
+ 
+Table 45: (U)SIM Low-voltage I/O Requirements 
+ 
+Table 46: (U)SIM High-voltage I/O Requirements 
+Parameter 
+Description 
+Min. 
+Max. 
+Unit 
+VDD_EXT 
+Power supply 
+1.67 
+1.93 
+V 
+VIH 
+Input high voltage 
+0.7 × VDD_EXT 
+VDD_EXT + 0.2 
+V 
+VIL 
+Input low voltage 
+-0.3 
+0.3 × VDD_EXT 
+V 
+VOH 
+Output high voltage 
+VDD_EXT - 0.2 
+VDD_EXT 
+V 
+VOL 
+Output low voltage 
+0 
+0.2 
+V 
+Parameter 
+Description 
+Min. 
+Max. 
+Unit 
+USIM_VDD 
+Power supply 
+1.67 
+1.93 
+V 
+VIH 
+Input high voltage 
+0.8 × USIM_VDD 
+USIM_VDD 
+V 
+VIL 
+Input low voltage 
+-0.3 
+0.12 × USIM_VDD  
+V 
+VOH 
+Output high voltage 
+0.7 × USIM_VDD 
+USIM_VDD 
+V 
+VOL 
+Output low voltage 
+0 
+0.15 × USIM_VDD 
+V 
+Parameter 
+Description 
+Min. 
+Max. 
+Unit 
+USIM_VDD 
+Power supply 
+2.7 
+3.3 
+V 
+VIH 
+Input high voltage 
+0.8 × USIM_VDD 
+USIM_VDD 
+V 
+VIL 
+Input low voltage 
+-0.3 
+0.12 × USIM_VDD 
+V 
+VOH 
+Output high voltage 
+0.7 × USIM_VDD 
+USIM_VDD 
+V 
+VOL 
+Output low voltage 
+0 
+0.15 × USIM_VDD 
+V 
+
+===== PAGE 92 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       91 / 106 
+ 
+ 
+ 
+Table 47: SDIO Low-voltage I/O Requirements 
+ 
+Table 48: SDIO High-voltage I/O Requirements 
+ 
+6.5. ESD Protection 
+ 
+Static electricity occurs naturally and it may damage the module. Therefore, applying proper ESD 
+countermeasures and handling methods is imperative. For example, wear anti-static gloves during the 
+development, production, assembly and testing of the module; add ESD protection components to the 
+ESD sensitive interfaces and points in the product design. 
+ 
+Table 49: Electrostatics Discharge Characteristics (Temperature: 25–30 °C, Humidity: 40 ±5 %) 
+Parameter 
+Description 
+Min. 
+Max. 
+Unit 
+SD_SDIO_VDD 
+Power supply 
+1.67 
+1.93 
+V 
+VIH 
+Input high voltage 
+0.7 × SD_SDIO_VDD 
+SD_SDIO_VDD + 0.2 
+V 
+VIL 
+Input low voltage 
+-0.3 
+0.3 × SD_SDIO_VDD 
+V 
+VOH 
+Output high voltage 
+SD_SDIO_VDD - 0.2 
+SD_SDIO_VDD 
+V 
+VOL 
+Output low voltage 
+0 
+0.2 
+V 
+Parameter 
+Description 
+Min. 
+Max. 
+Unit 
+SD_SDIO_VDD 
+Power supply 
+2.7 
+3.05 
+V 
+VIH 
+Input high voltage 
+2.0 
+SD_SDIO_VDD + 0.3 
+V 
+VIL 
+Input low voltage 
+-0.3 
+0.8 
+V 
+VOH 
+Output high voltage 
+2.4 
+SD_SDIO_VDD 
+V 
+VOL 
+Output low voltage 
+0 
+0.3 
+V 
+Tested Interfaces 
+Contact Discharge 
+Air Discharge 
+Unit 
+VBAT, GND 
+±8 
+±10 
+kV 
+All Antenna Interfaces 
+±8 
+±10 
+kV 
+
+===== PAGE 93 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       92 / 106 
+ 
+ 
+ 
+ 
+6.6. Operating and Storage Temperatures 
+ 
+Table 50: Operating and Storage Temperatures 
+ 
+ 
+9 Within the operating temperature range, the module meets 3GPP specifications. 
+10 Within the extended temperature range, the module remains the ability to establish and maintain functions such as voice, 
+SMS and data transmission, without any unrecoverable malfunction. Radio spectrum and radio network are not influenced, 
+while one or more specifications, such as Pout, may exceed the specified tolerances of 3GPP. When the temperature 
+returns to the operating temperature range, the module meets 3GPP specifications again. 
+Other Interfaces 
+±0.5 
+±1 
+kV 
+Parameter 
+Min. 
+Typ. 
+Max. 
+Unit 
+Operating Temperature Range 9 
+-35 
++25 
++75 
+°C 
+Extended Operating Temperature 
+Range 10 
+-40 
+- 
++85 
+°C 
+Storage temperature range 
+-40 
+- 
++90 
+°C 
+
+===== PAGE 94 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       93 / 106 
+ 
+ 
+ 
+7 Mechanical Information 
+ 
+This chapter describes the mechanical dimensions of the module. All dimensions are measured in 
+millimeter (mm), and the dimensional tolerances are ±0.2 mm unless otherwise specified. 
+ 
+7.1. Mechanical Dimensions 
+ 
+Figure 43: Module Top and Side Dimensions (Unit: mm) 
+ 
+ 
+
+===== PAGE 95 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       94 / 106 
+ 
+ 
+ 
+ 
+Figure 44: Module Bottom Dimensions View (Unit: mm) 
+ 
+⚫  
+ 
+ 
+The package warpage level of the module refers to the JEITA ED-7306 standard. 
+NOTE 
+
+===== PAGE 96 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       95 / 106 
+ 
+ 
+ 
+7.2. Recommended Footprint 
+ 
+ 
+ Figure 45: Recommended Footprint (Perspective View) 
+ 
+. 
+Keep at least 3 mm between the module and other components on the motherboard to improve 
+soldering quality and maintenance convenience. 
+NOTE 
+
+===== PAGE 97 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       96 / 106 
+ 
+ 
+ 
+7.3. Top and Bottom Views 
+ 
+Figure 46: Top and Bottom Views of the Module 
+ 
+ 
+Images above are for illustration purpose only and may differ from the actual module. For authentic 
+appearance and label, please refer to the module received from Quectel. 
+NOTE 
+
+===== PAGE 98 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       97 / 106 
+ 
+ 
+ 
+8 Storage, Manufacturing & Packaging 
+ 
+8.1. Storage Conditions 
+ 
+The module is provided with vacuum-sealed packaging. MSL of the module is rated as 3. The storage 
+requirements are shown below.  
+ 
+1. Recommended Storage Condition: the temperature should be 23 ±5 °C and the relative humidity 
+should be 35–60 %. 
+ 
+2. Shelf life (in a vacuum-sealed packaging): 12 months in Recommended Storage Condition. 
+ 
+3. Floor life: 168 hours 11 in a factory where the temperature is 23 ±5 °C and relative humidity is below 
+60 %. After the vacuum-sealed packaging is removed, the module must be processed in reflow 
+soldering or other high-temperature operations within 168 hours. Otherwise, the module should be 
+stored in an environment where the relative humidity is less than 10 % (e.g., a dry cabinet). 
+ 
+4. The module should be pre-baked to avoid blistering, cracks and inner-layer separation in PCB under 
+the following circumstances: 
+ 
+⚫ 
+The module is not stored in Recommended Storage Condition; 
+⚫ 
+Violation of the third requirement mentioned above; 
+⚫ 
+Vacuum-sealed packaging is broken, or the packaging has been removed for over 24 hours; 
+⚫ 
+Before module repairing. 
+ 
+5. If needed, the pre-baking should follow the requirements below:  
+ 
+⚫ 
+The module should be baked for 8 hours at 120 ±5 °C; 
+⚫ 
+The module must be soldered to PCB within 24 hours after the baking, otherwise it should be put 
+in a dry environment such as in a dry cabinet. 
+ 
+ 
+ 
+ 
+11 This floor life is only applicable when the environment conforms to IPC/JEDEC J-STD-033. It is recommended to start 
+the solder reflow process within 24 hours after the package is removed if the temperature and moisture do not conform to, 
+or are not sure to conform to IPC/JEDEC J-STD-033. And do not unpack the modules in large quantities until they are ready 
+for soldering. 
+
+===== PAGE 99 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       98 / 106 
+ 
+ 
+ 
+ 
+ 
+8.2. Manufacturing and Soldering 
+ 
+Push the squeegee to apply the solder paste on the surface of stencil, thus making the paste fill the 
+stencil openings and then penetrate to the PCB. Apply proper force on the squeegee to produce a clean 
+stencil surface on a single pass. To guarantee module soldering quality, the thickness of stencil for the 
+module is recommended to be 0.15–0.20 mm. For more details, see document [7].  
+ 
+The recommended peak reflow temperature should be 235–246 ºC, with 246 ºC as the absolute 
+maximum reflow temperature. To avoid damage to the module caused by repeated heating, it is 
+recommended that the module should be mounted only after reflow soldering for the other side of PCB 
+has been completed. The recommended reflow soldering thermal profile (lead-free reflow soldering) and 
+related parameters are shown below. 
+Temp. (°C)
+Reflow Zone
+Soak Zone
+246
+200
+217
+235
+C
+D
+B
+A
+150
+100
+ 
+Ramp-to-soak slope: 
+0–3 °C/s
+Cool-down slope: 
+        -3–0 °C/s
+ 
+Ramp-up slope: 
+0–3 °C/s
+ 
+Figure 47: Recommended Reflow Soldering Thermal Profile 
+ 
+1. To avoid blistering, layer separation and other soldering issues, extended exposure of the module to 
+the air is forbidden. 
+2. Take out the module from the package and put it on high-temperature-resistant fixtures before 
+baking. All modules must be soldered to PCB within 24 hours after the baking, otherwise put them 
+in the drying oven. If shorter baking time is desired, see IPC/JEDEC J-STD-033 for the baking 
+procedure. 
+3. Pay attention to ESD protection, such as wearing anti-static gloves, when touching the modules.  
+NOTE 
+
+===== PAGE 100 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       99 / 106 
+ 
+ 
+ 
+Table 51: Recommended Thermal Profile Parameters 
+ 
+ 
+1. 
+The above profile parameter requirements are for the measured temperature of the solder joints. 
+Both the hottest and coldest spots of solder joints on the PCB should meet the above requirements. 
+2. 
+During manufacturing and soldering, or any other processes that may contact the module directly, 
+NEVER wipe the module’s shielding can with organic solvents, such as acetone, ethyl alcohol, 
+isopropyl alcohol, trichloroethylene, etc. Otherwise, the shielding can may become rusted.  
+3. 
+The shielding can for the module is made of Cupro-Nickel base material. It is tested that after 12 
+hours’ Neutral Salt Spray test, the laser engraved label information on the shielding can is still clearly 
+identifiable and the QR code is still readable, although white rust may be found.  
+4. 
+If a conformal coating is necessary for the module, do NOT use any coating material that may 
+chemically react with the PCB or shielding cover, and prevent the coating material from flowing into 
+the module. 
+5. 
+Avoid using ultrasonic technology for module cleaning since it can damage crystals inside the 
+module. 
+6. 
+Avoid using materials that contain mercury (Hg), such as adhesives, for module processing, even if 
+the materials are RoHS compliant and their mercury content is below 1000 ppm (0.1 %). 
+7. 
+Due to the complexity of the SMT process, please contact Quectel Technical Support in advance for 
+any situation that you are not sure about, or any process (e.g. selective soldering, ultrasonic 
+soldering) that is not mentioned in document [7]. 
+ 
+ 
+Factor 
+Recommended Value 
+Soak Zone 
+ 
+Ramp-to-soak slope 
+0–3 °C/s 
+Soak time (between A and B: 150 °C and 200 °C) 
+70–120 s 
+Reflow Zone 
+ 
+Ramp-up slope 
+0–3 °C/s 
+Reflow time (D: over 217°C) 
+40–70 s 
+Max temperature 
+235–246 °C 
+Cool-down slope 
+-3–0 °C/s 
+Reflow Cycle 
+ 
+Max reflow cycle  
+1 
+NOTE 
+
+===== PAGE 101 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       100 / 106 
+ 
+ 
+ 
+8.3. Packaging Specifications 
+ 
+This chapter outlines the key packaging parameters and processes. All figures below are for reference 
+purposes only, as the actual appearance and structure of packaging materials may vary in delivery. 
+ 
+The modules are packed in a tape and reel packaging as specified in the sub-chapters below. 
+ 
+8.3.1. Carrier Tape 
+Carrier tape dimensions are illustrated in the following figure and table: 
+ 
+Figure 48: Carrier Tape Dimension Drawing (Unit: mm) 
+ 
+Table 52: Carrier Tape Dimension Table (Unit: mm) 
+ 
+ 
+ 
+ 
+ 
+ 
+W 
+P 
+T 
+A0 
+B0 
+K0 
+K1 
+F 
+E 
+44 
+44 
+0.35 
+32.5 
+29.5 
+3.0 
+3.8 
+20.2 
+1.75 
+
+===== PAGE 102 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       101 / 106 
+ 
+ 
+ 
+8.3.2. Plastic Reel 
+Plastic reel dimensions are illustrated in the following figure and table: 
+ 
+Figure 49: Plastic Reel Dimension Drawing 
+ 
+Table 53: Plastic Reel Dimension Table (Unit: mm) 
+ 
+8.3.3. Mounting Direction 
+ 
+Figure 50: Mounting Direction 
+ 
+øD1 
+øD2 
+W 
+330 
+100 
+44.5 
+
+===== PAGE 103 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       102 / 106 
+ 
+ 
+ 
+8.3.4. Packaging Process 
+ 
+Place the modules onto the carrier tape cavity 
+and cover them securely with cover tape. 
+Wind the heat-sealed carrier tape onto a 
+plastic reel and apply a protective tape for 
+additional protection. 1 plastic reel can pack 
+250 modules. 
+Place the packaged plastic reel, 1 humidity 
+indicator card and 1 desiccant bag into a 
+vacuum bag, and vacuumize it. 
+ 
+ 
+ 
+Place the vacuum-packed plastic reel into a 
+pizza box. 
+Place the 4 packaged pizza boxes into 1 
+carton and seal it. 1 carton can pack 1000 
+modules. 
+ 
+Figure 51: Packaging Process 
+
+===== PAGE 104 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       103 / 106 
+ 
+ 
+ 
+9 Appendix References 
+ 
+Table 54: Related Documents 
+ 
+Table 55: Terms and Abbreviations 
+Document Name 
+[1] Quectel_LTE_OPEN_EVB_User_Guide 
+[2] Quectel_EC200x&EG91xN&EG912Y&EG950A_Series_AT_Commands_Manual 
+[3] Quectel_EC200A&EC300R_Series_QuecOpen(SDK)_Low_Power_Mode_Application_Note 
+[4] Quectel_EC200A_Series_QuecOpen(SDK)_GPIO_Configuration 
+[5] Quectel_EC200A_Series_QuecOpen_ADC_Development Guide 
+[6] Quectel_RF_Layout_Application_Note 
+[7] Quectel_Module_SMT_Application_Note  
+Abbreviation 
+Description 
+AMR 
+Adaptive Multi-Rate 
+APT 
+Average Power Tracking 
+bps 
+Bytes per second 
+CDMA 
+Code Division Multiple Access 
+CS  
+Coding Scheme 
+CTS  
+Clear To Send 
+DRX  
+Discontinuous Reception 
+DTE  
+Data Terminal Equipment 
+
+===== PAGE 105 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       104 / 106 
+ 
+ 
+ 
+EFR 
+Enhanced Full Rate 
+EGSM 
+Enhanced GSM 
+ESD  
+Electrostatic Discharge 
+EVB 
+Evaluation Board 
+FDD 
+Frequency Division Duplexing 
+FOTA 
+Firmware Over-the-Air 
+FR 
+Full Rate 
+FTP 
+File Transfer Protocol 
+GMSK 
+Gaussian Filtered Minimum Shift Keying 
+GND 
+Ground 
+GSM 
+Global System for Mobile Communications 
+HR 
+Half Rate 
+HSDPA 
+High Speed Downlink Packet Access 
+HTTPS 
+Hypertext Transfer Protocol Secure 
+LGA 
+Land Grid Array 
+LTE 
+Long Term Evolution 
+MCS 
+Modulation and Coding Scheme 
+MMS 
+Multimedia Messaging Service 
+PAP  
+Password Authentication Protocol 
+PCB  
+Printed Circuit Board 
+PCM 
+Pulse Code Modulation 
+PHY 
+Physical Layer Transceiver 
+PING 
+Packet Internet Groper 
+PPP  
+Point-to-Point Protocol 
+PSK 
+Phase Shift Keying 
+
+===== PAGE 106 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       105 / 106 
+ 
+ 
+ 
+QAM 
+Quadrature Amplitude Modulation 
+QPSK 
+Quadrature Phase Shift Keying 
+RF  
+Radio Frequency 
+RoHS 
+Restriction of Hazardous Substances 
+RTS 
+Request To Send 
+SDIO 
+Secure Digital Input and Output Card 
+SMS  
+Short Message Service 
+SMTP 
+Simple Mail Transfer Protocol 
+SMTPS 
+Simple Mail Transfer Protocol Secure 
+SSL 
+Secure Sockets Layer 
+TCP 
+Transmission Control Protocol 
+TDD 
+Time Division Duplexing 
+UDP 
+User Datagram Protocol 
+UMTS 
+Universal Mobile Telecommunications System 
+USB 
+Universal Serial Bus 
+(U)SIM 
+(Universal) Subscriber Identity Module 
+Vmax 
+Maximum Voltage Value 
+Vnom 
+Nominal Voltage Value 
+Vmin 
+Minimum Voltage Value 
+VIHmax 
+Maximum Input High Level Voltage Value 
+VIHmin 
+Minimum Input High Level Voltage Value 
+VILmax 
+Maximum Input Low Level Voltage Value 
+VILmin 
+Minimum Input Low Level Voltage Value 
+VOHmin 
+Minimum Output High Level Voltage Value 
+VOLmax 
+Maximum Output Low Level Voltage Value 
+
+===== PAGE 107 =====
+ 
+                                                 LTE Standard Module Series 
+ 
+EC200A_Series_QuecOpen_Hardware_Design                                       106 / 106 
+ 
+ 
+ 
+ 
+VSWR 
+Voltage Standing Wave Ratio 
+WCDMA 
+Wideband Code Division Multiple Access 

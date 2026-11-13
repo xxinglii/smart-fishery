@@ -1,0 +1,187 @@
+# 鱼塘视觉监控系统 · 固件配置示例
+#
+# 用法：
+#   cp config.example.yaml config.yaml && vi config.yaml
+#   python3 -m yutang_vision --config config.yaml          # 现场模式
+#   python3 -m yutang_vision --simulate                    # 无相机联调（不读本文件的相机段）
+#
+# 说明：
+# 1) 标着【契约 §6】的 6 个键就是 GET/PUT /api/v1/config 的结构，字段名/类型/枚举不可改。
+#    其余键属于运行期设置，不出现在契约响应里。
+# 2) 时间一定要写成带引号的字符串 "06:30"：YAML 1.1 会把不加引号的 06:30 解析成六十进制数字 390。
+#    （固件对 0..2359 的整数会兜底还原，但别依赖这个。）
+# 3) 口令只写在这里，不会通过 API 暴露；GET /api/v1/cameras 里的 rtsp URL 一律把口令打码成 ***。
+
+# ---------------------------------------------------------------------------
+server:
+  host: 0.0.0.0          # 监听地址；塘边局域网直接访问 http://<树莓派IP>:8080
+  port: 8080
+  sse_heartbeat_s: 15    # SSE 心跳（契约 §0 推荐 15 s，4G 下更省流量）
+  cors: true             # 允许前端跨域调试（同源部署时可关）
+  static_dir: ""         # 前端产物目录；留空则自动找 ../yutang-vision-console、./static
+
+# ---------------------------------------------------------------------------
+# 相机：两台海康（全景定焦 + 细节球机）。ip/口令按现场实际改。
+cameras:
+  - id: cam-pano
+    name: 全景位 · 塘东北角
+    role: panorama                 # panorama | detail
+    model: DS-2CD3T86FWDV3-I3S     # 800 万定焦筒机（全景）
+    ip: 192.168.1.64
+    rtsp_user: admin
+    rtsp_password: "CHANGE_ME"     # ← 必改
+    rtsp_path: /Streaming/Channels/101
+    rtsp_port: 554
+    onvif: true
+    onvif_port: 80
+    resolution: 3840x2160          # 只用于展示
+    fps: 20
+    bitrate_kbps: 4096             # 用于估算每天录像占用（health.storage.bytes_per_day）
+    ir_m: 30                       # 红外照射距离
+    ptz: false                     # 筒机无云台 -> /cameras 里 ptz 为 null
+    analysis:                      # 送给检测器的低分辨率灰度流（树莓派 5 跑得动）
+      width: 640
+      height: 360
+      fps: 5
+      roi: null                    # 投料区 ROI：[x, y, w, h] 归一化 0..1；null = 全画面
+
+  - id: cam-detail
+    name: 细节位 · 塘西南角
+    role: detail
+    model: DS-2DC4423IW-D          # 400 万 23 倍球机（细节）
+    ip: 192.168.1.65
+    rtsp_user: admin
+    rtsp_password: "CHANGE_ME"     # ← 必改
+    rtsp_path: /Streaming/Channels/101
+    rtsp_port: 554
+    onvif: true
+    onvif_port: 80
+    resolution: 2560x1440
+    fps: 25
+    bitrate_kbps: 4096
+    ir_m: 100
+    ptz:
+      zoom_max: 23                 # 契约 §2 的 ptz.zoom_max
+      pan_speed_dps: 60.0          # 本地状态机积分用的角速度
+      tilt_speed_dps: 30.0
+      zoom_speed: 0.6
+      pan_min: 0.0
+      pan_max: 360.0
+      tilt_min: -90.0
+      tilt_max: 25.0
+    analysis:
+      width: 640
+      height: 360
+      fps: 5
+      roi: null
+
+# ---------------------------------------------------------------------------
+# 【契约 §6】投料窗口：曲线端点会原样回显；splash 事件 detail 里也会标注是否落在窗口内
+feed_windows:
+  - {start: "06:30", end: "07:10"}
+  - {start: "16:30", end: "17:20"}
+
+# 【契约 §6】阈值
+thresholds:
+  splash_ratio: 1.6          # V-Value / 基线 ≥ 该比值 -> splash_activity
+  aggregation_area_pct: 4.0  # 暗斑连通域面积占比 ≥ 该值（%）-> surface_aggregation
+  person_confidence: 0.6     # 人形置信度阈值（HOG 分数为未标定映射，见 README）
+
+# 【契约 §6】抓图（4G 友好：默认只回传缩略图）
+capture:
+  interval_s: 60             # 定时抓图间隔
+  on_event: true             # 事件触发时抓一张
+  jpeg_quality: 85
+  max_width: 1920            # 抓图最大宽度（3840 宽的全景机会缩到 1920）
+
+# 【契约 §6】上传策略
+upload:
+  policy: thumbs_only        # thumbs_only | events_only | full（三个值都有真实行为）
+                             #   thumbs_only：定时抓图 + 事件抓图，缩放到 capture.max_width（默认，最省流量）
+                             #   events_only：只存事件抓图，定时抓图循环空转
+                             #   full：抓图不缩放，保留相机原始分辨率（最费流量，仅本地存档场景用）
+  max_kbps: 512              # 预留：回传限速上限（当前固件只做记录，不主动外发）
+  quota_gb_month: 10         # 套餐月流量，用于 health.net.month_quota_bytes
+
+# 【契约 §6】本地录像
+record:
+  local_full_stream: true    # 用 ffmpeg -c copy 把 RTSP 全码流分段录到 SD 卡
+  keep_days: 14              # 录像保留天数（磁盘不足时先删最旧抓图，再删过期录像）
+
+# 【契约 §6】巡航
+patrol:
+  "on": true          # 键必须加引号：YAML 1.1 会把裸 on 当成布尔 true
+  preset_ids: [1, 2, 3]
+  dwell_s: 30
+
+# ---------------------------------------------------------------------------
+# 运行期设置（不在契约里，按需改）
+ptz_presets:                 # 预置位种子；PUT /ptz action=save 保存的会落到 data/ptz.json
+  - {id: 1, name: "投料点", camera_id: cam-detail, pan: 118.0, tilt: -22.0, zoom: 6.0}
+  - {id: 2, name: "塘中央", camera_id: cam-detail, pan: 168.0, tilt: -9.0, zoom: 1.0}
+  - {id: 3, name: "进水口", camera_id: cam-detail, pan: 205.0, tilt: -14.0, zoom: 4.0}
+
+analysis:
+  roi: null                  # 全局默认 ROI（相机段可覆盖）
+  pixel_thr: 25              # 帧差灰度阈值（有 numpy 时生效；否则退化为"是否变化"）
+  max_fps: 5                 # 检测循环上限帧率
+
+detector:
+  splash_min_s: 8            # splash 至少持续多久才发事件（抑制瞬时抖动）
+  splash_cooldown_s: 120     # 同类事件冷却
+  splash_require_feed_window: false  # true = 只在投料窗口内报 splash
+  splash_floor: 0.005        # V-Value 绝对下限（0.5% ROI 像素在动），防冷启动误报
+  aggregation_frames: 15     # 暗斑需连续多少帧
+  aggregation_cooldown_s: 300
+  person_roi: [0.0, 0.02, 0.40, 0.95]  # 立杆侧警戒区（归一化 x,y,w,h）
+  person_cooldown_s: 60
+  person_every_n_frames: 5   # 每 N 帧跑一次人形检测（HOG 在树莓派上别每帧跑）
+  hog_win_stride: 16
+  mobilenet_prototxt: ""     # 有 MobileNet-SSD 模型时优先用它（更准）
+  mobilenet_caffemodel: ""
+  tamper_cooldown_s: 300
+  tamper_mean_delta: 28.0    # 亮度均值突变阈值（灰度级 0..255）
+  tamper_std_min: 4.0        # 方差塌陷阈值（镜头被糊住/遮挡）
+  motion_ratio: 0.02         # 通用 motion 事件阈值（非投料窗口）
+  motion_cooldown_s: 60
+  dark_k: 1.5                # 暗斑阈值 = 均值 - k×标准差
+  offline_after_s: 30        # 契约 §8：RTSP 连续失败 ≥30 s 发 offline
+  rtsp_timeout_s: 10         # ffmpeg socket 超时（相机掉电/断网时快速失败，不干等）
+  stream_stall_s: 10         # 超过这么久没有新帧就杀掉重连（防 ffmpeg 卡死）
+  stall_after_s: 6           # 多久没有新帧就先把 online 置 false
+
+metrics:
+  sample_s: 5                # V-Value 入库间隔
+  baseline_window_s: 1800    # 基线回看窗口（滚动中位数）
+  default_window: 24h        # /metrics/splash 默认窗口
+  default_step: 300          # 默认分桶步长（秒）
+  keep_days: 30              # 指标保留天数
+
+storage:
+  data_dir: data             # SQLite / 抓图 / 录像 / ptz.json 都放这里（相对配置文件所在目录）
+  min_free_gb: 3.0           # 低于该值自动清最旧抓图
+  snapshot_keep_days: 14
+  events_keep_days: 90
+  logs_keep_days: 14
+  cleanup_interval_s: 60
+
+net:
+  type: 4g                   # health.net.type
+  carrier: ""                # 留空 = 尝试用 mmcli 探测；探测不到给 null（不编数据）
+  iface_include: [eth, wlan, usb, wwan, en, enp, end]
+  iface_exclude: [lo, docker, veth, "br-"]
+  mmcli_enable: true
+
+logging:
+  level: info
+  stdout: true               # systemd 会收进 journalctl
+
+# --simulate 模式用的剧本（保证前端在 ~3 分钟内看到全部 5 类事件）
+sim:
+  fps: 5
+  width: 320
+  height: 180
+  first_event_s: 8
+  phase_s: {idle: 20, splash: 40, aggregation: 40, person: 30, tamper: 20, offline: 40}
+  offline_camera: cam-detail
+  seed: 20260919

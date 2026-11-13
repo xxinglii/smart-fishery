@@ -1,0 +1,16 @@
+{
+  "_description": "人工近似标注的ground truth计数。低密度帧(352,882)通过人工点数估算，高密度帧(351,353)通过区域抽样密度估算。",
+  "annotations": [
+    {"frame": "351_frame_0002.jpg", "video": "351", "manual_count": 1200, "confidence": "medium", "method": "density_estimate"},
+    {"frame": "351_frame_0005.jpg", "video": "351", "manual_count": 1100, "confidence": "medium", "method": "density_estimate"},
+    {"frame": "352_frame_0005.jpg", "video": "352", "manual_count": 35, "confidence": "high", "method": "manual_count"},
+    {"frame": "352_frame_0010.jpg", "video": "352", "manual_count": 38, "confidence": "high", "method": "manual_count"},
+    {"frame": "352_frame_0015.jpg", "video": "352", "manual_count": 25, "confidence": "high", "method": "manual_count"},
+    {"frame": "353_frame_0005.jpg", "video": "353", "manual_count": 1500, "confidence": "medium", "method": "density_estimate"},
+    {"frame": "353_frame_0008.jpg", "video": "353", "manual_count": 1600, "confidence": "medium", "method": "density_estimate"},
+    {"frame": "353_frame_0014.jpg", "video": "353", "manual_count": 400, "confidence": "medium", "method": "density_estimate"},
+    {"frame": "882_frame_0002.jpg", "video": "882", "manual_count": 110, "confidence": "high", "method": "manual_count"},
+    {"frame": "882_frame_0005.jpg", "video": "882", "manual_count": 140, "confidence": "high", "method": "manual_count"},
+    {"frame": "882_frame_0008.jpg", "video": "882", "manual_count": 170, "confidence": "high", "method": "manual_count"}
+  ]
+}

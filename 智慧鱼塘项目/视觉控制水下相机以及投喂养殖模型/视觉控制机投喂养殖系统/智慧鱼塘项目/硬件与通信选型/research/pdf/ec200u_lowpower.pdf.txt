@@ -1,0 +1,1398 @@
+
+===== PAGE 1 =====
+ 
+ 
+ 
+ 
+ 
+ 
+EC200U&EG91xU&EG915G Series 
+Low Power Mode Application Note 
+ 
+LTE Standard Module Series 
+ 
+Version: 2.0 
+ 
+Date: 2024-04-26 
+ 
+Status: Released 
+
+===== PAGE 2 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 1 / 27 
+ 
+ 
+ 
+At Quectel, our aim is to provide timely and comprehensive services to our customers. If you 
+require any assistance, please contact our headquarters: 
+ 
+Quectel Wireless Solutions Co., Ltd.  
+Building 5, Shanghai Business Park Phase III (Area B), No.1016 Tianlin Road, Minhang District, Shanghai 
+200233, China  
+Tel: +86 21 5108 6236  
+Email: info@quectel.com 
+ 
+Or our local offices. For more information, please visit:  
+http://www.quectel.com/support/sales.htm. 
+ 
+For technical support, or to report documentation errors, please visit:  
+http://www.quectel.com/support/technical.htm. 
+Or email us at: support@quectel.com. 
+ 
+Legal Notices 
+We offer information as a service to you. The provided information is based on your requirements and we 
+make every effort to ensure its quality. You agree that you are responsible for using independent analysis 
+and evaluation in designing intended products, and we provide reference designs for illustrative purposes 
+only. Before using any hardware, software or service guided by this document, please read this notice 
+carefully. Even though we employ commercially reasonable efforts to provide the best possible 
+experience, you hereby acknowledge and agree that this document and related services hereunder are 
+provided to you on an “as available” basis. We may revise or restate this document from time to time at 
+our sole discretion without any prior notice to you. 
+ 
+Use and Disclosure Restrictions 
+License Agreements 
+Documents and information provided by us shall be kept confidential, unless specific permission is 
+granted. They shall not be accessed or used for any purpose except as expressly provided herein. 
+ 
+Copyright 
+Our and third-party products hereunder may contain copyrighted material. Such copyrighted material shall 
+not be copied, reproduced, distributed, merged, published, translated, or modified without prior written 
+consent. We and the third party have exclusive rights over copyrighted material. No license shall be 
+granted or conveyed under any patents, copyrights, trademarks, or service mark rights. To avoid 
+ambiguities, purchasing in any form cannot be deemed as granting a license other than the normal 
+non-exclusive, royalty-free license to use the material. We reserve the right to take legal action for 
+noncompliance with abovementioned requirements, unauthorized use, or other illegal or malicious use of 
+the material. 
+
+===== PAGE 3 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 2 / 27 
+ 
+ 
+ 
+Trademarks 
+Except as otherwise set forth herein, nothing in this document shall be construed as conferring any rights 
+to use any trademark, trade name or name, abbreviation, or counterfeit product thereof owned by Quectel 
+or any third party in advertising, publicity, or other aspects. 
+ 
+Third-Party Rights 
+This document may refer to hardware, software and/or documentation owned by one or more third parties 
+(“third-party materials”). Use of such third-party materials shall be governed by all restrictions and 
+obligations applicable thereto. 
+ 
+We make no warranty or representation, either express or implied, regarding the third-party materials, 
+including but not limited to any implied or statutory, warranties of merchantability or fitness for a particular 
+purpose, quiet enjoyment, system integration, information accuracy, and non-infringement of any 
+third-party intellectual property rights with regard to the licensed technology or use thereof. Nothing herein 
+constitutes a representation or warranty by us to either develop, enhance, modify, distribute, market, sell, 
+offer for sale, or otherwise maintain production of any our products or any other hardware, software, 
+device, tool, information, or product. We moreover disclaim any and all warranties arising from the course 
+of dealing or usage of trade. 
+ 
+Privacy Policy 
+To implement module functionality, certain device data are uploaded to Quectel’s or third-party’s servers, 
+including carriers, chipset suppliers or customer-designated servers. Quectel, strictly abiding by the 
+relevant laws and regulations, shall retain, use, disclose or otherwise process relevant data for the 
+purpose of performing the service only or as permitted by applicable laws. Before data interaction with 
+third parties, please be informed of their privacy and data security policy. 
+ 
+Disclaimer  
+a) 
+We acknowledge no liability for any injury or damage arising from the reliance upon the information. 
+b) 
+We shall bear no liability resulting from any inaccuracies or omissions, or from the use of the 
+information contained herein.  
+c) 
+While we have made every effort to ensure that the functions and features under development are 
+free from errors, it is possible that they could contain errors, inaccuracies, and omissions. Unless 
+otherwise provided by valid agreement, we make no warranties of any kind, either implied or express, 
+and exclude all liability for any loss or damage suffered in connection with the use of features and 
+functions under development, to the maximum extent permitted by law, regardless of whether such 
+loss or damage may have been foreseeable. 
+d) 
+We are not responsible for the accessibility, safety, accuracy, availability, legality, or completeness of 
+information, advertising, commercial offers, products, services, and materials on third-party websites 
+and third-party resources. 
+Copyright © Quectel Wireless Solutions Co., Ltd. 2024. All rights reserved. 
+
+===== PAGE 4 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 3 / 27 
+ 
+ 
+ 
+About the Document 
+ 
+Revision History 
+ 
+Version 
+Date 
+Author 
+Description 
+- 
+2021-04-18 
+Marvin NING 
+Creation of the document 
+1.0 
+2021-05-31 
+Marvin NING 
+First official release 
+1.1 
+2021-08-20 
+Marvin NING 
+Added an applicable module series EG915U. 
+2.0 
+2024-04-26 
+Felix LIN 
+1. 
+Added applicable modules EG912U series and 
+EG915G-EU. 
+2. 
+Introduced the low power mode and its classification  
+(Chapter 1). 
+3. 
+Added AT+QSCLK (Chapter 2.3.1). 
+4. 
+Extended the function of AT+QSCLKEX and added 
+default values to <idle_time> and <retry_time> and 
+the example (Chapter 2.3.2). 
+5. 
+Added 
+AT+QNWCFG="psm/timer" 
+and 
+AT+QCFG="psmwakeup/pin" (Chapters 2.3.3 and 
+2.3.4). 
+6. 
+Added a note on power consumption data (Chapter 
+3). 
+7. 
+Updated precautions (Chapter 3.1.5). 
+8. 
+Added test in PSM Application scenarios and 
+precautions (Chapter 3.2). 
+
+===== PAGE 5 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 4 / 27 
+ 
+ 
+ 
+Contents 
+About the Document .................................................................................................................................. 3 
+Contents ...................................................................................................................................................... 4 
+Table Index .................................................................................................................................................. 5 
+Figure Index ................................................................................................................................................ 6 
+1 
+Introduction ......................................................................................................................................... 7 
+1.1. 
+Applicable Modules .................................................................................................................... 8 
+2 
+Related AT Command ......................................................................................................................... 9 
+2.1. 
+AT Command Introduction ......................................................................................................... 9 
+2.1.1. 
+Definitions ........................................................................................................................ 9 
+2.1.2. 
+AT Command Syntax ...................................................................................................... 9 
+2.2. 
+Declaration of AT Command Examples ................................................................................... 10 
+2.3. 
+Description of AT Command .................................................................................................... 10 
+2.3.1. 
+AT+QSCLK  Enable/Disable Normal Sleep Mode and PSM ...................................... 10 
+2.3.2. 
+AT+QSCLKEX  Enable/Disable Enhanced Sleep Mode ............................................. 13 
+2.3.3. 
+AT+QNWCFG="psm/timer"  Get PSM Timer Parameters Issued by Network ........... 15 
+2.3.4. 
+AT+QCFG="psmwakeup/pin"  Configure PSM Sleep and Wake-up Pin .................... 16 
+3 
+Tests in Application Scenarios and Precautions .......................................................................... 19 
+3.1. 
+Normal Sleep Mode and Enhanced Sleep Mode .................................................................... 19 
+3.1.1. 
+Test Steps ...................................................................................................................... 19 
+3.1.1.1. 
+Test Scenarios .................................................................................................... 19 
+3.1.1.2. 
+Statistical Data .................................................................................................... 19 
+3.1.1.3. 
+Test Steps ........................................................................................................... 20 
+3.1.2. 
+Test Data ....................................................................................................................... 20 
+3.1.3. 
+Test Examples ............................................................................................................... 20 
+3.1.3.1. 
+EC200U Series Average Current Consumption in Different Sleep Modes ........ 21 
+3.1.4. 
+Test Conclusion ............................................................................................................. 22 
+3.1.5. 
+Precautions ................................................................................................................... 22 
+3.2. 
+PSM .......................................................................................................................................... 23 
+3.2.1. 
+Test Steps ...................................................................................................................... 23 
+3.2.1.1. 
+Test Scenarios .................................................................................................... 23 
+3.2.1.2. 
+Statistical Data .................................................................................................... 23 
+3.2.1.3. 
+Test Steps ........................................................................................................... 23 
+3.2.2. 
+Test Data ....................................................................................................................... 24 
+3.2.3. 
+Test Examples ............................................................................................................... 25 
+3.2.4. 
+Test Conclusion ............................................................................................................. 25 
+3.2.5. 
+Precautions ................................................................................................................... 25 
+4 
+Appendix References ....................................................................................................................... 27 
+ 
+
+===== PAGE 6 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 5 / 27 
+ 
+ 
+ 
+Table Index 
+Table 1: Applicable Modules ......................................................................................................................... 8 
+Table 2: Types of AT Commands ................................................................................................................. 9 
+Table 3: Average Current Consumption Comparison in Different Sleep Modes for EC200U Series ........ 20 
+Table 4: Average Current Consumption Data After Waking up From PSM for EG915U Series ................ 24 
+Table 5: Related Documents ...................................................................................................................... 27 
+Table 6: Terms and Abbreviations .............................................................................................................. 27 
+
+===== PAGE 7 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 6 / 27 
+ 
+ 
+ 
+Figure Index 
+Figure 1: Average Current Consumption in Normal Sleep Mode for EC200U Series ............................... 21 
+Figure 2: Average Current Consumption in Enhanced Sleep Mode for EC200U Series .......................... 22 
+Figure 3: EG915U Series Average Current Consumption Data After Waking up From PSM ................... 25 
+ 
+ 
+
+===== PAGE 8 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 7 / 27 
+ 
+ 
+ 
+1 Introduction 
+ 
+This document mainly introduces the low power mode of Quectel EC200U series, EG91xU family and 
+EG915G-EU modules in LTE network. It includes the introduction of related AT command, the data 
+comparison of average current consumption tests in different sleep modes in application scenarios as 
+well as precautions. 
+ 
+Low power mode refers to the module’s sleeping in low power mode, including normal sleep mode, 
+enhanced sleep mode and PSM. 
+ 
+The module enters normal sleep mode (controlled by AT+QSCLK, see Chapter 2.3.1 for details) by 
+related pins, or after data interaction finished, then, the overall average current consumption is reduced. 
+ 
+Enhanced sleep mode refers to the fast sleep after the module sends data. The difference between the 
+enhanced sleep mode and the normal sleep mode is mainly demonstrated in the scenario where data is 
+sent and received at intervals, after the data is sent and received, the module in enhanced sleep mode 
+enters the sleep state faster than the module in normal sleep mode, thereby reducing the overall average 
+current consumption. 
+ 
+PSM is an ultra low power sleep mode, different from normal sleep mode in that the module in PSM 
+consumes less power, which is equivalent to the module has been shut down, and only the default bearer 
+is retained for fast camping the network after booting up.  
+ 
+ 
+The module can enter PSM when it is in normal sleep mode or enhanced sleep mode. When PSM is 
+enabled, if not configured to enter enhanced sleep mode, the module will be in normal sleep mode 
+before entering PSM. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+NOTE 
+
+===== PAGE 9 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 8 / 27 
+ 
+ 
+ 
+1.1. 
+Applicable Modules 
+ 
+Table 1: Applicable Modules 
+ 
+ 
+ 
+Module Family 
+Module 
+- 
+EC200U Series 
+- 
+EG915G-EU 
+EG91xU 
+EG912U Series 
+EG915U Series 
+
+===== PAGE 10 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 9 / 27 
+ 
+ 
+ 
+2 Related AT Command 
+ 
+2.1. AT Command Introduction 
+2.1.1. Definitions 
+⚫ 
+<CR> 
+ 
+Carriage return character. 
+⚫ 
+<LF> 
+ 
+Line feed character. 
+⚫ 
+<...> 
+ 
+Parameter name. Angle brackets do not appear on the command line. 
+⚫ 
+[...]  
+ 
+Optional parameter of a command or an optional part of TA information response.  
+ 
+ 
+ 
+Square brackets do not appear on the command line. When an optional parameter is  
+ 
+ 
+ 
+not given in a command, the new value equals to its previous value or the default  
+ 
+ 
+ 
+settings, unless otherwise specified. 
+⚫ 
+Underline 
+Default setting of a parameter. 
+ 
+2.1.2. AT Command Syntax 
+All command lines must start with AT or at and end with <CR>. Information responses and result codes 
+always 
+start 
+and 
+end 
+with 
+a 
+carriage 
+return 
+character 
+and 
+a 
+line 
+feed 
+character: 
+<CR><LF><response><CR><LF>. In tables presenting commands and responses throughout this 
+document, only the commands and responses are presented, and <CR> and <LF> are deliberately 
+omitted. 
+ 
+Table 2: Types of AT Commands 
+ 
+Command Type 
+Syntax 
+Description 
+Test Command 
+AT+<cmd>=? 
+Test the existence of corresponding Write 
+Command and return information about the 
+type, value, or range of its parameter. 
+Read Command 
+AT+<cmd>? 
+Check the current parameter value of a 
+corresponding Write Command. 
+Write Command 
+AT+<cmd>=<p1>[,<p2>[,<p3>[...]]] Set user-definable parameter value. 
+Execution Command 
+AT+<cmd> 
+Return a specific information parameter or 
+perform a specific action. 
+
+===== PAGE 11 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 10 / 27 
+ 
+ 
+ 
+2.2. Declaration of AT Command Examples 
+ 
+The AT command examples in this document are provided to help you learn about the use of the AT 
+commands introduced herein. The examples, however, should not be taken as Quectel’s 
+recommendations or suggestions about how to design a program flow or what status to set the module 
+into. Sometimes multiple examples may be provided for one AT command. However, this does not mean 
+that there is a correlation among these examples, or that they should be executed in a given sequence.  
+ 
+2.3. Description of AT Command 
+2.3.1. AT+QSCLK  Enable/Disable Normal Sleep Mode and PSM 
+This command controls whether the module enters normal sleep mode and PSM.  
+ 
+ 
+ 
+AT+QSCLK  Enable/Disable Normal Sleep Mode and PSM 
+Test Command 
+AT+QSCLK=? 
+Response 
++QSCLK: (range of supported <n>s),(range of supported 
+<delay_time>s),<periodic_TAU_time>,<active_time> 
+ 
+OK 
+Read Command 
+AT+QSCLK? 
+Response 
++QSCLK: <n>[,<delay_time>[,<periodic_TAU_time>,<
+active_time>]] 
+ 
+OK 
+Write Command 
+AT+QSCLK=<n>[,<delay_time>[,<period
+ic_TAU_time>[,<active_time>]]] 
+Response 
+OK 
+ 
+If there is any error:  
+ERROR 
+Maximum Response Time 
+300 ms 
+Characteristics 
+The command takes effect immediately. 
+The configurations will not be saved. 
+
+===== PAGE 12 =====
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note  
+11 / 27 
+Parameter 
+<n> 
+Integer type. Enable/Disable normal sleep mode and PSM. 
+0 
+Disable normal sleep mode and PSM. 
+1 
+Enable normal sleep mode. The module enters normal sleep mode 
+under the control of DTR and WAKEUP_IN pins. If DTR and 
+WAKEUP_IN are in high level, the module enters normal sleep mode 
+directly. If either DTR or WAKEUP_IN pin is pulled down, the module 
+cannot enter normal sleep mode. 
+2 
+Enable normal sleep mode. If there is no data interaction on UART 
+during <delay_time>, the module enters normal sleep mode. 
+Otherwise, the module is woken up.  
+3 
+Enable PSM. The module needs to re-camp the network to make PSM 
+to take effect.  
+<delay_time> 
+Integer type. Time to enter low power mode when there is no data 
+interaction on UART. Range: 1–255. Default value: 5. Unit: second.  
+This parameter can only be configured when <n>=2/3. If this parameter is 
+omitted, the default value is 5. In general, the configuration is not saved 
+after power-down. If it is configured when <n>=3, before the module enters 
+PSM, the configuration is saved and still valid after the module wakes up.  
+<periodic_TAU_time> 
+String type. This parameter can only be configured when <n>=3. Before the 
+module enters PSM, the configuration is saved and still valid after the 
+module wakes up.  
+A value of periodic TAU timer. It is specified as T3412 reference value 
+reported by the module to the network. When PSM is enabled, the module 
+reports this value. If (U)SIM and the network supports PSM, the network 
+determines whether to use the reference value to issue and the module 
+cannot predict network behavior.  
+Periodic TAU timer value is encoded in a bit in the form of a byte according 
+to GPRS Timer 3 (octet3) format (such as "01000111" represents 70 hours). 
+The encoding format and range are defined by GPRS Timer 3 value 
+according to Table 10.5.163a/3GPP TS 24.008 in 3GPP TS 24.008. See 
+Chapter 10.2 in 3GPP TS 24.301 for details. The module specifies the 
+default value if it cannot be obtained.  
+GPRS Timer 3 value (octet 3) 
+Bits 5 to 1 represents the timer value in binary encoding; 
+The unit of GPRS Timer value defined by Bits 6 to 8 is as follows: 
+
+===== PAGE 13 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 12 / 27 
+ 
+ 
+ 
+ 
+ 
+Bits  
+8 7 6 
+0 0 0  This value increments in a multiples of 10 minutes 
+0 0 1  This value increments in the multiple of 1 hour 
+0 1 0  This value increments in the multiple of 10 hours 
+0 1 1  This value increments in the multiple of 2 seconds 
+1 0 0  This value increments in the multiple of 30 seconds 
+1 0 1  This value increments in the multiple of 1 minutes 
+1 1 0  This value increments in the multiple of 320 hours. See Table 
+10.5.163a/3GPP TS 24.008 in 3GPP TS 24.008 for details. 
+1 1 1  This value represents the timer is deactivated. See Table 
+10.5.163a/3GPP TS 24.008 in 3GPP TS 24.008 for details. 
+<active_time> 
+String type. This parameter can only be configured when <n>=3. Before the 
+module enters PSM, the configuration is saved and still valid after the 
+module wakes up.  
+ 
+A value of Active Timer (T3324). It is specified as T3324 reference value 
+reported by the module to the network. When PSM is enabled, the module 
+reports this value. If (U)SIM and the network supports PSM, the network 
+determines whether to use the reference value to issue and the module 
+cannot predict network behavior.  
+ 
+Active Timer value is encoded in a bit in the form of a byte according to 
+GPRS Timer 2 (octet 2) format (such as "00100100" represents 4 minutes). 
+The encoding format and range are defined by GPRS Timer 2 value 
+according to Table 10.5.172/3GPP TS 24.008 in 3GPP TS 24.008. See 
+Chapter 11.2.2 in 3GPP TS 24.008 for details. The module specifies the 
+default value if it cannot be obtained.  
+ 
+GPRS Timer 2 value (octet 2) 
+ 
+Bits 5 to 1 represents the timer value in binary encoding; 
+ 
+The unit of GPRS Timer value defined by Bits 6 to 8 is as follows: 
+Bits  
+8 7 6 
+0 0 0  This value increments in the multiple of 2 seconds 
+0 0 1  This value increments in the multiple of 1 minute 
+0 1 0  This value increments in the multiple of 10 hours 
+1 1 1  This value represents the timer is deactivated. 
+In this protocol version, other values represent incrementing in the multiple 
+of 1 minute.  
+
+===== PAGE 14 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 13 / 27 
+ 
+ 
+ 
+ 
+1. 
+When the low power mode is enabled, ways to control the module to enter low power mode are 
+independent, that is, values of <n> are separated and need to be configured independently. 
+2. 
+In normal sleep mode, main UART can be woken up by AT commands. 
+3. 
+In normal sleep mode, if the flow control of main UART is not enabled, do not to send large data 
+(more than 127 bytes) directly to the module through main UART. Before sending the large data, 
+the module needs to exit from low power mode, otherwise, data will be lost. 
+4. 
+The values of <periodic_TAU_time> and <active_time> queried through AT+QSCLK? are the 
+reference values of the timer reported by the module. The timer value issued by the network can be 
+obtained by AT+QNWCFG="psm/timer". 
+5. 
+The module can be woken up from PSM in the case of the following conditions:  
+⚫ 
+Pull up the interrupt wake-up pin PSM_EINT (only for EG915G-EU and EG915U series 
+module) 
+⚫ 
+Periodic TAU timer (T3412) 
+⚫ 
+RTC clock 
+⚫ 
+Pull down the PWRKEY 
+⚫ 
+The interrupt wake-up pin configured by users (only for EG915G-EU module) 
+6. 
+Some modules do not have a WAKEUP_IN pin, refer to the hardware design manual of different 
+modules for details. 
+Example 
+AT+QSCLK=? 
++QSCLK: (0-3),(1-255),<periodic_TAU_time>,<active_time> 
+ 
+OK 
+AT+QSCLK=3,1,"00100001","00000001" 
+//The module enters normal sleep mode after there is no  
+OK  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+data interaction on UART for 1 second. Set T3412 timer to 1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+hour and 3324 timer to 2 seconds. 
+AT+QSCLK? 
++QSCLK: 3,1,"00100001","00000001" 
+ 
+OK 
+ 
+2.3.2. AT+QSCLKEX  Enable/Disable Enhanced Sleep Mode 
+This command enables or disables the enhanced sleep mode. If the enhanced sleep mode is enabled 
+when low power mode is disabled (+QSCLK: 0), <n> in AT+QSCLK will be set to 1 automatically. At this 
+time, the enabling of normal sleep mode (+QSCLK: 1) is controlled by related pins. If the low power 
+mode 
+requires 
+to 
+be 
+modified, 
+you 
+can 
+execute 
+AT+QSCLK=<n>[,<delay_time>[,<periodic_TAU_time>[,<active_time>]]]. 
+ 
+NOTE 
+
+===== PAGE 15 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 14 / 27 
+ 
+ 
+ 
+Parameter 
+ 
+ 
+Once the enhanced sleep mode is enabled and later disabled regardless of the module's state during 
+this time, the module will switch to the disabled low-power mode (+QSCLK: 0). 
+ 
+AT+QSCLKEX  Enable/Disable Enhanced Sleep Mode 
+Test Command 
+AT+QSCLKEX=? 
+Response 
++QSCLKEX: (list of supported <mode>s),(range of 
+supported 
+<idle_time>s),(range 
+of 
+supported 
+<retry_time>s),(list of supported <tau_type>s) 
+ 
+OK 
+Read Command 
+AT+QSCLKEX? 
+Response 
++QSCLKEX: <mode>,<idle_time>,<retry_time>,<tau_
+type> 
+ 
+OK 
+Write Command 
+AT+QSCLKEX=<mode>[,<idle_time>[,<re
+try_time>[,<tau_type>]]] 
+ 
+Response 
+OK 
+Or 
+ERROR 
+Maximum Response Time 
+300 ms 
+Characteristics 
+The command takes effect immediately. 
+The configurations will not be saved. 
+<mode> 
+Integer type. Enable/disable enhanced sleep mode.  
+0 
+Disable 
+1 
+Enable 
+<idle_time> 
+Integer type. Time to enter sleep state after sending data. Range:1–50. Default 
+value: 3. Unit: second. 
+<retry_time> 
+Integer type. Time to restore the enhanced sleep mode if an abnormal situation is 
+encountered. Range: 1–600. Default value: 30. Unit: minute. This parameter can 
+be set to any value between 1–600 and has no actual function. 
+<tau_type> 
+Integer type. Type of TAU reporting performed after enhanced sleep is enabled. 
+1 
+Combined TA/LA Updating 
+3 
+Periodic Updating 
+NOTE 
+
+===== PAGE 16 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 15 / 27 
+ 
+ 
+ 
+Example 
+AT+QSCLKEX=? 
++QSCLKEX: (0,1),(1-50),(1-600),(1,3) 
+ 
+OK 
+AT+QSCLKEX=1,1,30 
+OK 
+AT+QSCLKEX? 
++QSCLKEX: 1,1,30,3 
+ 
+OK 
+ 
+2.3.3. AT+QNWCFG="psm/timer"  Get PSM Timer Parameters Issued by Network 
+This command gets PSM timer parameters issued by network. 
+ 
+ 
+AT+QNWCFG="psm/timer"  Get PSM Timer Parameters Issued by Network 
+Test Command 
+AT+QNWCFG=? 
+Response 
++QNWCFG: "psm/timer",<periodic_TAU_time>,<peri
+odic_TAU_time_remain>,<active_time>,<active_time
+_remain> 
+... 
+ 
+OK 
+Execution Command 
+AT+QNWCFG="psm/timer" 
+Response 
++QNWCFG: "psm/timer",<periodic_TAU_time>,<peri
+odic_TAU_time_remain>,<active_time>,<active_time
+_remain> 
+ 
+OK 
+Or 
+ERROR 
+ 
+If an error is related to ME functionality: 
++CME ERROR: <err> 
+Maximum Response Time 
+300 ms 
+Characteristics 
+/ 
+
+===== PAGE 17 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 16 / 27 
+ 
+ 
+ 
+Parameter 
+ 
+ 
+The parameter <active_time_remain> is valid only when RRC is in the released state and when PSM  
+(AT+QSCLK=3) is enabled.  
+Example 
+AT+QNWCFG="psm/timer" 
++QNWCFG: "psm/timer",3240000,2060143,0,0  
+ 
+//The network or (U)SIM card does not   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+support PSM. 
+OK 
+AT+QNWCFG="psm/timer" 
++QNWCFG: "psm/timer",3240000,3219848,2000,2000 
+//The network or (U)SIM card supports PSM  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+mode. 
+OK 
+ 
+2.3.4. AT+QCFG="psmwakeup/pin"  Configure PSM Sleep and Wake-up Pin 
+This command configures PSM sleep and wake-up pin. 
+<periodic_TAU_time> 
+Integer type. The value of the TAU periodic timer (T3412) issued by 
+the network. Unit: milliseconds. 
+<periodic_TAU_time_remain> 
+Integer type. The value of the expiration of the TAU periodic timer 
+(T3412). When this value is 0, the module initiates periodic TAU. Unit: 
+milliseconds. 
+<active_time> 
+Integer type. The value of the active timer (T3324) issued by the 
+network. This value is only available when the network supports PSM. 
+Unit: milliseconds. 
+<active_time_remain> 
+Integer type. The value of the expiration of the active timer (T3324). 
+This value is only available when the network supports PSM. When 
+the value is 0, the module enters PSM. Unit: milliseconds. 
+<err> 
+Error code. For details, see the error code summary section in the 
+document [1]. 
+AT+QCFG="psmwakeup/pin"  Configure PSM Sleep and Wake-up Pin 
+Test Command 
+AT+QCFG=? 
+Response 
++QCFG: 
+"psmwakeup/pin",(list 
+of 
+supported 
+<enable>s),< list of supported <level>s) 
+... 
+ 
+NOTE 
+
+===== PAGE 18 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 17 / 27 
+ 
+ 
+ 
+Parameter 
+OK 
+Execution Command 
+AT+QCFG="psmwakeup/pin"[,<enable>,[
+<level>]] 
+Response 
+If the optional parameters are omitted, query the current 
+setting: 
++QCFG: "psmwakeup/pin",<enable>,<level> 
+ 
+OK 
+ 
+If the optional parameters are specified, configure PSM 
+sleep and wake-up pin: 
+OK 
+Or 
+ERROR 
+ 
+If an error is related to ME functionality: 
++CME ERROR: <err> 
+Maximum Response Time 
+300 ms 
+Characteristics 
+The command takes effect immediately. 
+The configurations are saved automatically. 
+<enable> 
+Hexadecimal value. This value specifies whether to enable the PSM 
+sleep and wake-up function for pins GPIO0–GPIO7. 
+Example: 0x05 = 0x1 (GPIO0) + 0x4 (GPIO2) indicates to enable the 
+PSM sleep and wake-up functions of GPIO0 and GPIO2. 
+0 
+      
+Disable 
+0x1      
+Enable the PSM sleep and wake-up functions of GPIO0. 
+0x2      
+Enable the PSM sleep and wake-up functions of GPIO1. 
+0x4      
+Enable the PSM sleep and wake-up functions of GPIO2. 
+0x8      
+Enable the PSM sleep and wake-up functions of GPIO3. 
+0x10      
+Enable the PSM sleep and wake-up functions of GPIO4. 
+0x20      
+Enable the PSM sleep and wake-up functions of GPIO5. 
+0x40      
+Enable the PSM sleep and wake-up functions of GPIO6. 
+0x80      
+Enable the PSM sleep and wake-up functions of GPIO7. 
+<level>  
+Hexadecimal value. This value specifies PSM sleep and wake-up level 
+of GPIO0–GPIO7. 
+Example: 0x05 = 0x1 (high level) + 0x4 (high level) configures PSM 
+sleep and wake-up level of GPIO0 and GPIO2. It only takes effect when 
+used with <enable>. The default setting is wake-up by high level. 
+0 
+ 
+Wake-up by low level 
+1 
+ 
+Wake-up by high level 
+
+===== PAGE 19 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 18 / 27 
+ 
+ 
+ 
+ 
+ 
+1. 
+This command is only supported by EG915G-EU module. 
+2. 
+The interrupt wake-up pin configuration and the GPIO configuration running on the module will not 
+interact with each other, but the configuration will be affected by external hardware circuit. 
+3. 
+If <level> is omitted, the default value or the previous configuration will be used. 
+Example 
+AT+QCFG="psmwakeup/pin" 
++QCFG: "psmwakeup/pin",0x0,0xff 
+ 
+OK 
+AT+QCFG="psmwakeup/pin",0x8,0xff  
+//Turn on PSM sleep and wake-up function of GPIO3 and 
+OK  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+set wake-up by high level. 
+ 
+ 
+ 
+ 
+<err> 
+Error code. For details, see the error code summary section in the 
+document [1]. 
+NOTE 
+
+===== PAGE 20 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 19 / 27 
+ 
+ 
+ 
+3 Tests in Application Scenarios and 
+Precautions 
+ 
+For your reference, this chapter takes EC200U series module as an example to describe and 
+demonstrate the average current consumption tests in normal sleep mode, enhanced sleep mode and 
+PSM in application scenarios. It includes the test steps, data comparison, test examples, test conclusion 
+and precautions.  
+ 
+ 
+The current consumption data involved in the examples in this section may differ between sub-models 
+of each module, and the specific measurements shall prevail. 
+ 
+3.1. Normal Sleep Mode and Enhanced Sleep Mode 
+3.1.1. Test Steps 
+3.1.1.1. Test Scenarios 
+Establish a TCP long connection and send 100 bytes data to the server every 60 seconds. 
+ 
+3.1.1.2. Statistical Data 
+⚫ 
+Test duration 
+⚫ 
+The average duration to enter low power consumption in normal sleep mode and enhanced sleep 
+ 
+mode 
+⚫ 
+The average current consumption in the process of sending a packet of data to entering low power 
+ 
+consumption and waiting for a certain period of time (as described in steps 3 and 4 below). 
+ 
+ 
+NOTE 
+
+===== PAGE 21 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 20 / 27 
+ 
+ 
+ 
+3.1.1.3. Test Steps 
+1. 
+Execute AT+QSCLKEX=1,2,10 to enable enhanced sleep mode. 
+2. 
+Execute AT+QIOPEN (see document [2]) to establish a TCP connection. 
+3. 
+Execute AT+QISEND (see document [2]) to send a packet of data (100 bytes). 
+4. 
+Pull up DTR to enter in low power mode and wait for 60 seconds (calculate the average current 
+consumption). 
+5. 
+Pull down DTR to wake up the module  
+6. 
+Repeat step 3–5 (test duration: 0.5 hour). 
+ 
+3.1.2. Test Data 
+Table 3: Average Current Consumption Comparison in Different Sleep Modes for EC200U Series 
+ 
+3.1.3. Test Examples 
+This chapter mainly demonstrates the average current consumption comparison between normal sleep 
+mode and enhanced sleep mode for EC200U series module. The examples are given in comparatively 
+better test scenarios.  
+ 
+Test scenarios: 
+⚫ 
+Execute AT+QSCLKEX=1,2,10 to enable enhanced sleep mode; 
+⚫ 
+Insert a China Unicom (U)SIM card and register to LTE Band 3; 
+⚫ 
+Establish a TCP long connection between the module and the server; 
+⚫ 
+Test duration: 0.5 hour. 
+ 
+ 
+Operator/Network 
+Normal Sleep 
+Mode/Enhanced 
+Sleep Mode 
+Test Duration 
+(H) 
+Average Duration to 
+Enter Low Power 
+Mode(S) 
+Average 
+Current 
+Consumption 
+(mA) 
+Mobile LTE 
+Normal Sleep Mode 
+0.5 
+10.2 
+17.41 
+Enhanced Sleep 
+Mode 
+0.5 
+2.5 
+6.60 
+Unicom LTE 
+Normal Sleep Mode 
+0.5 
+20.2 
+31.87 
+Enhanced Sleep 
+Mode 
+0.5 
+2.1 
+5.84 
+Telecom LTE 
+Normal Sleep Mode 
+0.5 
+5.8 
+11.24 
+Enhanced Sleep 
+Mode 
+0.5 
+3.0 
+7.26 
+
+===== PAGE 22 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 21 / 27 
+ 
+ 
+ 
+3.1.3.1. EC200U Series Average Current Consumption in Different Sleep Modes 
+⚫ 
+Normal sleep mode 
+ 
+Figure 1: Average Current Consumption in Normal Sleep Mode for EC200U Series 
+ 
+As shown in the above figure, after the module receives the data, the peak current duration is about 20 
+seconds, and then module enters sleep state. The average current consumption within 60 seconds is 
+29.92 mA. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+===== PAGE 23 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 22 / 27 
+ 
+ 
+ 
+⚫ 
+Enhanced sleep mode 
+ 
+Figure 2: Average Current Consumption in Enhanced Sleep Mode for EC200U Series 
+ 
+As shown in the above figure, after the module receives the data, the peak current duration is about 2 
+seconds, and then module enters sleep state. The average current consumption within 60 seconds is 
+5.63 mA. 
+ 
+From the comparison of Figure 1 and Figure 2, the module can quickly enter in sleep state after receiving 
+and sending data in enhanced sleep mode, thereby reducing the average current consumption. 
+ 
+3.1.4. Test Conclusion 
+By comparing the data before and after the enhanced sleep mode is enabled, power consumption 
+reduction is more obvious in enhanced sleep mode. 
+ 
+3.1.5. Precautions 
+After the enhanced sleep mode is enabled, additional signalling burden will be imposed on the base 
+station when the user initiates data interaction, so there may be a situation where the terminal cannot go 
+online due to the network side punishment. This function is turned off by default and you need to assess 
+this risk by yourself before using it. 
+ 
+
+===== PAGE 24 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 23 / 27 
+ 
+ 
+ 
+3.2. PSM 
+ 
+This chapter takes EG915U series modules as an example to describe and demonstrate the duration, 
+average current consumption and power consumption from enhanced sleep mode to PSM. 
+ 
+3.2.1. Test Steps 
+3.2.1.1. Test Scenarios 
+Wake up the module from PSM, establish a TCP short connection and send 20 bytes data to the server. 
+Then, wait for the module to enter PSM again. 
+ 
+Preparation: 
+1. 
+Connect the power consumption board to the power adapter and the N6705C current consumption 
+device 
+2. 
+Disconnect the power consumption board from USB 
+3. 
+The module uses China Unicom IoT card 
+4. 
+Network environment: The T3324 timer issued by the network is 2 seconds. 
+ 
+3.2.1.2. Statistical Data 
+⚫ 
+Average current consumption after entering PSM 
+⚫ 
+The average duration to enter low power consumption in normal sleep mode and enhanced sleep 
+ 
+mode 
+⚫ 
+Count the duration, average current consumption and power consumption of the following scenarios: 
+a) 
+Module initialization 
+b) 
+Network camping 
+c) 
+Data sending and receiving 
+d) 
+T3324 waiting phase 
+⚫ 
+Current consumption diagram of the module throughout the PSM process 
+ 
+3.2.1.3. Test Steps 
+1. 
+Execute AT+CFUN=4 (see document [2]) to enter airplane mode. 
+2. 
+Execute AT+QSCLKEX=1,1,30 to enable the enhanced sleep mode. 
+3. 
+Execute AT+QSCLK=3,1,"00100001","00000001" to enable PSM, and set the duration of T3412 
+timer to 1 hour and T3324 timer to 2 seconds. See Chapter 2.3.1 for details about timers. The 
+module enters sleep mode after there is no data interaction for 1 second. 
+4. 
+Execute AT+CFUN=1 to exit from airplane mode. 
+
+===== PAGE 25 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 24 / 27 
+ 
+ 
+ 
+5. 
+After finished the above steps, in the case of a successful network camping, the module enters PSM 
+automatically after there is no any data interaction. T3324 timer will be triggered if there is no network 
+data interaction. <delay_time> configuration will be triggered if there is no UART data interaction. If 
+the sleep light and network status light of the module are off, the module has entered PSM. 
+6. 
+After the module enters PSM, manually pull up the PSM_EINT pin to 1.8 V to confirm the module is 
+woken up, then run the following steps. 
+7. 
+Execute AT+QIOPEN (see document [2]) to establish a TCP short connection. 
+8. 
+Execute AT+QISEND (see document [2]) to send a packet data in 20 bytes. 
+9. 
+Because the enhanced sleep mode is enabled and the local RRC release duration is set to 1 second, 
+RRC will release quickly. After AT+QISEND is sent completely and the network releases RRC 
+quickly, the module starts timing according to the duration of the T3324 timer issued by the network. 
+When the timer ends, the module enters PSM again. 
+10. Step 6 to Step 9 is a wake-up cycle. You can select any wake-up cycle for data statistics. 
+ 
+3.2.2. Test Data 
+Table 4: Average Current Consumption Data After Waking up From PSM for EG915U Series 
+ 
+Mode 
+Test Duration (S) 
+Average Current 
+Consumption (mA) 
+Power Consumption 
+(μAh) 
+PSM 
+595 
+0.005 
+0.943 
+Module initialization plus 
+waiting for data packet 
+1.619 
+33.411 
+15.032 
+Network camping 
+0.393 
+63.296 
+6.917 
+Data receiving and 
+sending plus RRC release 
+0.840 
+170.164 
+39.750 
+IDLE 
+2.298 
+12.264 
+7.829 
+PSM 
+595 
+0.005 
+0.944 
+Total  
+5.210 
+48.625 
+69.643 
+
+===== PAGE 26 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 25 / 27 
+ 
+ 
+ 
+3.2.3. Test Examples 
+ 
+Figure 3: EG915U Series Average Current Consumption Data After Waking up From PSM 
+ 
+3.2.4. Test Conclusion 
+There is a total of 4 stages in which the module enters PSM from enhanced sleep mode: initiation, 
+camping the network, sending the TCP data and waiting for entering PSM again. 
+ 
+⚫ 
+The initialization duration is 1.619 seconds, with an average current consumption of 33.411 mA and a 
+power consumption of 15.032 μAh.  
+⚫ 
+The module network camping duration is 0.393 seconds, with an average current consumption of 
+63.296 mA and a power consumption of 6.917 μAh. 
+⚫ 
+TCP data sending duration is 0.840 seconds, with an average current consumption of 170.164 mA 
+and a power consumption of 39.750 μAh.   
+⚫ 
+T3324 timer waiting duration is 2.298 seconds, with an average current consumption of 12.264 mA 
+and a power consumption of 7.829 μAh. When the module enters PSM again, the average current 
+consumption is stable within 6 μA. 
+ 
+As can be seen from above, the total time taken for the module to wake up from PSM to enter PSM again 
+is 5.210 seconds, with an average current consumption of 48.625 mA and a power consumption of     
+69.643 μAh. 
+ 
+3.2.5. Precautions 
+After the enhanced sleep mode is enabled, additional signaling burden will be imposed on the base 
+station when the user initiates data interaction, so there may be a situation where the terminal cannot go 
+online due to the network side punishment. This function is turned off by default and you need to assess 
+this risk by yourself before using it. 
+ 
+ 
+ 
+
+===== PAGE 27 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 26 / 27 
+ 
+ 
+ 
+After PSM is enabled, the module reports the values of T3412 timer and T3324 timer as a reference. If the 
+operator supports PSM, the network determines whether to uses the reported value to issue to the 
+module. The module cannot predict network behavior. If the difference between the T3412 value and the 
+T3324 value issued by the network is less than 5 minutes, the module does not enter PSM. In other words, 
+although the difference between the T3412 value and the T3324 value reported by the module is higher 
+than 5 minutes, and the difference between the T3412 value and the T3324 value issued by the network 
+is less than 5 minutes, the module will not enter PSM. 
+ 
+ 
+
+===== PAGE 28 =====
+ 
+LTE Standard Module Series 
+EC200U&EG91xU&EG915G_Series_Low_Power_Mode_Application_Note                 27 / 27 
+ 
+ 
+ 
+4 Appendix References 
+ 
+Table 5: Related Documents 
+ 
+Table 6: Terms and Abbreviations 
+ 
+ 
+Document Name 
+[1] Quectel_EC200U&EG91xU&EG915G_Series_AT_Commands_Manual 
+[2] Quectel_EC200U&EG91xU&EG915G_Series_TCP(IP)_Application_Note 
+Abbreviation 
+Description 
+DTR 
+Data Terminal Ready 
+IP 
+Internet Protocol 
+LTE 
+Long Term Evolution 
+PSM 
+Power Saving Mode 
+RRC 
+Radio Resource Control 
+TA 
+Terminal Adapter 
+TAU 
+Tracking Area Update 
+TCP 
+Transmission Control Protocol 
+USB 
+Universal Serial Bus 

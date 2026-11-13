@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鱼群计数工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@400;600&family=Noto+Serif+SC:wght@700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="app">
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6.5 12c.94-2.34 3.09-4 5.5-4s4.56 1.66 5.5 4"/>
+                        <path d="M6.5 12c-.94 2.34-3.09 4-5.5 4s-4.56-1.66-5.5-4"/>
+                        <path d="M17.5 12c.94 2.34 3.09 4 5.5 4s4.56-1.66 5.5-4"/>
+                        <path d="M17.5 12c-.94-2.34-3.09-4-5.5-4s-4.56 1.66-5.5 4"/>
+                        <circle cx="12" cy="12" r="1.5"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>鱼群计数工具</h1>
+                    <span class="brand-tag">智慧渔业</span>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">系统就绪</span>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <!-- 左侧：控制面板 -->
+            <aside class="panel panel-controls">
+                <div class="panel-section">
+                    <h3 class="section-title"><span class="section-num">01</span>图像上传</h3>
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="imageUpload" accept="image/*">
+                        <div class="upload-content">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <p class="upload-hint">拖拽图像到此处</p>
+                            <p class="upload-sub">或点击选择文件</p>
+                            <label for="imageUpload" class="upload-btn">选择图像</label>
+                        </div>
+                        <div class="upload-ripple"></div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="section-title"><span class="section-num">02</span>参数设置</h3>
+                    <div class="control-stack">
+                        <div class="field">
+                            <label>二值化方法</label>
+                            <div class="select-wrap">
+                                <select id="thresholdMethod">
+                                    <option value="otsu">Otsu 自动阈值</option>
+                                    <option value="fixed">固定阈值</option>
+                                </select>
+                                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                        </div>
+                        <div class="field" id="fixedThresholdField">
+                            <label>固定阈值 <span id="fixedThresholdValue">90</span></label>
+                            <input type="range" id="fixedThreshold" min="0" max="255" value="90">
+                        </div>
+                        <div class="field row">
+                            <label class="switch-label">反转二值化（深色鱼群）</label>
+                            <label class="switch">
+                                <input type="checkbox" id="invertBinarize" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label>计数模式</label>
+                            <div class="select-wrap">
+                                <select id="countMode">
+                                    <option value="density" selected>密度估计（密集鱼群）</option>
+                                    <option value="connected">连通域（稀疏鱼群）</option>
+                                </select>
+                                <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                        </div>
+                        <div class="field" id="avgFishAreaField">
+                            <label>单鱼估算面积（像素）</label>
+                            <input type="number" id="avgFishArea" value="70" min="1" max="500">
+                        </div>
+                        <div class="field hidden" id="minAreaField">
+                            <label>最小连通域面积</label>
+                            <input type="number" id="minArea" value="20" min="1" max="5000">
+                        </div>
+                        <button id="processButton" class="process-btn" disabled>
+                            <span class="btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                            处理图像
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section result-section-compact">
+                    <div class="result-metric-inline">
+                        <div class="metric-block">
+                            <span class="metric-label">检测数量</span>
+                            <span class="metric-value-row"><span id="fishCount">0</span><small>条</small></span>
+                        </div>
+                        <div class="metric-divider"></div>
+                        <div class="metric-block">
+                            <span class="metric-label">处理耗时</span>
+                            <span class="metric-value-row"><span id="processTime">0</span><small>ms</small></span>
+                        </div>
+                        <div class="metric-actions">
+                            <button id="copyResult" class="icon-btn" title="复制结果">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            </button>
+                            <button id="exportResult" class="icon-btn" title="导出结果">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 中间：原始图像 -->
+            <section class="panel panel-preview">
+                <div class="preview-header">
+                    <h3 class="section-title">原始图像</h3>
+                    <span class="image-badge" id="originalBadge">未加载</span>
+                </div>
+                <div class="canvas-frame">
+                    <canvas id="originalCanvas" width="480" height="360"></canvas>
+                    <div class="canvas-placeholder" id="originalPlaceholder">
+                        <div class="placeholder-art">
+                            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="8" y="12" width="48" height="40" rx="4"/><circle cx="24" cy="28" r="6"/><path d="M8 44 L24 32 L36 40 L48 28 L56 36"/></svg>
+                        </div>
+                        <p>等待图像加载</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧：二值化 + 标记图 -->
+            <section class="panel panel-result">
+                <div class="result-stack">
+                    <div class="result-view">
+                        <div class="preview-header sub">
+                            <h3 class="section-title">二值化结果</h3>
+                            <span class="image-badge" id="binaryBadge">未处理</span>
+                        </div>
+                        <div class="canvas-frame small">
+                            <canvas id="binaryCanvas" width="480" height="240"></canvas>
+                            <div class="canvas-placeholder" id="binaryPlaceholder">
+                                <div class="placeholder-art">
+                                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="12" y="8" width="40" height="48" rx="2"/><line x1="12" y1="20" x2="52" y2="20"/><line x1="12" y1="44" x2="52" y2="44"/><circle cx="22" cy="32" r="4"/><circle cx="32" cy="32" r="4"/><circle cx="42" cy="32" r="4"/></svg>
+                                </div>
+                                <p>处理后显示</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-view">
+                        <div class="preview-header sub">
+                            <h3 class="section-title">检测标记</h3>
+                            <span class="image-badge" id="markBadge">未处理</span>
+                        </div>
+                        <div class="canvas-frame small">
+                            <canvas id="markCanvas" width="480" height="240"></canvas>
+                            <div class="canvas-placeholder" id="markPlaceholder">
+                                <div class="placeholder-art">
+                                    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M32 8 L38 26 L56 26 L42 38 L48 56 L32 44 L16 56 L22 38 L8 26 L26 26 Z"/></svg>
+                                </div>
+                                <p>检测后显示标记</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-msg" id="toastMsg">操作成功</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

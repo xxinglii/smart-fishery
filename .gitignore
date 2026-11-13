@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# 运行期数据
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# 现场配置（含相机口令，不入库）
+config.yaml
+
+# 虚拟环境
+.venv/
+venv/

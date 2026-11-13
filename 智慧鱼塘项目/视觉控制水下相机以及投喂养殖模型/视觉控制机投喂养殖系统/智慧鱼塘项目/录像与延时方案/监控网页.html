@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鱼塘监控 · 网页端试播/抓图（多路）</title>
+<script src="https://cdn.jsdelivr.net/npm/ezuikit-js@9.0.22/index.js"></script>
+<style>
+  :root {
+    --bg: #f4f6f8; --card: #ffffff; --text: #1d2129; --muted: #86909c;
+    --border: #e5e9ef; --accent: #165dff; --accent-hover: #4080ff;
+    --danger: #f53f3f; --ok: #00b42a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+         font: 14px/1.6 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; max-width: 1280px; margin: 0 auto; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card h2 { font-size: 15px; margin: 0 0 12px; }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+  input, select { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+                  font-size: 13px; background: #fff; color: var(--text); }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  button { padding: 8px 14px; border: none; border-radius: 6px; background: var(--accent); color: #fff;
+           font-size: 13px; cursor: pointer; margin: 8px 6px 0 0; }
+  button:hover { background: var(--accent-hover); }
+  button.secondary { background: #fff; color: var(--text); border: 1px solid var(--border); }
+  button.secondary:hover { border-color: var(--accent); color: var(--accent); background: #fff; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  #status { margin-top: 12px; padding: 10px; background: #f7f8fa; border-radius: 6px;
+            font-size: 12px; color: var(--muted); white-space: pre-wrap; word-break: break-all;
+            max-height: 220px; overflow-y: auto; }
+  #status .err { color: var(--danger); }
+  #status .ok  { color: var(--ok); }
+  #video-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cell { position: relative; background: #000; border-radius: 8px; overflow: hidden; flex: 1 1 100%; aspect-ratio: 16/9; min-height: 240px; }
+  .cell.half { flex: 1 1 calc(50% - 4px); min-height: 180px; }
+  .cell .tag { position: absolute; top: 6px; left: 8px; z-index: 10; color: #fff; font-size: 12px;
+               background: rgba(0,0,0,.5); padding: 1px 8px; border-radius: 4px; pointer-events: none; }
+  .shots { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .shots figure { margin: 0; width: calc(25% - 6px); min-width: 120px; }
+  .shots img { width: 100%; border-radius: 6px; display: block; background: #000; }
+  .shots figcaption { font-size: 11px; color: var(--muted); margin-top: 2px; word-break: break-all; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+  code { background: #f0f2f5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <div class="card">
+    <h2>① 开放平台凭证</h2>
+    <label>AppKey</label>
+    <input id="appKey" placeholder="开放平台控制台 → 应用管理">
+    <label>AppSecret</label>
+    <input id="appSecret" type="password" placeholder="创建应用后获得">
+    <button id="btnToken" class="secondary">获取 accessToken</button>
+    <span id="tokenState" class="hint"></span>
+
+    <h2 style="margin-top:20px">② 设备</h2>
+    <label>设备序列号（NVR 填整机序列号，4 路共用）</label>
+    <input id="serial" placeholder="如 C12345678">
+    <div class="row">
+      <div>
+        <label>通道（逗号分隔）</label>
+        <input id="channels" value="1,2,3,4">
+      </div>
+      <div>
+        <label>清晰度</label>
+        <select id="quality">
+          <option value=".hd.live">高清（主码流）</option>
+          <option value=".live" selected>流畅（子码流）</option>
+        </select>
+      </div>
+    </div>
+
+    <h2 style="margin-top:20px">③ 操作</h2>
+    <button id="btnPlay">▶ 播放全部通道</button>
+    <button id="btnStop" class="secondary">全部停止</button>
+    <br>
+    <button id="btnCapture" class="secondary">📷 逐路抓图（测试延时API）</button>
+    <button id="btnAlarms" class="secondary">📋 查最近告警图片</button>
+
+    <div id="status">状态日志会显示在这里。</div>
+  </div>
+
+  <div class="card">
+    <h2>实时监控画面（多路同屏）</h2>
+    <div id="video-grid"></div>
+    <div class="hint">
+      若某路黑屏：该通道可能未接摄像头或被停用。多路同屏会同时取多路流，宽带吃紧时把清晰度切到「流畅」。
+    </div>
+    <h2 style="margin-top:20px">抓拍 / 告警图片 <span id="shotCount" style="color:var(--muted);font-weight:normal;font-size:12px"></span></h2>
+    <div class="shots" id="shots"></div>
+    <div class="hint">图片只显示在本页面，不会自动保存到磁盘——符合“没变化就不存”的目标。</div>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const API = 'https://open.ezviz.com';
+let players = [];
+
+function chList() {
+  return $('channels').value.split(',').map(s => s.trim()).filter(Boolean);
+}
+function log(msg, cls) {
+  const el = document.createElement('div');
+  if (cls) el.className = cls;
+  el.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  $('status').appendChild(el);
+  $('status').scrollTop = $('status').scrollHeight;
+}
+async function post(path, params) {
+  const r = await fetch(API + path, { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(params) });
+  const j = await r.json();
+  if (String(j.code) !== '200') throw new Error(path + ' 返回 ' + j.code + '：' + (j.msg || JSON.stringify(j)));
+  return j.data;
+}
+async function ensureToken() {
+  const saved = JSON.parse(localStorage.getItem('ys7token') || 'null');
+  if (saved && saved.accessToken && saved.expireAt > Date.now() + 60000) {
+    $('tokenState').textContent = '（已缓存，' + new Date(saved.expireAt).toLocaleString() + ' 过期）';
+    return saved.accessToken;
+  }
+  const appKey = $('appKey').value.trim(), appSecret = $('appSecret').value.trim();
+  if (!appKey || !appSecret) throw new Error('请先填写 AppKey / AppSecret');
+  const data = await post('/api/lapp/token/get', { appKey, appSecret });
+  localStorage.setItem('ys7token', JSON.stringify({
+    accessToken: data.accessToken, expireAt: Date.now() + Number(data.expireTime)
+  }));
+  $('tokenState').textContent = '（获取成功，约' + Math.round(data.expireTime/86400000) + '天有效）';
+  log('accessToken 获取成功', 'ok');
+  return data.accessToken;
+}
+function stopAll() {
+  players.forEach(p => { try { p.stop(); } catch(e) {} });
+  players = [];
+  $('video-grid').innerHTML = '';
+}
+$('btnToken').onclick = async () => {
+  try { localStorage.removeItem('ys7token'); await ensureToken(); }
+  catch (e) { log(e.message, 'err'); }
+};
+$('btnPlay').onclick = async () => {
+  try {
+    const token = await ensureToken();
+    const serial = $('serial').value.trim();
+    const chs = chList();
+    if (!serial) throw new Error('请填写设备序列号');
+    if (!chs.length) throw new Error('请填写至少一个通道号');
+    stopAll();
+    const multi = chs.length > 1;
+    chs.forEach((ch, i) => {
+      const cell = document.createElement('div');
+      cell.className = 'cell' + (multi ? ' half' : '');
+      const inner = document.createElement('div');
+      inner.id = 'cell-' + i;
+      inner.style.width = '100%'; inner.style.height = '100%';
+      const tag = document.createElement('div');
+      tag.className = 'tag'; tag.textContent = '通道 ' + ch;
+      cell.appendChild(tag); cell.appendChild(inner);
+      $('video-grid').appendChild(cell);
+    });
+    await new Promise(r => setTimeout(r, 50));   // 等 DOM 布局完成
+    chs.forEach((ch, i) => {
+      const url = 'ezopen://open.ezviz.com/' + serial + '/' + ch + $('quality').value;
+      const el = $('cell-' + i);
+      const p = new EZUIKit.EZUIKitPlayer({
+        id: el.id, url, accessToken: token, template: 'simple',
+        width: el.clientWidth, height: el.clientHeight,
+      });
+      p.play();
+      players.push(p);
+      log('通道 ' + ch + ' 开始播放');
+    });
+  } catch (e) { log(e.message, 'err'); }
+};
+$('btnStop').onclick = () => { stopAll(); log('已全部停止'); };
+function addShot(src, caption) {
+  const fig = document.createElement('figure');
+  const img = document.createElement('img');
+  img.src = src; img.referrerPolicy = 'no-referrer';
+  const cap = document.createElement('figcaption');
+  cap.textContent = caption;
+  fig.appendChild(img); fig.appendChild(cap);
+  $('shots').prepend(fig);
+  $('shotCount').textContent = '（本页共 ' + $('shots').childElementCount + ' 张）';
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+$('btnCapture').onclick = async () => {
+  try {
+    const token = await ensureToken();
+    const serial = $('serial').value.trim();
+    for (const ch of chList()) {
+      const data = await post('/api/lapp/device/capture', {
+        accessToken: token, deviceSerial: serial, channelNo: ch
+      });
+      log('通道 ' + ch + ' 抓图成功', 'ok');
+      addShot(data.picUrl, 'ch' + ch + ' ' + new Date().toLocaleTimeString());
+      await sleep(4000);   // 官方要求每台设备间隔 ≥4 秒
+    }
+  } catch (e) { log(e.message, 'err'); }
+};
+$('btnAlarms').onclick = async () => {
+  try {
+    const token = await ensureToken();
+    const serial = $('serial').value.trim();
+    const now = Date.now(), day = 86400000;
+    const data = await post('/api/lapp/alarm/device/callAlarmList', {
+      accessToken: token, deviceSerial: serial,
+      startTime: now - day, endTime: now,
+      status: 2, pageStart: 0, pageSize: 8
+    });
+    const list = (data.alarmsInfo || data || []);
+    const alarms = Array.isArray(list) ? list : (list.alarmsInfo || []);
+    if (!alarms.length) { log('近 24 小时没有告警记录'); return; }
+    alarms.slice(0, 8).forEach(a => {
+      if (a.alarmPicUrl) addShot(a.alarmPicUrl, (a.alarmName || '告警') + ' ' + new Date(a.alarmStartTime).toLocaleString());
+    });
+    log('查到 ' + alarms.length + ' 条告警，已显示图片', 'ok');
+  } catch (e) { log(e.message, 'err'); }
+};
+['appKey', 'serial', 'channels'].forEach(id => {
+  const v = localStorage.getItem('ys7_' + id);
+  if (v) $(id).value = v;
+  $(id).addEventListener('change', () => localStorage.setItem('ys7_' + id, $(id).value.trim()));
+});
+if (localStorage.getItem('ys7token')) log('检测到缓存的 accessToken，可直接播放');
+</script>
+</body>
+</html>

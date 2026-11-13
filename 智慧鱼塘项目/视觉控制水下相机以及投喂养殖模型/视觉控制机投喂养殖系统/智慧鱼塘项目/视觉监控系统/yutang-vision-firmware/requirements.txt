@@ -1,0 +1,43 @@
+# 鱼塘视觉固件 · Python 依赖
+#
+# 结论先说：**一行都不装也能跑**（纯标准库路径）。
+# 下面的包全是"装上更好"，缺失时固件会自动降级，并把降级原因写到
+# /api/v1/logs 与 /api/v1/health 的 services 列表（ok=false 的那几项）。
+#
+# 在树莓派上推荐这样装（headless 版没有 GUI 依赖，省 SD 卡空间）：
+#   pip install -r requirements.txt
+# 或只装必须的两个：
+#   pip install numpy opencv-python-headless
+
+# --- 强烈建议（树莓派 5）----------------------------------------------------
+numpy>=1.24,<3
+#   运动检测向量化（V-Value 计算）：有它才是"灰度阈值帧差"，
+#   没有它退化成纯 Python 的字节异或变化率（会同时把传感器噪声算成运动，
+#   基线偏高、灵敏度下降）。缺失 -> /logs 记录降级原因。
+
+opencv-python-headless>=4.8
+#   ① HOG 人形检测（person 事件，防偷捕）；② 快速 JPEG 编码与缩放。
+#   缺失 -> live 模式下 person 事件不产出（不假装检出），抓图走纯标准库编码器。
+#   注意：不要上 YOLO —— 树莓派 5 长期值守跑不动，契约 §8 也明确说"不必上 YOLO"。
+
+# --- 建议 -------------------------------------------------------------------
+PyYAML>=6.0
+#   解析 config.yaml。缺失 -> 用内置的极简 YAML 子集解析器（支持块映射/列表/行内流式），
+#   config.example.yaml 这种写法完全够用。
+
+onvif-zeep>=0.2.12
+#   云台真控制（ContinuousMove / GotoPreset / SetPreset）。
+#   缺失 -> 云台走本地状态机（mock）：接口行为完全一致，但不会真的转动相机。
+#   HIKVISION 球机需在相机端"配置 → 网络 → 高级配置 → 集成协议"里开启 ONVIF 并建用户。
+
+# --- 可选 -------------------------------------------------------------------
+psutil>=5.9
+#   非 Linux 平台（比如开发用的 macOS）读取内存占用。树莓派上不需要（走 /proc）。
+
+pytest>=7.0
+#   仅用于 `python3 -m pytest tests/ -q`；不装也能跑 `python3 tests/test_contract.py`。
+
+# --- 说明：不需要 Flask ------------------------------------------------------
+# app.py 用 Python 标准库 http.server 实现（ThreadingHTTPServer + 自写路由），
+# 因此**不依赖 Flask**，4G 现场少一个依赖就少一个坏点。若你确实要用 Flask/其它
+# WSGI 部署，可自行安装，但本固件不会 import 它。
