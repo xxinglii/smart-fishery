@@ -30,11 +30,12 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Callable, Dict, List, Optional
 
-from . import __version__, degraded_notes
+from . import EVIDENCE_LEVEL, __version__, degraded_notes
 from .bus import Bus
 from .camera import CameraManager, jpeg_dimensions
 from .config import CONTRACT_KEYS, Config
 from .detector import Detector
+from .feeding_fsm import ARMED, GORGE, IDLE, SETTLE, STOPPED, FeedingFSM, Transition
 from .metrics import MetricsService, SystemSampler
 from .netmeter import NetMeter
 from .onvif_ptz import PTZManager
@@ -42,6 +43,10 @@ from .store import EVENT_TYPES, LOG_LEVELS, SNAPSHOT_TRIGGERS, Store
 
 MAX_LIMIT = 2000
 MAX_BODY_BYTES = 1024 * 1024
+
+# 只有这些跃迁值得变成事件。gorge_detected / settle_begin / gorge_resumed
+# 是过程状态，每轮会来回好几次，发成事件会把前端淹掉 —— 它们只写日志。
+FEEDING_EMIT_REASONS = ("satiety", "timeout", "no_response", "baseline_unready", "window_closed")
 
 
 # ==========================================================================
@@ -71,6 +76,11 @@ class Runtime:
         self.ptz = PTZManager(cfg, self.store, self.cameras, logger=self.log, force_mock=force_ptz_mock)
         self.netmeter = NetMeter(cfg, self.store, logger=self.log)
         self.sysmon = SystemSampler(data_dir, logger=self.log)
+
+        # 投喂控制：每相机一个状态机，每次投喂窗口重建一次
+        self._feeding: Dict[str, FeedingFSM] = {}
+        self._feed_window_prev: Optional[bool] = None
+        self._feeder_cmds: List[Dict[str, Any]] = []
 
         self._net: Dict[str, Any] = {
             "type": cfg.get("net.type", "4g"),
@@ -264,6 +274,240 @@ class Runtime:
         return False
 
     # ------------------------------------------------------------------
+    # 投喂控制：把「视觉判饱食」接成「停料建议」
+    # ------------------------------------------------------------------
+    def _feeding_cfg(self) -> Dict[str, Any]:
+        return {
+            "gorge_ratio": self.cfg.get("feeding_control.gorge_ratio", 1.6),
+            "stop_ratio": self.cfg.get("feeding_control.stop_ratio", 1.2),
+            "gorge_confirm_s": self.cfg.get("feeding_control.gorge_confirm_s", 8),
+            "hold_s": self.cfg.get("feeding_control.hold_s", 30),
+            "max_gorge_s": self.cfg.get("feeding_control.max_gorge_s", 1800),
+            "arm_timeout_s": self.cfg.get("feeding_control.arm_timeout_s", 300),
+            "observe_after_s": self.cfg.get("feeding_control.observe_after_s", 60),
+        }
+
+    def _feeding_fsm(self, camera_id: str) -> FeedingFSM:
+        fsm = self._feeding.get(camera_id)
+        if fsm is None or fsm.state == IDLE:
+            fsm = FeedingFSM(self._feeding_cfg())
+            self._feeding[camera_id] = fsm
+        return fsm
+
+    def feeding_snapshot(self) -> Dict[str, Any]:
+        """给 API / 前端看当前投喂判定状态（只读，不改任何东西）。"""
+        out: Dict[str, Any] = {
+            "enabled": bool(self.cfg.get("feeding_control.enabled", True)),
+            "shadow_mode": bool(self.cfg.get("feeding_control.shadow_mode", True)),
+            "in_feed_window": self.feed_window_active(),
+            "cameras": {},
+        }
+        for cam in self.cameras.cameras:
+            fsm = self._feeding.get(cam.id)
+            out["cameras"][cam.id] = fsm.snapshot() if fsm else None
+            out["cameras"][cam.id + ":signal"] = self.detector.last_signal(cam.id)
+        out["pending_cmds"] = list(self._feeder_cmds[-20:])
+        return out
+
+    def _on_feed_window_edge(self, active: bool, ts: Optional[int] = None) -> None:
+        """投喂窗口开/关。
+
+        开：冻结基线 + 启动状态机。
+        关：解冻基线 + 结算本轮。
+
+        冻结这一步不是优化，是必需：基线是 1800 s 滚动中位数，一次投喂 20 min，
+        不冻结的话投喂期的高峰值会把"平时"抬上去，ratio 自己塌到 1.0，
+        状态机在 18.1 min 就误判吃饱（实测见 tools/replay_feeding.py）。
+        """
+        if not self.cfg.get("feeding_control.enabled", True):
+            return
+        now = int(ts or time.time())
+        for cam in self.cameras.cameras:
+            fsm = self._feeding_fsm(cam.id)
+            if active:
+                base = self.metrics.baseline(cam.id)
+                samples = len(self.metrics.tracker(cam.id))
+                if self.metrics.baseline_ready(cam.id):
+                    frozen = self.metrics.freeze_baseline(cam.id, now)
+                    fsm.start(now, ready=True)
+                    self.log(
+                        "info",
+                        "feeding",
+                        "%s 投喂开始，基线冻结在 %.5f（%d 个历史样本）" % (cam.id, frozen, samples),
+                    )
+                else:
+                    # 不把这一轮判死：启动时就绪不了（树莓派重启正好落在窗口内），
+                    # 先挂起，等基线攒够 10 个样本再冻结并开始判定（见 _tick_feeding）。
+                    fsm.start(now, ready=True)
+                    self.log(
+                        "warn",
+                        "feeding",
+                        "%s 基线尚未就绪（基线 %.5f，仅 %d 个样本）：先挂起，攒够后自动开始判定"
+                        % (cam.id, base, samples),
+                    )
+            else:
+                if self.metrics.baseline_frozen(cam.id):
+                    old = self.metrics.unfreeze_baseline(cam.id, now)
+                    skipped = self.metrics.tracker(cam.id).skipped
+                    self.log(
+                        "info",
+                        "feeding",
+                        "%s 投喂窗口结束，基线解冻（原 %.5f，投喂期共丢弃 %d 个高峰样本）"
+                        % (cam.id, old, skipped),
+                    )
+                tr = fsm.close(now)
+                if tr is not None:
+                    event = self._feeding_event(cam.id, tr)
+                    if event is not None:
+                        self.emit_event(event)
+
+    def _tick_feeding(self, camera_id: str, ts: int) -> None:
+        """每帧喂一次状态机。相机离线 / 云台转动 / 画面近乎静止期间只暂停计时。"""
+        fsm = self._feeding.get(camera_id)
+        if fsm is None or fsm.state == IDLE:
+            return
+        sig = self.detector.last_signal(camera_id)
+        if sig is None:
+            return
+
+        # 自愈：窗口开启时基线没就绪，这里等它攒够样本再冻结。
+        # 此时窗口内已经积累了几个样本，但中位数对少量极端值不敏感
+        # （1800 s 窗口约 900 个样本，十几个高峰值改变不了中位数）。
+        if not self.metrics.baseline_frozen(camera_id) and self.metrics.baseline_ready(camera_id):
+            frozen = self.metrics.freeze_baseline(camera_id, ts)
+            self.log(
+                "info",
+                "feeding",
+                "%s 基线就绪，补冻结在 %.5f，开始判定" % (camera_id, frozen),
+            )
+
+        cam = self.cameras.get(camera_id)
+        moving = False
+        try:
+            ctrl = self.ptz.controller(camera_id)
+            if ctrl is not None:
+                moving = bool(ctrl.state().get("moving"))
+        except Exception:
+            moving = False
+
+        min_v = float(self.cfg.get("feeding_control.min_v_value", 0.005) or 0.005)
+        if cam is None or not cam.online:
+            fsm.pause(ts, "offline")
+        elif moving:
+            fsm.pause(ts, "ptz")
+        elif sig["v_value"] < min_v:
+            # 画面近乎静止：夜间纯标准库降级路径、镜头被糊住、或增益被压到底。
+            # 这种时候 ratio 可能是基线噪声除出来的 19 倍，判定不可信 —— 宁可停判，
+            # 也不能拿它去停料。这条与「夜间只走定时」的原则一致。
+            fsm.pause(ts, "low_signal")
+        else:
+            fsm.resume(ts)
+
+        tr = fsm.tick(
+            ts,
+            sig["ratio"],
+            v_value=sig["v_value"],
+            baseline=sig["baseline"],
+            ready=sig["baseline_ready"],
+        )
+        if tr is not None:
+            event = self._feeding_event(camera_id, tr)
+            if event is not None:
+                self.emit_event(event)
+
+    def _feeding_event(self, camera_id: str, tr: Transition) -> Optional[Dict[str, Any]]:
+        if tr.reason not in FEEDING_EMIT_REASONS:
+            self.log(
+                "debug",
+                "feeding",
+                "%s %s -> %s（ratio %.2f×，过程状态，不发事件）"
+                % (camera_id, tr.frm, tr.to, float(tr.metric.get("ratio") or 0.0)),
+            )
+            return None
+        shadow = bool(self.cfg.get("feeding_control.shadow_mode", True))
+        # 只有「真的该停」的跃迁才算可执行建议；无响应/结算只是记录
+        actionable = tr.reason in ("satiety", "timeout") and tr.to == STOPPED
+        if tr.reason == "no_response":
+            severity, title = "notice", "投料后未见摄食响应"
+        elif tr.reason == "window_closed":
+            severity, title = "info", "本轮投喂结算"
+        elif tr.reason == "baseline_unready":
+            severity, title = "notice", "本轮未做自动停料判定"
+        elif tr.reason == "satiety":
+            severity, title = "warn", "建议停料：摄食强度已回落"
+        else:
+            severity, title = "warn", "建议停料：抢食超时（兜底）"
+
+        detail = tr.label
+        if tr.reason == "satiety":
+            detail += "；连续 %d s 低于 %.2f×（峰值 %.2f×）" % (
+                int(self._feeding_cfg()["hold_s"]),
+                float(self._feeding_cfg()["stop_ratio"]),
+                float(tr.metric.get("peak_ratio") or 0.0),
+            )
+        elif tr.reason == "timeout":
+            detail += "；已持续 %d s" % int(tr.metric.get("held_s") or 0)
+        elif tr.reason == "no_response":
+            detail += "；已等待 %d s，仍按定时计划执行，请人工确认料机/画面" % int(
+                tr.metric.get("waited_s") or 0
+            )
+        elif tr.reason == "window_closed":
+            avg = tr.metric.get("after_stop_ratio_avg")
+            stop_reason = tr.metric.get("stop_reason")
+            if stop_reason == "baseline_unready":
+                detail += "；基线始终未就绪，本轮未做任何判定（退回定时投喂）"
+            elif avg is not None:
+                detail += "；停料后 %d 个样本的均值为 %.2f×（用于核对停得早还是晚）" % (
+                    int(tr.metric.get("after_stop_samples") or 0),
+                    float(avg),
+                )
+            elif stop_reason:
+                detail += "；判停原因 %s" % stop_reason
+            else:
+                detail += "；本轮未产生停料点（窗口结束前强度一直没回落）"
+        if shadow and actionable:
+            title = "[影子] %s" % title
+            detail += "（影子模式：只记录不发指令）"
+
+        event = {
+            "ts": int(tr.ts),
+            "camera_id": camera_id,
+            "type": "feeding_stop",
+            "severity": severity,
+            "confidence": 0.6 if actionable else 0.4,
+            "title": title,
+            "detail": detail,
+            "metric": dict(tr.metric),
+            "evidence": EVIDENCE_LEVEL,
+        }
+        if actionable and not shadow:
+            self._dispatch_feeder_cmd(camera_id, event)
+        return event
+
+    def _dispatch_feeder_cmd(self, camera_id: str, event: Dict[str, Any]) -> None:
+        """真正下发停料指令。目前只走 SSE/内存，真机再接 MQTT。
+
+        刻意留成唯一出口：影子模式跑通、人工核对 10 次无误之后，
+        再把这里换成 MQTT publish，改动面只有这一个函数。
+        """
+        cmd = {
+            "ts": int(event["ts"]),
+            "camera_id": camera_id,
+            "action": "stop",
+            "reason": str(event["metric"].get("to") and event.get("title") or ""),
+            "shadow": False,
+        }
+        self._feeder_cmds.append(cmd)
+        if len(self._feeder_cmds) > 200:
+            del self._feeder_cmds[:100]
+        try:
+            self.bus.publish("feeder_cmd", cmd)
+        except Exception as exc:
+            self.log("warn", "feeding", "停料指令广播失败：%s" % exc)
+        self.log("info", "feeding", "%s 已下发停料指令（%s）" % (camera_id, cmd["action"]))
+
+
+    # ------------------------------------------------------------------
     # 后台线程
     # ------------------------------------------------------------------
     def _watchdog_loop(self) -> None:
@@ -325,6 +569,9 @@ class Runtime:
             self._detector_tick_at = started
             try:
                 active = self.feed_window_active()
+                if active != self._feed_window_prev:
+                    self._on_feed_window_edge(active)
+                    self._feed_window_prev = active
                 for cam in self.cameras.cameras:
                     frame = cam.latest()
                     if frame is None:
@@ -339,6 +586,9 @@ class Runtime:
                     )
                     for event in events:
                         self.emit_event(event)
+                    # 检测完立刻喂状态机：用刚算出的 ratio，不重复计算 V-Value
+                    if active:
+                        self._tick_feeding(cam.id, int(frame.ts))
             except Exception as exc:
                 import traceback
 

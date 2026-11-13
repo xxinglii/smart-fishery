@@ -26,6 +26,9 @@ EVENT_TYPES: Tuple[str, ...] = (
     "offline",
     "tamper",
     "motion",
+    # 迭代新增：投喂控制相关（停料判定 / 结算 / 无响应告警），一个类型多种 reason，
+    # detail 里写明具体原因。对前端只多一个 type 值，不改任何既有字段。
+    "feeding_stop",
 )
 SEVERITIES: Tuple[str, ...] = ("info", "notice", "warn", "critical")
 SNAPSHOT_TRIGGERS: Tuple[str, ...] = ("interval", "event", "manual")

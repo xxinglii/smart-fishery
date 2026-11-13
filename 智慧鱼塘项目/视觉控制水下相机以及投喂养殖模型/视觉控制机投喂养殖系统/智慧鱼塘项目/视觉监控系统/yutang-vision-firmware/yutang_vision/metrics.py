@@ -55,14 +55,53 @@ def median(values: Sequence[float]) -> float:
 
 
 class BaselineTracker:
-    """滚动中位数基线（带时间窗口）。"""
+    """滚动中位数基线（带时间窗口，支持投喂期冻结）。
+
+    为什么需要 freeze()：窗口是 1800 s，而一次投喂要 20 分钟。不冻结的话，
+    投喂期的摄食高峰值会滚进窗口，把"平时"的中位数抬到接近峰值，
+    ratio = v_value / baseline 自己塌到 1.0 附近 —— 停料判据会把自己算死
+    （实测见 tools/replay_feeding.py：不冻结 18.1 min 误停，冻结后 27.6 min 才停）。
+    """
 
     def __init__(self, window_s: float = 1800.0, min_samples: int = 3) -> None:
         self.window_s = float(window_s)
         self.min_samples = int(min_samples)
         self._samples: Deque[Tuple[float, float]] = deque()
+        self._frozen: Optional[float] = None
+        self._frozen_ts: float = 0.0
+        self._skipped: int = 0
+
+    @property
+    def frozen(self) -> bool:
+        return self._frozen is not None
+
+    def freeze(self, now: Optional[float] = None) -> float:
+        """锁定当前基线。冻结期 add() 仍被调用，但样本不进基线。"""
+        if self._frozen is not None:
+            return self._frozen
+        base = self.value(now)  # 此刻 _frozen 还是 None，走正常中位数
+        self._frozen = float(base)
+        self._frozen_ts = float(now or 0.0)
+        self._skipped = 0
+        return self._frozen
+
+    def unfreeze(self, now: Optional[float] = None) -> float:
+        """解冻并返回冻结期间用的基线值。冻结期样本从未进入基线，无需清理。"""
+        base = self._frozen
+        self._frozen = None
+        if now is not None:
+            self._trim(float(now))
+        return float(base or 0.0)
+
+    @property
+    def skipped(self) -> int:
+        """冻结期间被丢弃的样本数（解冻后用于日志，确认真的跳过了高峰值）。"""
+        return self._skipped
 
     def add(self, ts: float, value: float) -> None:
+        if self._frozen is not None:
+            self._skipped += 1
+            return
         self._samples.append((float(ts), float(value)))
         self._trim(float(ts))
 
@@ -72,6 +111,8 @@ class BaselineTracker:
             self._samples.popleft()
 
     def value(self, now: Optional[float] = None) -> float:
+        if self._frozen is not None:
+            return self._frozen
         if now is not None:
             self._trim(float(now))
         if not self._samples:
@@ -192,6 +233,26 @@ class MetricsService:
 
     def baseline(self, camera_id: str) -> float:
         return self.tracker(camera_id).value()
+
+    # ---------------- 投喂期基线冻结 ----------------
+    def freeze_baseline(self, camera_id: str, ts: Optional[float] = None) -> float:
+        """投喂窗口开始时锁基线。必须在窗口边缘调用，不能每帧调。"""
+        return self.tracker(camera_id).freeze(ts)
+
+    def unfreeze_baseline(self, camera_id: str, ts: Optional[float] = None) -> float:
+        return self.tracker(camera_id).unfreeze(ts)
+
+    def baseline_frozen(self, camera_id: str) -> bool:
+        return self.tracker(camera_id).frozen
+
+    def baseline_ready(self, camera_id: str, floor: float = 1e-4) -> bool:
+        """基线是否可用于判定：样本够多且非零。
+
+        基线为 0 时 ratio() 会返回 99.0 这种哨兵值，直接喂给停料判据
+        会让状态机以为"鱼在疯狂抢食"。所以判定前必须先问这个。
+        """
+        tracker = self.tracker(camera_id)
+        return len(tracker) >= 10 and tracker.value() > floor
 
     # ---------------- 查询 ----------------
     def feed_windows(self) -> List[Dict[str, str]]:

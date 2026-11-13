@@ -242,6 +242,7 @@ class _CameraDetState:
         self.last_ratio: float = 0.0
         self.last_baseline: float = 0.0
         self.last_v: float = 0.0
+        self.last_ts: int = 0
 
 
 class Detector:
@@ -440,6 +441,33 @@ class Detector:
         return self._svm
 
     # ------------------------------------------------------------------
+    # 对外：最近一帧的摄食信号
+    # ------------------------------------------------------------------
+    def last_signal(self, camera_id: str) -> Optional[Dict[str, Any]]:
+        """返回该相机最近一帧的 {ts, v_value, baseline, ratio, baseline_ready, frozen}。
+
+        为什么单开这个访问器、而不是让投喂状态机订阅 splash_activity 事件：
+        splash_activity 只在强度"上去"时发一次，随后进 120 s 冷却，它从不表达
+        "强度下来了" —— 而饱食点恰恰是回落。所以状态机必须直接读实时值。
+        """
+        state = self._states.get(camera_id)
+        if state is None or state.last_ts == 0:
+            return None
+        frozen = False
+        try:
+            frozen = bool(self.metrics.baseline_frozen(camera_id))
+        except AttributeError:
+            frozen = False
+        return {
+            "ts": int(state.last_ts),
+            "v_value": round(float(state.last_v), 5),
+            "baseline": round(float(state.last_baseline), 5),
+            "ratio": round(float(state.last_ratio), 3),
+            "baseline_ready": bool(self._baseline_ready.get(camera_id)),
+            "frozen": frozen,
+        }
+
+    # ------------------------------------------------------------------
     # 主入口
     # ------------------------------------------------------------------
     def process(
@@ -464,6 +492,7 @@ class Detector:
         baseline = observed["baseline"]
         ratio = observed["ratio"]
         state.last_v, state.last_baseline, state.last_ratio = v_value, baseline, ratio
+        state.last_ts = ts
         tracker_len = len(self.metrics.tracker(camera_id))
         # 基线预热：至少 10 个采样点且基线非零才允许出 splash 事件，避免冷启动误报
         baseline_ready = tracker_len >= 10 and baseline > 1e-4

@@ -121,6 +121,25 @@ ptz_presets:                 # 预置位种子；PUT /ptz action=save 保存的�
   - {id: 2, name: "塘中央", camera_id: cam-detail, pan: 168.0, tilt: -9.0, zoom: 1.0}
   - {id: 3, name: "进水口", camera_id: cam-detail, pan: 205.0, tilt: -14.0, zoom: 4.0}
 
+# ---------------------------------------------------------------------------
+# 投喂控制（迭代新增，不在契约里）
+#
+# 逻辑：投料后看「摄食强度 ratio」回落，连续 hold_s 低于 stop_ratio 就建议停料。
+# 它不数鱼 —— 只看水面比平时"吵"几倍，所以不受计数系统精度问题影响。
+# 前提：投喂窗口开始时必须冻结基线（metrics.BaselineTracker.freeze），
+#       否则滚动中位数会把投喂高峰当成"平时"，18 分钟就误判吃饱（实测差 9.5 min）。
+feeding_control:
+  enabled: true
+  shadow_mode: true          # ← 先别关。true = 只记录「我本来要在这里停」，不下发指令
+  gorge_ratio: 1.6           # 判定「正在抢食」的门槛（与 thresholds.splash_ratio 同源）
+  stop_ratio: 1.2            # 判定「不抢了」的门槛，必须小于 gorge_ratio
+  gorge_confirm_s: 8         # 抢食需持续多久才确认（抑制瞬时抖动）
+  hold_s: 30                 # ratio 低于 stop_ratio 需持续多久才判停料
+  max_gorge_s: 1800          # 抢食累计上限，到点兜底停（防画面卡在高峰值）
+  arm_timeout_s: 300         # 投料后这么久没响应就告警（只告警不停料，交定时计划兜底）
+  observe_after_s: 60        # 停料后继续记录多久，用于核对停早了还是停晚了
+  min_v_value: 0.005         # 画面运动占比低于此值时暂停判定（夜间/镜头糊/增益见底，ratio 不可信）
+
 analysis:
   roi: null                  # 全局默认 ROI（相机段可覆盖）
   pixel_thr: 25              # 帧差灰度阈值（有 numpy 时生效；否则退化为"是否变化"）
